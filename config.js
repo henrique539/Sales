@@ -49,7 +49,7 @@ export const USUARIOS = {
 
 // ─── APIs ─────────────────────────────────────────────────────────────────────
 export const API = {
-  claude:     "https://api.anthropic.com/v1/messages",
+  claude:     "/api/claude",  // proxy server-side — sem CORS em qualquer browser
   salesforce: "https://api.salesforce.com/platform/mcp/v1/platform/sobject-all",
   nitzap:     "https://sabagram-mcp.nitzap.com/mcp/master"
 };
