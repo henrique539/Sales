@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sabagram · Gerencial</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#1a3254;--navy-mid:#1e3d65;--gold:#c8960a;--gold-light:#e0aa18;
+  --bg:#f4f6f9;--white:#fff;--surface2:#f8f9fc;
+  --border:#e2e7ef;--border2:#d0d8e8;
+  --text:#1a2540;--text2:#3d5073;--muted:#7589a8;--dim:#a8b8cf;
+  --red:#c0392b;--red-bg:rgba(192,57,43,.07);--red-border:rgba(192,57,43,.2);
+  --amber:#d97706;--amber-bg:rgba(217,119,6,.07);--amber-border:rgba(217,119,6,.2);
+  --green:#1a7a4a;--green-bg:rgba(26,122,74,.07);--green-border:rgba(26,122,74,.2);
+  --blue:#1e5fa0;--blue-bg:rgba(30,95,160,.07);--blue-border:rgba(30,95,160,.2);
+  --radius:10px;--shadow:0 1px 3px rgba(26,50,84,.08),0 4px 12px rgba(26,50,84,.06);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6}
+
+/* HEADER */
+.hdr{background:var(--navy);height:56px;padding:0 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(26,50,84,.25)}
+.hdr-l{display:flex;align-items:center;gap:14px}
+.logo{font-weight:800;font-size:15px;color:white;letter-spacing:.04em}
+.logo span{color:var(--gold-light)}
+.hsep{width:1px;height:18px;background:rgba(255,255,255,.15)}
+.hdr-badge{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.8);font-size:10px;font-weight:700;padding:3px 10px;border-radius:5px;letter-spacing:.06em}
+.hdr-r{display:flex;align-items:center;gap:10px}
+#clock{font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,.4)}
+.btn-sair{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.6);font-size:11px;font-weight:600;padding:5px 11px;border-radius:7px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .15s}
+.btn-sair:hover{background:rgba(255,255,255,.15);color:white}
+.btn-refresh{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.85);font-size:12px;font-weight:600;padding:7px 13px;border-radius:8px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;display:flex;align-items:center;gap:5px;transition:all .15s}
+.btn-refresh:hover{background:rgba(255,255,255,.18)}
+.btn-refresh:disabled{opacity:.4;cursor:not-allowed}
+
+/* STATUS */
+.sbar{background:white;border-bottom:1px solid var(--border);padding:6px 28px;display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+.sdot{width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0}
+.sdot.on{background:var(--amber);animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+.wrap{max-width:1100px;margin:0 auto;padding:24px 28px 60px}
+
+/* RESUMO DO TIME */
+.team-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;gap:16px;flex-wrap:wrap}
+.team-title-date{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px}
+.team-title{font-size:22px;font-weight:800;letter-spacing:-.3px}
+.team-title span{color:var(--navy)}
+
+/* CARDS DO TEAM */
+.team-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-bottom:28px}
+.team-card{background:white;border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:var(--shadow);cursor:pointer;transition:box-shadow .15s}
+.team-card:hover{box-shadow:0 4px 20px rgba(26,50,84,.12)}
+.team-card.active{border-color:var(--navy-light)}
+.tc-hdr{padding:14px 16px;display:flex;align-items:center;justify-content:space-between}
+.tc-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:white;flex-shrink:0}
+.tc-info{flex:1;padding-left:10px}
+.tc-nome{font-size:13px;font-weight:700}
+.tc-cargo{font-size:10px;color:var(--muted);font-weight:500}
+.tc-body{padding:0 16px 16px}
+.tc-metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.tc-metric{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:9px 11px}
+.tc-metric-v{font-size:16px;font-weight:800;line-height:1;letter-spacing:-.3px}
+.tc-metric-l{font-size:9px;font-weight:700;color:var(--dim);letter-spacing:.07em;text-transform:uppercase;margin-top:2px}
+.tc-prog{height:5px;background:var(--border);border-radius:3px;overflow:hidden;margin-bottom:4px}
+.tc-prog-fill{height:5px;border-radius:3px;transition:width .8s}
+.tc-pct{font-size:10px;color:var(--muted);text-align:right;font-family:'JetBrains Mono',monospace}
+
+/* CONSOLIDADO */
+.consolid{background:var(--navy);border-radius:12px;padding:20px 24px;margin-bottom:28px;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px}
+.cons-metric{}
+.cons-v{font-size:24px;font-weight:800;color:white;letter-spacing:-.5px;line-height:1;margin-bottom:3px}
+.cons-v.gold{color:var(--gold-light)}
+.cons-l{font-size:10px;font-weight:600;color:rgba(255,255,255,.45);letter-spacing:.07em;text-transform:uppercase}
+.cons-s{font-size:11px;color:rgba(255,255,255,.35);margin-top:2px;font-family:'JetBrains Mono',monospace}
+
+/* SEÇÃO COBRANÇAS */
+.secao{background:white;border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:var(--shadow);margin-bottom:16px}
+.secao-hdr{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.secao-titulo{font-size:14px;font-weight:700}
+.secao-body{padding:18px}
+.vendedor-tab{display:none}.vendedor-tab.active{display:block}
+.tabs-nav{display:flex;gap:6px;margin-bottom:16px;border-bottom:1px solid var(--border);padding-bottom:0}
+.tab-btn{padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer;border-bottom:2px solid transparent;color:var(--muted);white-space:nowrap;background:none;border-top:none;border-left:none;border-right:none;font-family:'Plus Jakarta Sans',sans-serif;margin-bottom:-1px}
+.tab-btn:hover{color:var(--text)}
+.tab-btn.on{color:var(--navy);border-bottom-color:var(--navy)}
+
+/* COBRANÇAS LIST */
+.cobranca-item{padding:12px 0;border-bottom:1px solid var(--border)}
+.cobranca-item:last-child{border-bottom:none}
+.cob-hdr{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:6px}
+.cob-titulo{font-size:13px;font-weight:700}
+.cob-prioridade{padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700}
+.pr-alta{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)}
+.pr-media{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border)}
+.pr-baixa{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)}
+.cob-body{font-size:13px;color:var(--text2);line-height:1.7}
+.cob-body strong{color:var(--text);font-weight:600}
+.cob-pergunta{background:var(--navy);color:rgba(255,255,255,.9);border-radius:8px;padding:10px 13px;margin-top:8px;font-size:12px;line-height:1.7;font-style:italic}
+.cob-pergunta::before{content:"💬 ";font-style:normal}
+
+/* AI OUTPUT */
+.ai-content{font-size:13px;line-height:1.85;color:var(--text2)}
+.ai-content p{margin-bottom:9px}
+.ai-content p:last-child{margin-bottom:0}
+.ai-content strong{color:var(--text);font-weight:600}
+.cursor{display:inline-block;width:2px;height:13px;background:var(--navy);animation:blink .7s infinite;vertical-align:middle;margin-left:2px;border-radius:1px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner{width:28px;height:28px;border:3px solid var(--border);border-top-color:var(--navy);border-radius:50%;animation:spin 1s linear infinite}
+
+/* TOAST */
+.toast{position:fixed;bottom:18px;right:18px;background:var(--navy);color:white;border-radius:var(--radius);padding:9px 15px;font-size:12px;font-weight:600;transform:translateY(60px);opacity:0;transition:all .25s;z-index:999;box-shadow:var(--shadow)}
+.toast.show{transform:translateY(0);opacity:1}
+.topbar{position:fixed;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--navy),var(--gold));transform:scaleX(0);transform-origin:left;z-index:999;transition:transform .4s}
+.topbar.on{transform:scaleX(.85)}.topbar.done{transform:scaleX(1);opacity:0;transition:opacity .5s}
+</style>
+</head>
+<body>
+<div class="topbar" id="topbar"></div>
+
+<header class="hdr">
+  <div class="hdr-l">
+    <div class="logo">SABA<span>GRAM</span></div>
+    <div class="hsep"></div>
+    <div class="hdr-badge" id="hdrBadge">VISÃO GERENCIAL</div>
+  </div>
+  <div class="hdr-r">
+    <div id="clock"></div>
+    <button class="btn-refresh" id="btnRefresh" onclick="carregarTudo()"><span id="btnIcon">↻</span> Atualizar</button>
+    <button class="btn-sair" onclick="sair()">Sair</button>
+  </div>
+</header>
+
+<div class="sbar"><div class="sdot" id="sDot"></div><span id="sTxt">Inicializando...</span></div>
+
+<div class="wrap">
+
+  <!-- CABEÇALHO -->
+  <div class="team-header">
+    <div>
+      <div class="team-title-date" id="teamDate"></div>
+      <div class="team-title">Bom dia, <span id="gNome">Dhiego</span>. Aqui está o time de hoje.</div>
+    </div>
+  </div>
+
+  <!-- CONSOLIDADO -->
+  <div class="consolid" id="consolidado">
+    <div class="cons-metric"><div class="cons-v gold" id="cFat">—</div><div class="cons-l">Total faturado</div><div class="cons-s" id="cFatS">este mês</div></div>
+    <div class="cons-metric"><div class="cons-v" id="cMeta">—</div><div class="cons-l">Meta consolidada</div><div class="cons-s">BU Mercado Interno</div></div>
+    <div class="cons-metric"><div class="cons-v" id="cPct">0%</div><div class="cons-l">Atingimento</div><div class="cons-s" id="cDias">— dias úteis</div></div>
+    <div class="cons-metric"><div class="cons-v" id="cFalta">—</div><div class="cons-l">Falta para meta</div><div class="cons-s" id="cPorDia">— por dia útil</div></div>
+  </div>
+
+  <!-- CARDS DOS VENDEDORES -->
+  <div class="team-grid" id="teamGrid">
+    <div style="font-size:13px;color:var(--muted);padding:20px">Carregando dados...</div>
+  </div>
+
+  <!-- COBRANÇAS E ANÁLISE -->
+  <div class="secao">
+    <div class="secao-hdr">
+      <div class="secao-titulo">🎯 O que cobrar de cada um — análise do dia</div>
+      <div style="font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace" id="iaStatus">aguardando...</div>
+    </div>
+    <div class="secao-body">
+      <div class="tabs-nav" id="tabsNav"></div>
+      <div id="tabsContent">
+        <div style="display:flex;align-items:center;gap:10px;color:var(--muted);font-size:13px;padding:10px 0">
+          <div class="spinner"></div> Analisando dados do time...
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { initializeApp }                     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { FIREBASE_CONFIG, USUARIOS, API }    from "./config.js";
+
+const app=initializeApp(FIREBASE_CONFIG);
+const auth=getAuth(app);
+let gerente=null;
+
+// Vendedores do time (filtra do config)
+const VENDEDORES = Object.entries(USUARIOS)
+  .filter(([,u])=>u.perfil==='vendedor')
+  .map(([email,u])=>({email,...u}));
+
+onAuthStateChanged(auth,async user=>{
+  if(!user){window.location.href='index.html';return;}
+  const u=USUARIOS[user.email.toLowerCase()];
+  if(!u||( u.perfil!=='gerente' && u.perfil!=='admin')){await signOut(auth);window.location.href='index.html';return;}
+  gerente={email:user.email,...u};
+  document.getElementById('gNome').textContent=u.nome.split(' ')[0];
+  document.getElementById('teamDate').textContent=new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'}).toUpperCase();
+  if(u.perfil==='admin') document.getElementById('hdrBadge').textContent='ADMIN';
+  carregarTudo();
+});
+
+window.sair=async()=>{await signOut(auth);window.location.href='index.html';};
+
+const $=id=>document.getElementById(id);
+const fmt=v=>v>=1000?'R$'+Math.round(v/1000)+'k':'R$'+Math.round(v);
+const toast=msg=>{const t=$('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800)};
+const setStatus=(txt,on=false)=>{$('sTxt').textContent=txt;$('sDot').className='sdot'+(on?' on':'')};
+const diasUteis=()=>{const h=new Date(),f=new Date(h.getFullYear(),h.getMonth()+1,0);let c=0,d=new Date(h);d.setDate(d.getDate()+1);while(d<=f){if(d.getDay()!==0&&d.getDay()!==6)c++;d.setDate(d.getDate()+1);}return c};
+const md2html=t=>t.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/^#{1,3}\s+(.+)$/gm,'<strong>$1</strong>').replace(/\n\n+/g,'</p><p>').replace(/\n/g,'<br>');
+const tick=()=>$('clock').textContent=new Date().toLocaleString('pt-BR',{weekday:'short',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}).toUpperCase();
+tick();setInterval(tick,30000);
+
+async function claude(prompt,onChunk,useMCP=true){
+  const body={model:'claude-sonnet-4-20250514',max_tokens:1500,stream:true,
+    system:`Você é o assistente do gerente comercial ${gerente?.nome||'Dhiego'} da Sabagram (granitos e mármores, ES).
+Data: ${new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}
+Você tem acesso ao Salesforce com dados de vendas e ao WhatsApp via Nitzap.
+Responda em português, direto e acionável. Foco em o que COBRAR e COMO COBRAR de cada vendedor.`,
+    messages:[{role:'user',content:prompt}]};
+  if(useMCP)body.mcp_servers=[{type:'url',url:API.salesforce,name:'salesforce'},{type:'url',url:API.nitzap,name:'nitzap'}];
+  const r=await fetch(API.claude,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  if(!r.ok)throw new Error('HTTP '+r.status);
+  const reader=r.body.getReader(),dec=new TextDecoder();
+  let buf='',full='';
+  while(true){
+    const{done,value}=await reader.read();if(done)break;
+    buf+=dec.decode(value,{stream:true});
+    const lines=buf.split('\n');buf=lines.pop();
+    for(const line of lines){
+      if(!line.startsWith('data: '))continue;
+      const d=line.slice(6);if(d==='[DONE]')continue;
+      try{const j=JSON.parse(d);if(j.type==='content_block_delta'&&j.delta?.type==='text_delta'){full+=j.delta.text;onChunk(j.delta.text)}}catch{}
+    }
+  }
+  return full;
+}
+
+// Dados de cada vendedor
+let dadosVendedores={};
+
+window.carregarTudo=async()=>{
+  const btn=$('btnRefresh');btn.disabled=true;$('btnIcon').textContent='↻';
+  $('topbar').className='topbar on';
+  setStatus('Buscando dados do time...',true);
+  const mesAtual=new Date().toISOString().slice(0,7)+'-01';
+  const dias=diasUteis();
+
+  // Buscar dados de todos os vendedores
+  let fatTotal=0,metaTotal=0;
+  for(const v of VENDEDORES){
+    try{
+      let buf='';
+      await claude(
+        `Execute no Salesforce para o vendedor ${v.nome}:
+Query 1: SELECT SUM(VlrLiq__c) fat, COUNT_DISTINCT(IdeCli__c) cli FROM Pedido__c WHERE IdeVen__c IN ('${v.salesforce.ideVen.join("','")}') AND StsPed__c='Faturado' AND DatFat__c >= ${mesAtual}
+Query 2: SELECT MetMen__c FROM User WHERE Id = '${v.salesforce.userId}' LIMIT 1
+Retorne APENAS:
+FAT:XXXXX
+CLI:X
+META:XXXXX`,
+        c=>{buf+=c;}
+      );
+      const fm=buf.match(/FAT[:\s]+(\d+(?:[.,]\d+)?)/),cm=buf.match(/CLI[:\s]+(\d+)/),mm=buf.match(/META[:\s]+(\d+(?:[.,]\d+)?)/);
+      dadosVendedores[v.email]={
+        fat:   fm?parseFloat(fm[1].replace(',','.')):0,
+        cli:   cm?parseInt(cm[1]):0,
+        meta:  mm?parseFloat(mm[1].replace(',','.')):300000,
+        nome:  v.nome, avatar:v.avatar, cor:v.cor, email:v.email
+      };
+      fatTotal+=dadosVendedores[v.email].fat;
+      metaTotal+=dadosVendedores[v.email].meta;
+    }catch{
+      dadosVendedores[v.email]={fat:0,cli:0,meta:300000,nome:v.nome,avatar:v.avatar,cor:v.cor,email:v.email};
+    }
+  }
+
+  // Consolidado
+  const pctTotal=Math.min(100,Math.round(fatTotal/metaTotal*100));
+  const faltaTotal=metaTotal-fatTotal;
+  $('cFat').textContent=fmt(fatTotal);
+  $('cFatS').textContent=new Date().toLocaleDateString('pt-BR',{month:'long',year:'2-digit'});
+  $('cMeta').textContent=fmt(metaTotal);
+  $('cPct').textContent=pctTotal+'%';
+  $('cPct').style.color=pctTotal<33?'var(--red)':pctTotal<66?'var(--gold-light)':'#6ee7b7';
+  $('cDias').textContent=dias+' dias úteis restantes';
+  $('cFalta').textContent=fmt(Math.max(0,faltaTotal));
+  $('cFalta').style.color='var(--gold-light)';
+  $('cPorDia').textContent=fmt(Math.round(faltaTotal/Math.max(dias,1)))+' por dia útil';
+
+  // Cards dos vendedores
+  $('teamGrid').innerHTML=VENDEDORES.map(v=>{
+    const d=dadosVendedores[v.email]||{fat:0,cli:0,meta:300000};
+    const pct=Math.min(100,Math.round(d.fat/d.meta*100));
+    const falta=d.meta-d.fat;
+    const corProg=pct<33?'var(--red)':pct<66?'var(--gold)':'var(--green)';
+    return`<div class="team-card" onclick="selecionarVendedor('${v.email}')">
+      <div class="tc-hdr">
+        <div class="tc-avatar" style="background:${v.cor||'var(--navy)'}">${v.avatar}</div>
+        <div class="tc-info">
+          <div class="tc-nome">${v.nome}</div>
+          <div class="tc-cargo">BU Mercado Interno</div>
+        </div>
+      </div>
+      <div class="tc-body">
+        <div class="tc-metrics">
+          <div class="tc-metric"><div class="tc-metric-v" style="color:var(--navy)">${fmt(d.fat)}</div><div class="tc-metric-l">Faturado</div></div>
+          <div class="tc-metric"><div class="tc-metric-v" style="color:var(--gold)">${fmt(d.meta)}</div><div class="tc-metric-l">Meta</div></div>
+          <div class="tc-metric"><div class="tc-metric-v" style="color:${corProg}">${pct}%</div><div class="tc-metric-l">Atingido</div></div>
+          <div class="tc-metric"><div class="tc-metric-v" style="color:var(--red)">${fmt(Math.max(0,falta))}</div><div class="tc-metric-l">Falta</div></div>
+        </div>
+        <div class="tc-prog"><div class="tc-prog-fill" style="width:${pct}%;background:${corProg}"></div></div>
+        <div class="tc-pct">${fmt(Math.round(falta/Math.max(dias,1)))} por dia útil</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Tabs
+  $('tabsNav').innerHTML=VENDEDORES.map((v,i)=>
+    `<button class="tab-btn${i===0?' on':''}" onclick="showTab('${v.email}',this)">${v.nome.split(' ')[0]}</button>`
+  ).join('');
+
+  // Gerar análise para todos os vendedores
+  $('iaStatus').textContent='gerando análise...';
+  $('tabsContent').innerHTML=VENDEDORES.map(v=>
+    `<div class="vendedor-tab${VENDEDORES.indexOf(v)===0?' active':''}" id="tab-${v.email.replace(/[@.]/g,'_')}">
+      <div class="ai-content" id="ia-${v.email.replace(/[@.]/g,'_')}"><span class="cursor"></span></div>
+    </div>`
+  ).join('');
+
+  // Gerar análise de cada vendedor com streaming (sequencial para não sobrecarregar)
+  for(const v of VENDEDORES){
+    const d=dadosVendedores[v.email]||{fat:0,meta:300000,cli:0};
+    const pct=Math.min(100,Math.round(d.fat/d.meta*100));
+    const safeId=v.email.replace(/[@.]/g,'_');
+    const el=document.getElementById('ia-'+safeId);
+    if(!el)continue;
+    let full='';
+    try{
+      await claude(
+        `Vendedor: ${v.nome}
+Faturado: ${fmt(d.fat)} de ${fmt(d.meta)} (${pct}% da meta)
+Clientes únicos este mês: ${d.cli}
+Dias úteis restantes: ${dias}
+Falta: ${fmt(Math.max(0,d.meta-d.fat))} = ${fmt(Math.round((d.meta-d.fat)/Math.max(dias,1)))} por dia útil
+
+Busque no Salesforce as últimas ligações e pedidos deste vendedor (IdeVen__c IN ('${v.salesforce.ideVen.join("','")}')) para contextualizar.
+
+Para o gerente Dhiego, gere:
+
+**Situação atual** (2 frases): Como está esse vendedor hoje. Tom direto, sem rodeios.
+
+**🔴 Cobranças prioritárias** (máximo 3 itens):
+Para cada cobrança: o problema específico identificado nos dados + a pergunta exata que Dhiego deve fazer na reunião/ligação.
+
+**📊 Métrica a monitorar essa semana**: Uma métrica específica com número atual e onde precisa chegar.
+
+**✅ O que está funcionando**: Uma coisa que está dando certo e deve continuar.
+
+Máximo 300 palavras. Direto, sem introduções.`,
+        chunk=>{
+          full+=chunk;
+          el.innerHTML=`<p>${md2html(full)}</p><span class="cursor"></span>`;
+        }
+      );
+      el.innerHTML=`<p>${md2html(full)}</p>`;
+    }catch(e){
+      el.innerHTML=`<span style="color:var(--red);font-size:12px;font-family:'JetBrains Mono',monospace">Erro: ${e.message}</span>`;
+    }
+  }
+
+  $('iaStatus').textContent='atualizado às '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  setStatus('Atualizado às '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),false);
+  $('topbar').className='topbar done';setTimeout(()=>$('topbar').className='topbar',600);
+  btn.disabled=false;$('btnIcon').textContent='↻';
+};
+
+window.showTab=(email,btn)=>{
+  document.querySelectorAll('.vendedor-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('on'));
+  const safeId=email.replace(/[@.]/g,'_');
+  document.getElementById('tab-'+safeId)?.classList.add('active');
+  btn.classList.add('on');
+};
+
+window.selecionarVendedor=(email)=>{
+  const btn=document.querySelector(`.tab-btn[onclick*="${email}"]`);
+  if(btn)window.showTab(email,btn);
+  document.querySelector('.secao')?.scrollIntoView({behavior:'smooth'});
+};
+
+// Auto-refresh 06h e 12h
+setInterval(()=>{const h=new Date().getHours(),m=new Date().getMinutes(),ub=parseInt(localStorage.getItem('ub_gerente')||'0');if((h===6||h===12)&&m<5&&Date.now()-ub>3600000)window.carregarTudo();},60000);
+</script>
+</body>
+</html>

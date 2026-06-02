@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sabagram · Briefing</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#1a3254;--navy-mid:#1e3d65;--navy-light:#2a4f80;
+  --gold:#c8960a;--gold-light:#e0aa18;--gold-bg:rgba(200,150,10,.08);--gold-border:rgba(200,150,10,.25);
+  --bg:#f4f6f9;--white:#fff;--surface2:#f8f9fc;
+  --border:#e2e7ef;--border2:#d0d8e8;
+  --text:#1a2540;--text2:#3d5073;--muted:#7589a8;--dim:#a8b8cf;
+  --red:#c0392b;--red-bg:rgba(192,57,43,.07);--red-border:rgba(192,57,43,.2);
+  --amber:#d97706;--amber-bg:rgba(217,119,6,.07);--amber-border:rgba(217,119,6,.2);
+  --green:#1a7a4a;--green-bg:rgba(26,122,74,.07);--green-border:rgba(26,122,74,.2);
+  --blue:#1e5fa0;--blue-bg:rgba(30,95,160,.07);--blue-border:rgba(30,95,160,.2);
+  --accent:var(--navy);
+  --radius:10px;
+  --shadow:0 1px 3px rgba(26,50,84,.08),0 4px 12px rgba(26,50,84,.06);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6;min-height:100vh}
+
+/* HEADER */
+.hdr{background:var(--navy);height:56px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(26,50,84,.25)}
+.hdr-l{display:flex;align-items:center;gap:14px}
+.logo{font-weight:800;font-size:15px;color:white;letter-spacing:.04em}
+.logo span{color:var(--gold-light)}
+.hsep{width:1px;height:18px;background:rgba(255,255,255,.15)}
+.hdr-user{display:flex;align-items:center;gap:8px}
+.avatar{width:30px;height:30px;border-radius:50%;background:var(--gold);color:white;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.hdr-name{font-size:13px;font-weight:600;color:rgba(255,255,255,.85)}
+.hdr-r{display:flex;align-items:center;gap:10px}
+#clock{font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,.4)}
+.btn-sair{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.6);font-size:11px;font-weight:600;padding:5px 11px;border-radius:7px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .15s}
+.btn-sair:hover{background:rgba(255,255,255,.15);color:white}
+.btn-upd{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.85);font-size:12px;font-weight:600;padding:7px 13px;border-radius:8px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;display:flex;align-items:center;gap:5px;transition:all .15s}
+.btn-upd:hover{background:rgba(255,255,255,.18)}
+.btn-upd:disabled{opacity:.4;cursor:not-allowed}
+
+/* STATUS */
+.sbar{background:white;border-bottom:1px solid var(--border);padding:6px 24px;display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+.sdot{width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0}
+.sdot.on{background:var(--amber);animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* LAYOUT */
+.main{display:grid;grid-template-columns:270px 1fr;min-height:calc(100vh - 88px)}
+
+/* SIDEBAR */
+.sidebar{background:white;border-right:1px solid var(--border);padding:16px 13px;display:flex;flex-direction:column;gap:18px;overflow-y:auto;max-height:calc(100vh - 88px)}
+.slabel{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-bottom:9px}
+.metrics{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.metric{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px}
+.metric-v{font-size:19px;font-weight:800;line-height:1;margin-bottom:2px;letter-spacing:-.4px}
+.metric-l{font-size:9px;font-weight:700;color:var(--dim);letter-spacing:.08em;text-transform:uppercase}
+.metric-s{font-size:10px;color:var(--muted);margin-top:2px}
+.prog-bar{height:5px;background:var(--border);border-radius:3px;overflow:hidden;margin-top:9px}
+.prog-fill{height:5px;border-radius:3px;transition:width .8s}
+.prog-label{font-size:10px;color:var(--muted);text-align:right;margin-top:3px;font-family:'JetBrains Mono',monospace}
+
+/* FILA */
+.qi{padding:9px 11px;border-radius:var(--radius);border:1px solid var(--border);margin-bottom:5px;cursor:pointer;transition:all .15s;position:relative;background:white}
+.qi:hover{border-color:var(--border2);background:var(--surface2)}
+.qi.active{border-color:var(--navy-light);background:var(--blue-bg)}
+.qi.done{opacity:.3;pointer-events:none}
+.qi-name{font-size:12px;font-weight:700;color:var(--text);margin-bottom:3px;padding-right:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.qi-row{display:flex;gap:5px;align-items:center;flex-wrap:wrap}
+.qi-dot{position:absolute;top:9px;right:9px;width:5px;height:5px;border-radius:50%}
+.d1{background:var(--red)}.d2{background:var(--amber)}.d3{background:var(--green)}
+.tag{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;font-size:9px;font-weight:700}
+.tag-call{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)}
+.tag-wa{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)}
+.tag-follow{background:var(--gold-bg);color:var(--gold);border:1px solid var(--gold-border)}
+.tag-hot{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border);animation:blink 2s infinite}
+.qi-sub{font-size:9px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+
+/* CONTENT */
+.content{padding:22px 26px;overflow-y:auto;max-height:calc(100vh - 88px)}
+.loading-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:360px;gap:14px;text-align:center}
+.spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--navy);border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-title{font-size:15px;font-weight:700}
+.lstep{font-size:11px;padding:3px 10px;border-radius:6px;font-family:'JetBrains Mono',monospace}
+.lstep.done{color:var(--green)}.lstep.active{color:var(--amber);background:var(--amber-bg)}.lstep.wait{color:var(--dim)}
+
+/* BRIEFING */
+.brief-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;gap:14px}
+.brief-date{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:3px}
+.brief-title{font-size:21px;font-weight:800;letter-spacing:-.3px;line-height:1.2}
+.brief-title span{color:var(--navy)}
+.brief-resumo{font-size:13px;color:var(--text2);margin-top:7px;max-width:440px;line-height:1.7}
+.need-badge{background:var(--navy);border-radius:var(--radius);padding:13px 16px;text-align:right;flex-shrink:0}
+.need-v{font-size:21px;font-weight:800;color:var(--gold-light);letter-spacing:-.4px}
+.need-l{font-size:9px;font-weight:600;color:rgba(255,255,255,.4);letter-spacing:.06em;text-transform:uppercase;margin-top:2px}
+
+/* ALERTAS */
+.alert{padding:10px 14px;border-radius:var(--radius);margin-bottom:7px;font-size:13px;display:flex;gap:8px;align-items:center;font-weight:500}
+.alert-r{background:var(--red-bg);border:1px solid var(--red-border);color:var(--red)}
+.alert-a{background:var(--amber-bg);border:1px solid var(--amber-border);color:var(--amber)}
+.alert-g{background:var(--green-bg);border:1px solid var(--green-border);color:var(--green)}
+
+/* DIVIDER */
+.divider{display:flex;align-items:center;gap:10px;margin:20px 0 14px}
+.div-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.div-line{flex:1;height:1px;background:var(--border)}
+.div-hint{font-size:10px;color:var(--dim);white-space:nowrap}
+
+/* CARD */
+.client-card{background:white;border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+.cc-hdr{background:var(--navy);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.cc-name{font-size:17px;font-weight:800;color:white;letter-spacing:-.2px}
+.cc-body{padding:18px}
+.cc-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:16px}
+.cc-stat{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px}
+.cc-stat-v{font-size:15px;font-weight:700;margin-bottom:2px;font-family:'JetBrains Mono',monospace}
+.cc-stat-l{font-size:9px;font-weight:700;color:var(--dim);letter-spacing:.07em;text-transform:uppercase}
+
+/* AI */
+.ai-hdr{display:flex;align-items:center;gap:8px;margin-bottom:11px;padding-bottom:9px;border-bottom:1px solid var(--border)}
+.ai-badge{background:var(--navy);color:white;font-size:9px;font-weight:700;letter-spacing:.07em;padding:3px 8px;border-radius:5px;display:flex;align-items:center;gap:4px}
+.ai-pulse{width:5px;height:5px;border-radius:50%;background:var(--gold-light)}
+.ai-pulse.on{animation:blink 1s infinite}
+.ai-title{font-size:12px;font-weight:600;color:var(--muted)}
+.ai-content{font-size:13px;line-height:1.85;color:var(--text2)}
+.ai-content p{margin-bottom:9px}
+.ai-content p:last-child{margin-bottom:0}
+.ai-content strong{color:var(--text);font-weight:600}
+
+/* SCRIPT */
+.script-box{background:#f0f5ff;border:1px solid #c5d5f0;border-left:4px solid var(--navy);border-radius:0 var(--radius) var(--radius) 0;padding:13px 15px;margin:12px 0}
+.script-label{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--navy);margin-bottom:7px}
+.script-text{font-size:13px;line-height:1.75;color:var(--text);font-style:italic}
+.cursor{display:inline-block;width:2px;height:13px;background:var(--navy);animation:blink .7s infinite;vertical-align:middle;margin-left:2px;border-radius:1px}
+
+/* AÇÕES */
+.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
+.act{font-size:12px;font-weight:700;padding:8px 13px;border-radius:8px;border:1px solid var(--border2);background:white;color:var(--text2);cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .15s;font-family:'Plus Jakarta Sans',sans-serif}
+.act:hover{border-color:var(--navy-light);color:var(--navy);background:var(--blue-bg)}
+.act.primary{background:var(--navy);border-color:var(--navy);color:white}
+.act.primary:hover{background:var(--navy-mid);color:white}
+.act.gold{background:var(--gold);border-color:var(--gold);color:white}
+.act.gold:hover{background:var(--gold-light);color:white}
+
+/* TOAST */
+.toast{position:fixed;bottom:18px;right:18px;background:var(--navy);color:white;border-radius:var(--radius);padding:9px 15px;font-size:12px;font-weight:600;transform:translateY(60px);opacity:0;transition:all .25s;z-index:999;box-shadow:var(--shadow)}
+.toast.show{transform:translateY(0);opacity:1}
+.topbar{position:fixed;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--navy),var(--gold));transform:scaleX(0);transform-origin:left;z-index:999;transition:transform .4s}
+.topbar.on{transform:scaleX(.85)}.topbar.done{transform:scaleX(1);opacity:0;transition:opacity .5s}
+</style>
+</head>
+<body>
+<div class="topbar" id="topbar"></div>
+
+<header class="hdr">
+  <div class="hdr-l">
+    <div class="logo">SABA<span>GRAM</span></div>
+    <div class="hsep"></div>
+    <div class="hdr-user">
+      <div class="avatar" id="avatar">??</div>
+      <div class="hdr-name" id="hdrNome">Carregando...</div>
+    </div>
+  </div>
+  <div class="hdr-r">
+    <div id="clock"></div>
+    <button class="btn-upd" id="btnUpd" onclick="gerarBriefing()"><span id="btnIcon">↻</span> Atualizar</button>
+    <button class="btn-sair" onclick="sair()">Sair</button>
+  </div>
+</header>
+
+<div class="sbar">
+  <div class="sdot" id="sDot"></div>
+  <span id="sTxt">Inicializando...</span>
+</div>
+
+<div class="main">
+  <aside class="sidebar">
+    <div>
+      <div class="slabel">Meta do mês</div>
+      <div class="metrics">
+        <div class="metric"><div class="metric-v" style="color:var(--navy)" id="mFat">—</div><div class="metric-l">Faturado</div><div class="metric-s" id="mFatS">este mês</div></div>
+        <div class="metric"><div class="metric-v" style="color:var(--gold)" id="mMeta">—</div><div class="metric-l">Meta</div><div class="metric-s" id="mMetaS">este mês</div></div>
+        <div class="metric"><div class="metric-v" id="mCli">—</div><div class="metric-l">Clientes</div><div class="metric-s">este mês</div></div>
+        <div class="metric"><div class="metric-v" id="mDias">—</div><div class="metric-l">Dias úteis</div><div class="metric-s">restantes</div></div>
+      </div>
+      <div class="prog-bar"><div class="prog-fill" id="pFill" style="width:0%"></div></div>
+      <div class="prog-label" id="pLabel">0% da meta</div>
+    </div>
+    <div>
+      <div class="slabel">Fila do dia <span id="qCount" style="color:var(--navy);font-weight:700"></span></div>
+      <div id="qList"><div style="font-size:11px;color:var(--dim);padding:5px 3px">Carregando...</div></div>
+    </div>
+  </aside>
+
+  <main class="content" id="mainContent">
+    <div class="loading-screen" id="loadingScreen">
+      <div class="spinner"></div>
+      <div class="loading-title">Gerando seu briefing...</div>
+      <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-start;margin-top:4px">
+        <div class="lstep active" id="ls1">⬡ Conectando ao Salesforce</div>
+        <div class="lstep wait"   id="ls2">⬡ Buscando faturamento e meta</div>
+        <div class="lstep wait"   id="ls3">⬡ Lendo conversas do WhatsApp</div>
+        <div class="lstep wait"   id="ls4">⬡ IA montando fila do dia</div>
+      </div>
+    </div>
+    <div id="briefingDiv" style="display:none"></div>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Firebase + App -->
+<script type="module">
+import { initializeApp }                     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { FIREBASE_CONFIG, USUARIOS, API }    from "./config.js";
+
+// ── AUTH ──────────────────────────────────────────────────────────────────────
+const app  = initializeApp(FIREBASE_CONFIG);
+const auth = getAuth(app);
+let usuario = null;
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) { window.location.href = 'index.html'; return; }
+  const u = USUARIOS[user.email.toLowerCase()];
+  if (!u || u.perfil !== 'vendedor') { await signOut(auth); window.location.href = 'index.html'; return; }
+  usuario = { email: user.email, ...u };
+  // Aplicar cor do vendedor
+  document.documentElement.style.setProperty('--accent', u.cor || '#1a3254');
+  document.getElementById('avatar').textContent  = u.avatar;
+  document.getElementById('hdrNome').textContent = u.nome;
+  gerarBriefing();
+});
+
+window.sair = async () => { await signOut(auth); window.location.href = 'index.html'; };
+
+// ── UTILS ─────────────────────────────────────────────────────────────────────
+const $ = id => document.getElementById(id);
+const fmt = v => v >= 1000 ? 'R$' + Math.round(v/1000) + 'k' : 'R$' + Math.round(v);
+const toast = msg => { const t=$('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2800); };
+const setStatus = (txt,on=false) => { $('sTxt').textContent=txt; $('sDot').className='sdot'+(on?' on':''); };
+const setStep = n => {
+  for(let i=1;i<=4;i++){
+    const el=$('ls'+i); if(!el) continue;
+    const txt=el.textContent.replace(/^[✓⬡] /,'');
+    if(i<n){el.className='lstep done';el.textContent='✓ '+txt}
+    else if(i===n){el.className='lstep active';el.textContent='⬡ '+txt}
+    else{el.className='lstep wait';el.textContent='⬡ '+txt}
+  }
+};
+const diasUteis = () => {
+  const h=new Date(),f=new Date(h.getFullYear(),h.getMonth()+1,0);
+  let c=0,d=new Date(h); d.setDate(d.getDate()+1);
+  while(d<=f){if(d.getDay()!==0&&d.getDay()!==6)c++;d.setDate(d.getDate()+1);}
+  return c;
+};
+const md2html = t => t
+  .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
+  .replace(/^#{1,3}\s+(.+)$/gm,'<strong>$1</strong>')
+  .replace(/\n\n+/g,'</p><p>')
+  .replace(/\n/g,'<br>');
+
+// CLOCK
+const tick = () => $('clock').textContent =
+  new Date().toLocaleString('pt-BR',{weekday:'short',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}).toUpperCase();
+tick(); setInterval(tick,30000);
+
+// ── CLAUDE API ────────────────────────────────────────────────────────────────
+async function claude(prompt, onChunk, useMCP=true) {
+  if(!usuario) throw new Error('sem usuário');
+  const body = {
+    model:'claude-sonnet-4-20250514', max_tokens:1000, stream:true,
+    system:`Você é o assistente comercial de ${usuario.nome}, vendedor(a) da Sabagram (granitos e mármores, ES).
+WhatsApp: ${usuario.whatsapp} | Salesforce IdeVen__c: ${usuario.salesforce.ideVen.join(', ')}
+Data: ${new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}
+REGRAS: ❌ Nunca "ajuda o amigo","preciso te vender","mensagem genérica de bom mês".
+✅ Começar pela necessidade do CLIENTE. ✅ Produto concreto ou pergunta específica. ✅ Próximo passo com data.
+Responda em português, direto. Scripts: naturais, humanos, 30 segundos.`,
+    messages:[{role:'user',content:prompt}]
+  };
+  if(useMCP) body.mcp_servers=[
+    {type:'url',url:API.salesforce,name:'salesforce'},
+    {type:'url',url:API.nitzap,name:'nitzap'}
+  ];
+  const r = await fetch(API.claude,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  if(!r.ok) throw new Error('HTTP '+r.status);
+  const reader=r.body.getReader(),dec=new TextDecoder();
+  let buf='',full='';
+  while(true){
+    const{done,value}=await reader.read();if(done)break;
+    buf+=dec.decode(value,{stream:true});
+    const lines=buf.split('\n');buf=lines.pop();
+    for(const line of lines){
+      if(!line.startsWith('data: '))continue;
+      const d=line.slice(6);if(d==='[DONE]')continue;
+      try{const j=JSON.parse(d);if(j.type==='content_block_delta'&&j.delta?.type==='text_delta'){full+=j.delta.text;onChunk(j.delta.text)}}catch{}
+    }
+  }
+  return full;
+}
+
+// ── FILA DINÂMICA (IA gera baseada nos dados reais do vendedor) ───────────────
+let fila=[], idxAtivo=0, scriptAtual='';
+
+function renderFila(){
+  $('qCount').textContent=`(${fila.filter(c=>!c.done).length})`;
+  $('qList').innerHTML=fila.map((c,i)=>`
+    <div class="qi${i===idxAtivo?' active':''}${c.done?' done':''}" onclick="selCliente(${i})" id="qi-${i}">
+      <div class="qi-dot ${c.p===1?'d1':c.p===2?'d2':'d3'}"></div>
+      <div class="qi-name">${c.nome}</div>
+      <div class="qi-row">
+        <span class="tag ${c.tag==='hot'?'tag-hot':c.tag==='call'?'tag-call':c.tag==='wa'?'tag-wa':'tag-follow'}">
+          ${c.tag==='hot'?'🔥 Urgente':c.tag==='call'?'☎ Ligar':c.tag==='wa'?'💬 WA':'↩ Follow'}
+        </span>
+        <span class="qi-sub">${c.fat2025>0?fmt(c.fat2025)+'/ano':c.status}</span>
+      </div>
+    </div>`).join('');
+}
+
+window.selCliente = async(idx) => { idxAtivo=idx; renderFila(); await renderCard(fila[idx]); };
+
+// ── CARD ──────────────────────────────────────────────────────────────────────
+async function renderCard(c){
+  const area=$('cardArea');if(!area)return;
+  const corP=c.p===1?'var(--red)':c.p===2?'var(--amber)':'var(--green)';
+  area.innerHTML=`
+    <div class="client-card">
+      <div class="cc-hdr">
+        <div class="cc-name">${c.nome}</div>
+        <span class="tag ${c.tag==='hot'?'tag-hot':c.tag==='call'?'tag-call':c.tag==='wa'?'tag-wa':'tag-follow'}" style="font-size:10px;padding:3px 9px">
+          ${c.tag==='hot'?'🔥 Fechar hoje':c.tag==='call'?'☎ Ligar agora':c.tag==='wa'?'💬 WhatsApp':'↩ Follow-up'}
+        </span>
+      </div>
+      <div class="cc-body">
+        <div class="cc-stats">
+          <div class="cc-stat"><div class="cc-stat-v" style="color:var(--gold)">${c.fat>0?fmt(c.fat):'—'}</div><div class="cc-stat-l">Comprado 2025</div></div>
+          <div class="cc-stat"><div class="cc-stat-v" style="color:${corP}">${['','Crítico','Alta','Média'][c.p]}</div><div class="cc-stat-l">Prioridade</div></div>
+          <div class="cc-stat"><div class="cc-stat-v" style="font-size:12px;color:var(--text2)">${c.status}</div><div class="cc-stat-l">Status</div></div>
+        </div>
+        <div class="ai-hdr">
+          <div class="ai-badge"><div class="ai-pulse on" id="aiPulse"></div>IA</div>
+          <div class="ai-title">Buscando histórico e gerando análise...</div>
+        </div>
+        <div class="ai-content" id="aiOut"><span class="cursor"></span></div>
+        <div class="actions">
+          ${c.num?`<button class="act gold" onclick="abrirWA('${c.num}')">💬 WhatsApp</button>`:''}
+          <button class="act primary" onclick="copiarScript()">⊙ Copiar script</button>
+          <button class="act" onclick="marcarFeito(${idxAtivo})">✓ Feito</button>
+          <button class="act" onclick="adiar(${idxAtivo})">→ Amanhã</button>
+        </div>
+      </div>
+    </div>`;
+
+  const aiOut=$('aiOut'), aiPulse=$('aiPulse');
+  let full='';
+  const prompt=`Cliente: ${c.nome}
+Status: ${c.status} | Fat. 2025: R$${c.fat||0}
+${c.num?`Número WhatsApp: ${c.num}\nBusque no Nitzap as últimas 5 mensagens (target: ${c.num}, vFrom: ${usuario.whatsapp}).\n`:''}Contexto: ${c.ctx||''}
+
+Gere para ${usuario.nome} agir agora:
+
+**Situação** (2 frases): O que sabemos. Por que é prioridade hoje.
+**Não fazer** (1 frase): O erro específico a evitar com este cliente.
+**Script** (marque com ---SCRIPT---): O que falar em 30 segundos. Natural. Começa pelo nome e pergunta sobre necessidade DELE.
+**Se não responder**: Próximo passo com prazo.
+
+Máximo 200 palavras.`;
+  try{
+    full=await claude(prompt,chunk=>{
+      const html=md2html(full+chunk);
+      aiOut.innerHTML=`<p>${html}</p><span class="cursor"></span>`;
+    });
+    if(full.includes('---SCRIPT---')){
+      const parts=full.split('---SCRIPT---');
+      const before=md2html(parts[0]),rest=parts[1]||'';
+      const end=rest.indexOf('\n\n');
+      const scriptTxt=(end>-1?rest.slice(0,end):rest).trim();
+      const after=end>-1?md2html(rest.slice(end)):'';
+      scriptAtual=scriptTxt;
+      aiOut.innerHTML=`<p>${before}</p><div class="script-box"><div class="script-label">📞 Script — use estas palavras</div><div class="script-text">${scriptTxt}</div></div><p>${after}</p>`;
+    }else{scriptAtual=full;aiOut.innerHTML=`<p>${md2html(full)}</p>`;}
+    if(aiPulse)aiPulse.classList.remove('on');
+  }catch(e){
+    aiOut.innerHTML=`<span style="color:var(--red);font-size:12px;font-family:'JetBrains Mono',monospace">Erro: ${e.message}</span>`;
+  }
+}
+
+// ── GERAR BRIEFING ────────────────────────────────────────────────────────────
+window.gerarBriefing = async () => {
+  if(!usuario) return;
+  const btn=$('btnUpd');btn.disabled=true;$('btnIcon').textContent='↻';
+  $('topbar').className='topbar on';
+  $('briefingDiv').style.display='none';
+  $('loadingScreen').style.display='flex';
+  setStatus('Gerando briefing...',true);setStep(1);
+  $('mDias').textContent=diasUteis();
+
+  const ideVen=usuario.salesforce.ideVen;
+  const mesAtual=new Date().toISOString().slice(0,7)+'-01'; // ex: 2026-06-01
+
+  // PASSO 1 — Faturamento + meta do mês do Salesforce
+  setStep(2);
+  let fatMes=0,cliMes=0,metaMes=300000;
+  try{
+    let buf='';
+    await claude(
+      `Execute no Salesforce estas duas queries e retorne APENAS as linhas indicadas:
+
+Query 1 — Faturamento: SELECT SUM(VlrLiq__c) fat, COUNT_DISTINCT(IdeCli__c) cli FROM Pedido__c WHERE IdeVen__c IN ('${ideVen.join("','")}') AND StsPed__c = 'Faturado' AND DatFat__c >= ${mesAtual}
+
+Query 2 — Meta: SELECT MetMen__c FROM User WHERE Id = '${usuario.salesforce.userId}' LIMIT 1
+
+Retorne EXATAMENTE (só essas linhas):
+FAT:XXXXX
+CLI:X
+META:XXXXX`,
+      c=>{buf+=c;}
+    );
+    const fm=buf.match(/FAT[:\s]+(\d+(?:[.,]\d+)?)/),cm=buf.match(/CLI[:\s]+(\d+)/),mm=buf.match(/META[:\s]+(\d+(?:[.,]\d+)?)/);
+    fatMes=fm?parseFloat(fm[1].replace(',','.')):0;
+    cliMes=cm?parseInt(cm[1]):0;
+    metaMes=mm?parseFloat(mm[1].replace(',','.')):300000;
+  }catch{}
+
+  $('mFat').textContent=fatMes>0?fmt(fatMes):'R$0';
+  $('mMeta').textContent=fmt(metaMes);
+  $('mMetaS').textContent=new Date().toLocaleDateString('pt-BR',{month:'short',year:'2-digit'});
+  $('mCli').textContent=cliMes||'0';
+  const pct=Math.min(100,Math.round(fatMes/metaMes*100));
+  const pf=$('pFill');pf.style.width=pct+'%';
+  pf.style.background=pct<33?'var(--red)':pct<66?'var(--gold)':'var(--green)';
+  $('pLabel').textContent=pct+'% da meta';
+
+  // PASSO 2 — IA gera fila prioritária do dia com dados reais
+  setStep(3);setStep(4);
+  let filaJson=[], resumo='';
+  try{
+    let buf='';
+    await claude(
+      `Você é o assistente de ${usuario.nome} na Sabagram.
+
+Faça no Salesforce:
+1. Busque os 15 clientes com maior faturamento histórico deste vendedor (IdeVen__c IN ('${ideVen.join("','")}')): SELECT IdeCli__c, NomCli__c, SUM(VlrLiq__c) fat FROM Pedido__c WHERE IdeVen__c IN ('${ideVen.join("','")}') AND StsPed__c='Faturado' GROUP BY IdeCli__c, NomCli__c ORDER BY SUM(VlrLiq__c) DESC LIMIT 15
+2. Dos mesmos clientes, veja quais compraram neste mês (${mesAtual} até hoje)
+3. Os que NÃO compraram este mês são inativos — maior prioridade se tinham volume alto
+
+Monte a fila do dia como JSON. Retorne APENAS o JSON válido, sem markdown:
+[
+  {
+    "nome": "Nome do Cliente",
+    "fat": 50000,
+    "status": "inativo 45d",
+    "p": 1,
+    "tag": "call",
+    "num": null,
+    "ctx": "Contexto e motivo de ser prioridade hoje (1 frase)"
+  }
+]
+Tags: "hot" = urgente fechar hoje | "call" = ligar | "wa" = whatsapp | "follow" = follow-up
+Prioridade p: 1=crítico, 2=alto, 3=médio
+Máximo 8 clientes. Ordene por prioridade.`,
+      c=>{buf+=c;}
+    );
+    const clean=buf.replace(/```json|```/g,'').trim();
+    filaJson=JSON.parse(clean);
+  }catch{}
+
+  // Se IA não retornou fila válida, usa fallback mínimo
+  if(!filaJson||filaJson.length===0){
+    filaJson=[{nome:'[Verifique Salesforce]',fat:0,status:'erro ao carregar',p:2,tag:'call',num:null,ctx:'Não foi possível carregar os clientes. Verifique a conexão com o Salesforce.'}];
+  }
+  fila=filaJson.map(c=>({...c,done:false}));
+
+  // Resumo do dia
+  try{
+    let buf='';
+    await claude(
+      `${usuario.nome} faturou ${fmt(fatMes)} de ${fmt(metaMes)} em ${diasUteis()} dias úteis restantes.
+Em 2 frases diretas: estado atual e a coisa mais importante a fazer hoje.`,
+      c=>{buf+=c;},false
+    );
+    resumo=buf.trim();
+  }catch{}
+
+  renderFila();
+
+  // Alertas
+  const alertas=[];
+  const falta=metaMes-fatMes;
+  if(fatMes===0) alertas.push({t:'r',m:'Nenhum pedido faturado ainda neste mês — foco total em fechar hoje.'});
+  else if(pct<50) alertas.push({t:'a',m:`Faltam ${fmt(falta)} em ${diasUteis()} dias úteis = ${fmt(Math.round(falta/Math.max(diasUteis(),1)))} por dia útil.`});
+  else alertas.push({t:'g',m:`✓ ${pct}% da meta atingida. Manter o ritmo!`});
+
+  // Render
+  const hoje=new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'});
+  $('loadingScreen').style.display='none';
+  const bd=$('briefingDiv');bd.style.display='block';
+  bd.innerHTML=`
+    <div class="brief-top">
+      <div>
+        <div class="brief-date">${hoje.toUpperCase()}</div>
+        <div class="brief-title">Bom dia, <span>${usuario.nome.split(' ')[0]}</span>.<br>Aqui está seu plano de hoje.</div>
+        ${resumo?`<div class="brief-resumo">${resumo}</div>`:''}
+      </div>
+      <div class="need-badge"><div class="need-v">${fmt(Math.max(0,falta))}</div><div class="need-l">Falta para meta</div></div>
+    </div>
+    ${alertas.map(a=>`<div class="alert alert-${a.t}">${a.m}</div>`).join('')}
+    <div class="divider"><div class="div-label">Foco agora</div><div class="div-line"></div><div class="div-hint">Clique na fila para trocar</div></div>
+    <div id="cardArea"></div>`;
+
+  await renderCard(fila[0]);
+
+  const ts=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  setStatus(`Atualizado às ${ts}`,false);
+  $('topbar').className='topbar done';setTimeout(()=>$('topbar').className='topbar',600);
+  btn.disabled=false;$('btnIcon').textContent='↻';
+  localStorage.setItem('ub_'+usuario.email,Date.now());
+};
+
+// Auto-refresh 06h e 12h
+setInterval(()=>{
+  if(!usuario)return;
+  const h=new Date().getHours(),m=new Date().getMinutes();
+  const ub=parseInt(localStorage.getItem('ub_'+usuario?.email)||'0');
+  if((h===6||h===12)&&m<5&&Date.now()-ub>3600000)window.gerarBriefing();
+},60000);
+
+// AÇÕES
+window.abrirWA    = n => window.open(`https://wa.me/${n}`,'_blank');
+window.copiarScript = () => navigator.clipboard.writeText(scriptAtual||$('aiOut')?.innerText||'').then(()=>toast('Script copiado ✓'));
+window.marcarFeito = i => { fila[i].done=true;renderFila();toast('Feito ✓');const p=fila.findIndex((c,j)=>j>i&&!c.done);if(p>-1)window.selCliente(p); };
+window.adiar = i => { fila[i].done=true;renderFila();toast('Para amanhã →');const p=fila.findIndex((c,j)=>j>i&&!c.done);if(p>-1)window.selCliente(p); };
+</script>
+</body>
+</html>
