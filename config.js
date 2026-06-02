@@ -1,5 +1,5 @@
 // ─── CONFIGURAÇÃO FIREBASE ────────────────────────────────────────────────────
-const FIREBASE_CONFIG = {
+export const FIREBASE_CONFIG = {
   apiKey:            "AIzaSyC6oWnbIyaZejwtNcL2S0SrHKLlLLxzUfI",
   authDomain:        "sales-team-6aeb6.firebaseapp.com",
   projectId:         "sales-team-6aeb6",
@@ -9,7 +9,7 @@ const FIREBASE_CONFIG = {
 };
 
 // ─── USUÁRIOS AUTORIZADOS ─────────────────────────────────────────────────────
-const USUARIOS = {
+export const USUARIOS = {
   "henrique@sabagram.com.br": {
     nome:   "Henrique Sabadine",
     perfil: "admin",
@@ -48,7 +48,7 @@ const USUARIOS = {
 };
 
 // ─── APIs ─────────────────────────────────────────────────────────────────────
-const API = {
+export const API = {
   claude:     "https://api.anthropic.com/v1/messages",
   salesforce: "https://api.salesforce.com/platform/mcp/v1/platform/sobject-all",
   nitzap:     "https://sabagram-mcp.nitzap.com/mcp/master"
