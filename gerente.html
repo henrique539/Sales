@@ -257,7 +257,7 @@ window.carregarTudo=async()=>{
       await claude(
         `Execute no Salesforce para o vendedor ${v.nome}:
 Query 1: SELECT SUM(VlrLiq__c) fat, COUNT_DISTINCT(IdeCli__c) cli FROM Pedido__c WHERE IdeVen__c IN ('${v.salesforce.ideVen.join("','")}') AND StsPed__c='Faturado' AND DatFat__c >= ${mesAtual}
-Query 2: SELECT MetMen__c FROM User WHERE Id = '${v.salesforce.userId}' LIMIT 1
+Query 2: SELECT VlrMet__c FROM Meta__c WHERE Name LIKE '%${new Date().toISOString().slice(0,7).replace('-','')}-BRL%' AND Name LIKE '%${v.nome.split(' ')[0]}%' ORDER BY DatMet__c DESC LIMIT 1
 Retorne APENAS:
 FAT:XXXXX
 CLI:X

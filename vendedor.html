@@ -410,7 +410,7 @@ window.gerarBriefing = async () => {
 
 Query 1 — Faturamento: SELECT SUM(VlrLiq__c) fat, COUNT_DISTINCT(IdeCli__c) cli FROM Pedido__c WHERE IdeVen__c IN ('${ideVen.join("','")}') AND StsPed__c = 'Faturado' AND DatFat__c >= ${mesAtual}
 
-Query 2 — Meta: SELECT MetMen__c FROM User WHERE Id = '${usuario.salesforce.userId}' LIMIT 1
+Query 2 — Meta do mês: SELECT VlrMet__c FROM Meta__c WHERE Name LIKE '%${new Date().toISOString().slice(0,7).replace('-','')}-BRL%' AND Name LIKE '%${usuario.nome.split(' ')[0]}%' ORDER BY DatMet__c DESC LIMIT 1
 
 Retorne EXATAMENTE (só essas linhas):
 FAT:XXXXX
