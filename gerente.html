@@ -609,7 +609,7 @@ WHATSAPP HOJE (${waChats.length} chats — ${waPessoal} pessoal, ${waComercial} 
 ${waTexto}
 
 Retorne APENAS este JSON sem markdown (cada texto: máximo 2 frases curtas):
-{"ligacoes":{"sub":"X lig · Y atend","tags":["tag1","tag2"],"tagCores":["warn","ok"],"texto":"2 frases com cliente real"},"whatsapp":{"sub":"X chats · Y pessoal","tags":["tag1","tag2"],"tagCores":["red","ok"],"texto":"2 frases com mensagem real"},"diagnostico":{"pontos":["causa 1","causa 2","causa 3"],"texto":"1 frase resumo"},"acoes":{"itens":["ação 1","ação 2","ação 3"]},"pergunta":{"txt":"pergunta para 1:1","porque":"2 frases explicando por que essa pergunta"}}
+{"ligacoes":{"sub":"X lig · Y atend","tags":["tag1","tag2"],"tagCores":["warn","ok"],"texto":"2 frases com cliente real"},"whatsapp":{"sub":"X chats · Y pessoal","tags":["tag1","tag2"],"tagCores":["red","ok"],"texto":"2 frases com mensagem real"},"diagnostico":{"pontos":["causa 1","causa 2","causa 3"],"texto":"1 frase resumo"},"acoes":{"itens":["ação 1","ação 2","ação 3"]},"pergunta":{"txt":"pergunta para 1:1","porque":"2 frases explicando por que essa pergunta"}}`;
 
   try{
     const r=await fetch('/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},
@@ -618,7 +618,7 @@ Retorne APENAS este JSON sem markdown (cada texto: máximo 2 frases curtas):
         messages:[{role:'user',content:prompt}]})});
     const data=await r.json();
     const buf=data.content?.map(b=>b.text||'').join('')||'';
-    const clean=buf.replace(/```json|```/g,'').trim();
+    const fence='```';const clean=buf.split(fence+'json').join('').split(fence).join('').trim();
     const j=JSON.parse(clean);
 
     const tagCor=(c)=>c==='ok'?'background:#dcfce7;color:#166534':c==='warn'?'background:#fef3c7;color:#92400e':c==='red'?'background:#fee2e2;color:#991b1b':'background:var(--s2);color:var(--muted)';
