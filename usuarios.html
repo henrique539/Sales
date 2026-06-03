@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sabagram · Usuários</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#1a3254;--gold-l:#e0aa18;
+  --bg:#f4f6f9;--white:#fff;--s2:#f8f9fc;
+  --border:#e2e7ef;--text:#1a2540;--text2:#3d5073;--muted:#7589a8;--dim:#a8b8cf;
+  --red:#c0392b;--rbg:rgba(192,57,43,.08);
+  --amber:#d97706;--abg:rgba(217,119,6,.08);
+  --green:#1a7a4a;--gbg:rgba(26,122,74,.08);
+  --r:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;height:100vh;overflow:hidden;display:flex;flex-direction:column}
+.hdr{background:var(--navy);height:52px;padding:0 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.logo{font-weight:800;font-size:15px;color:white;letter-spacing:.04em}.logo span{color:var(--gold-l)}
+.hbtn{background:rgba(255,255,255,.1);border:0.5px solid rgba(255,255,255,.18);color:rgba(255,255,255,.85);font-size:11px;font-weight:600;padding:5px 11px;border-radius:7px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif}
+.hbtn-ghost{background:transparent;border:0.5px solid rgba(255,255,255,.2);color:rgba(255,255,255,.5);font-size:11px;font-weight:600;padding:5px 10px;border-radius:7px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif}
+.content{overflow-y:auto;flex:1;padding:20px}
+.page-title{font-size:20px;font-weight:800;color:var(--text);margin-bottom:4px}
+.page-sub{font-size:12px;color:var(--muted);margin-bottom:20px}
+
+/* TABELA */
+.table-wrap{background:var(--white);border:0.5px solid var(--border);border-radius:12px;overflow:hidden}
+.table-header{display:grid;grid-template-columns:1fr 200px 100px 80px 100px 110px;gap:0;background:var(--s2);border-bottom:0.5px solid var(--border);padding:10px 16px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em}
+.table-row{display:grid;grid-template-columns:1fr 200px 100px 80px 100px 110px;gap:0;padding:12px 16px;border-bottom:0.5px solid var(--border);align-items:center;transition:background .1s}
+.table-row:last-child{border-bottom:none}
+.table-row:hover{background:var(--s2)}
+.av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:white;flex-shrink:0}
+.badge{display:inline-flex;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700}
+.badge-admin{background:#1a3254;color:white}
+.badge-gerente{background:#1a5f3a;color:white}
+.badge-vendedor{background:#e6f1fb;color:#0c447c}
+.badge-inativo{background:var(--s2);color:var(--muted);border:0.5px solid var(--border)}
+.dot-on{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green)}
+.dot-off{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--dim)}
+.row-btns{display:flex;gap:5px}
+.btn-sm{padding:4px 9px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:0.5px solid var(--border);background:var(--white);color:var(--text2);font-family:'Plus Jakarta Sans',sans-serif;transition:all .1s}
+.btn-sm:hover{background:var(--s2)}
+.btn-sm-red{border-color:var(--red);color:var(--red)}
+.btn-sm-red:hover{background:var(--rbg)}
+.btn-primary{background:var(--navy);color:white;border:none;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;display:flex;align-items:center;gap:6px}
+.btn-primary:hover{background:#0f1f35}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:var(--white);border-radius:14px;padding:24px;width:440px;max-width:95vw}
+.modal-title{font-size:16px;font-weight:800;margin-bottom:4px}
+.modal-sub{font-size:12px;color:var(--muted);margin-bottom:20px}
+.form-group{margin-bottom:14px}
+.form-label{font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;display:block}
+.form-input{width:100%;padding:9px 12px;border:0.5px solid var(--border);border-radius:8px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;color:var(--text);background:var(--white);outline:none;transition:border .15s}
+.form-input:focus{border-color:var(--navy)}
+.form-select{width:100%;padding:9px 12px;border:0.5px solid var(--border);border-radius:8px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;color:var(--text);background:var(--white);outline:none;cursor:pointer}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.modal-btns{display:flex;gap:8px;margin-top:20px;justify-content:flex-end}
+.btn-cancel{padding:8px 16px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:0.5px solid var(--border);background:var(--white);color:var(--text2);font-family:'Plus Jakarta Sans',sans-serif}
+.btn-save{padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;border:none;background:var(--navy);color:white;font-family:'Plus Jakarta Sans',sans-serif}
+.btn-save:disabled{opacity:.5;cursor:not-allowed}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:#1a2540;color:white;padding:10px 18px;border-radius:9px;font-size:12px;font-weight:600;z-index:999;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.show{opacity:1}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin 1s linear infinite;display:inline-block;vertical-align:middle}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div style="display:flex;align-items:center;gap:12px">
+    <div class="logo">SABA<span>GRAM</span></div>
+    <div style="width:1px;height:16px;background:rgba(255,255,255,.15)"></div>
+    <a href="gerente.html" style="font-size:11px;color:rgba(255,255,255,.5);text-decoration:none;font-weight:600">← Voltar ao portal</a>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px">
+    <button class="hbtn-ghost" onclick="sair()">Sair</button>
+  </div>
+</header>
+
+<div class="content">
+  <div class="page-title">Gerenciamento de usuários</div>
+  <div class="page-sub">Cadastre, edite e desative os acessos ao portal Sabagram</div>
+
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+    <div id="userCount" style="font-size:12px;color:var(--muted)">Carregando...</div>
+    <button class="btn-primary" onclick="abrirModal()">+ Novo usuário</button>
+  </div>
+
+  <div class="table-wrap">
+    <div class="table-header">
+      <div>Usuário</div>
+      <div>Email</div>
+      <div>Perfil</div>
+      <div>BU</div>
+      <div>Status</div>
+      <div>Ações</div>
+    </div>
+    <div id="userList">
+      <div style="padding:24px;text-align:center;color:var(--muted);font-size:12px">
+        <div class="spinner" style="border-top-color:var(--muted);margin-bottom:6px"></div><br>Carregando usuários...
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL NOVO / EDITAR -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-title" id="modalTitle">Novo usuário</div>
+    <div class="modal-sub" id="modalSub">Preencha os dados. O vendedor receberá acesso imediato após o cadastro.</div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Nome completo</label>
+        <input class="form-input" id="fNome" placeholder="Ex: Sizenando Andrade">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input class="form-input" id="fEmail" type="email" placeholder="sizenando@sabagram.com.br">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Perfil</label>
+        <select class="form-select" id="fPerfil" onchange="toggleBU()">
+          <option value="vendedor">Vendedor</option>
+          <option value="gerente">Gerente</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
+      <div class="form-group" id="buGroup">
+        <label class="form-label">BU</label>
+        <select class="form-select" id="fBU">
+          <option value="MI">MI — Mercado Interno</option>
+          <option value="Obras">Obras</option>
+          <option value="ME">ME — Mercado Externo</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">WhatsApp (com DDI)</label>
+        <input class="form-input" id="fWhatsapp" placeholder="5528999565519">
+      </div>
+      <div class="form-group" id="senhaGroup">
+        <label class="form-label" id="senhaLabel">Senha temporária</label>
+        <input class="form-input" id="fSenha" type="password" placeholder="Mínimo 6 caracteres">
+      </div>
+    </div>
+
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="fecharModal()">Cancelar</button>
+      <button class="btn-save" id="btnSalvar" onclick="salvar()">Criar usuário</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import{getAuth,onAuthStateChanged,signOut}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+const FB={apiKey:"AIzaSyC6oWnbIyaZejwtNcL2S0SrHKLlLLxzUfI",authDomain:"sales-team-6aeb6.firebaseapp.com",projectId:"sales-team-6aeb6",storageBucket:"sales-team-6aeb6.firebasestorage.app",messagingSenderId:"421701680094",appId:"1:421701680094:web:1f8bc4ae716dd0d0f3bb4f"};
+
+const app=initializeApp(FB);
+const auth=getAuth(app);
+const $=id=>document.getElementById(id);
+
+let currentToken='';
+let editandoEmail=null;
+let usuarios=[];
+
+const CORES={
+  admin:'#1a3254',gerente:'#1a5f3a',vendedor:'#1a3a6b',
+  SA:'#1a3254',KJ:'#1a5f3a',MM:'#8b1a1a',RS:'#6b1a5f',WM:'#1a4a2a',CF:'#1a3a6b',DR:'#5f1a4a',
+};
+
+function initials(nome){return nome.split(' ').slice(0,2).map(p=>p[0]).join('').toUpperCase();}
+function corAvatar(nome){const i=initials(nome);return CORES[i]||'#1a3254';}
+
+function toast(msg,ok=true){
+  const t=$('toast');
+  t.textContent=msg;
+  t.style.background=ok?'#1a7a4a':'#c0392b';
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+async function fetchAPI(method,body){
+  const r=await fetch('/api/users',{
+    method,
+    headers:{'Content-Type':'application/json','Authorization':'Bearer '+currentToken},
+    body:body?JSON.stringify(body):undefined,
+  });
+  return r.json();
+}
+
+async function carregarUsuarios(){
+  try{
+    const data=await fetchAPI('GET');
+    usuarios=data.users||[];
+    renderTabela(usuarios);
+    $('userCount').textContent=usuarios.length+' usuário'+(usuarios.length!==1?'s':'')+' cadastrado'+(usuarios.length!==1?'s':'');
+  }catch(e){
+    $('userList').innerHTML='<div style="padding:20px;color:var(--red);font-size:12px">Erro ao carregar: '+e.message+'</div>';
+  }
+}
+
+function renderTabela(lista){
+  if(!lista.length){
+    $('userList').innerHTML='<div style="padding:24px;text-align:center;color:var(--muted);font-size:12px">Nenhum usuário cadastrado ainda.</div>';
+    return;
+  }
+  $('userList').innerHTML=lista.map(u=>{
+    const av=initials(u.nome);
+    const cor=corAvatar(u.nome);
+    const badgePerfil=u.perfil==='admin'?'badge-admin':u.perfil==='gerente'?'badge-gerente':'badge-vendedor';
+    const statusDot=u.ativo?'<span class="dot-on"></span> Ativo':'<span class="dot-off"></span> Inativo';
+    return`<div class="table-row">
+      <div style="display:flex;align-items:center;gap:9px">
+        <div class="av" style="background:${cor}">${av}</div>
+        <div>
+          <div style="font-size:13px;font-weight:600;color:var(--text)">${u.nome}</div>
+          ${u.whatsapp?`<div style="font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace">${u.whatsapp}</div>`:''}
+        </div>
+      </div>
+      <div style="font-size:12px;color:var(--text2);font-family:'JetBrains Mono',monospace">${u.email}</div>
+      <div><span class="badge ${badgePerfil}">${u.perfil}</span></div>
+      <div style="font-size:12px;color:var(--muted)">${u.bu||'—'}</div>
+      <div style="font-size:11px;font-weight:600;display:flex;align-items:center;gap:5px">${statusDot}</div>
+      <div class="row-btns">
+        <button class="btn-sm" onclick="editarUsuario('${u.email}')">Editar</button>
+        <button class="btn-sm" onclick="resetarSenha('${u.email}','${u.nome}')">Senha</button>
+        ${u.ativo
+          ?`<button class="btn-sm btn-sm-red" onclick="desativar('${u.email}','${u.nome}')">Desativar</button>`
+          :`<button class="btn-sm" onclick="reativar('${u.email}','${u.nome}')">Reativar</button>`
+        }
+      </div>
+    </div>`;
+  }).join('');
+}
+
+window.abrirModal=()=>{
+  editandoEmail=null;
+  $('modalTitle').textContent='Novo usuário';
+  $('modalSub').textContent='Preencha os dados. O acesso será criado imediatamente.';
+  $('fNome').value='';$('fEmail').value='';$('fSenha').value='';$('fWhatsapp').value='';
+  $('fPerfil').value='vendedor';$('fBU').value='MI';
+  $('fEmail').disabled=false;
+  $('senhaGroup').style.display='block';
+  $('senhaLabel').textContent='Senha temporária';
+  $('btnSalvar').textContent='Criar usuário';
+  toggleBU();
+  $('modalOverlay').classList.add('open');
+};
+
+window.fecharModal=()=>$('modalOverlay').classList.remove('open');
+
+window.toggleBU=()=>{
+  const p=$('fPerfil').value;
+  $('buGroup').style.display=(p==='vendedor')?'block':'none';
+};
+
+window.editarUsuario=(email)=>{
+  const u=usuarios.find(x=>x.email===email);
+  if(!u)return;
+  editandoEmail=email;
+  $('modalTitle').textContent='Editar usuário';
+  $('modalSub').textContent='Altere os campos desejados. Deixe a senha em branco para não mudar.';
+  $('fNome').value=u.nome;
+  $('fEmail').value=u.email;$('fEmail').disabled=true;
+  $('fPerfil').value=u.perfil;
+  $('fBU').value=u.bu||'MI';
+  $('fWhatsapp').value=u.whatsapp||'';
+  $('fSenha').value='';
+  $('senhaLabel').textContent='Nova senha (deixe em branco para manter)';
+  $('btnSalvar').textContent='Salvar alterações';
+  toggleBU();
+  $('modalOverlay').classList.add('open');
+};
+
+window.salvar=async()=>{
+  const btn=$('btnSalvar');
+  btn.disabled=true;
+  btn.innerHTML='<span class="spinner"></span> Salvando...';
+  try{
+    if(editandoEmail){
+      const body={
+        email:editandoEmail,
+        nome:$('fNome').value.trim(),
+        perfil:$('fPerfil').value,
+        bu:$('fBU').value,
+        whatsapp:$('fWhatsapp').value.trim(),
+      };
+      if($('fSenha').value)body.novaSenha=$('fSenha').value;
+      const r=await fetchAPI('PUT',body);
+      if(r.error)throw new Error(r.error);
+      toast('Usuário atualizado com sucesso!');
+    }else{
+      const body={
+        nome:$('fNome').value.trim(),
+        email:$('fEmail').value.trim().toLowerCase(),
+        senha:$('fSenha').value,
+        perfil:$('fPerfil').value,
+        bu:$('fBU').value,
+        whatsapp:$('fWhatsapp').value.trim(),
+      };
+      if(!body.nome||!body.email||!body.senha){toast('Preencha todos os campos obrigatórios',false);return;}
+      const r=await fetchAPI('POST',body);
+      if(r.error)throw new Error(r.error);
+      toast('Usuário criado com sucesso!');
+    }
+    fecharModal();
+    await carregarUsuarios();
+  }catch(e){
+    toast('Erro: '+e.message,false);
+  }finally{
+    btn.disabled=false;
+    btn.textContent=editandoEmail?'Salvar alterações':'Criar usuário';
+  }
+};
+
+window.desativar=async(email,nome)=>{
+  if(!confirm('Desativar acesso de '+nome+'? O usuário não conseguirá mais logar.'))return;
+  try{
+    const r=await fetchAPI('DELETE',{email});
+    if(r.error)throw new Error(r.error);
+    toast(nome+' desativado.');
+    await carregarUsuarios();
+  }catch(e){toast('Erro: '+e.message,false);}
+};
+
+window.reativar=async(email,nome)=>{
+  try{
+    const r=await fetchAPI('PUT',{email,ativo:true});
+    if(r.error)throw new Error(r.error);
+    toast(nome+' reativado!');
+    await carregarUsuarios();
+  }catch(e){toast('Erro: '+e.message,false);}
+};
+
+window.resetarSenha=async(email,nome)=>{
+  const nova=prompt('Nova senha para '+nome+' (mínimo 6 caracteres):');
+  if(!nova||nova.length<6){alert('Senha muito curta');return;}
+  try{
+    const r=await fetchAPI('PUT',{email,novaSenha:nova});
+    if(r.error)throw new Error(r.error);
+    toast('Senha de '+nome+' atualizada!');
+  }catch(e){toast('Erro: '+e.message,false);}
+};
+
+// Fechar modal clicando fora
+$('modalOverlay').addEventListener('click',e=>{if(e.target===$('modalOverlay'))fecharModal();});
+
+onAuthStateChanged(auth,async user=>{
+  if(!user){window.location.href='index.html';return;}
+  currentToken=await user.getIdToken();
+  await carregarUsuarios();
+});
+
+window.sair=async()=>{await signOut(auth);window.location.href='index.html';};
+</script>
+</body>
+</html>

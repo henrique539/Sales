@@ -183,6 +183,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
   </div>
   <div style="display:flex;align-items:center;gap:8px">
     <div id="clock"></div>
+    <a href="usuarios.html" style="display:flex;align-items:center;gap:4px;background:rgba(255,255,255,.1);border:0.5px solid rgba(255,255,255,.18);color:rgba(255,255,255,.8);font-size:11px;font-weight:600;padding:5px 11px;border-radius:7px;text-decoration:none">👥 Usuários</a>
     <div style="position:relative" id="previewWrap">
       <button class="hbtn" onclick="togglePreview()" style="font-size:10px;padding:5px 10px">👤 Ver como vendedor</button>
       <div id="previewMenu" style="display:none;position:absolute;right:0;top:36px;background:white;border:0.5px solid #e2e7ef;border-radius:10px;padding:6px;min-width:180px;z-index:999;box-shadow:0 4px 16px rgba(0,0,0,.12)">
@@ -349,10 +350,12 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import{getAuth,onAuthStateChanged,signOut}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import{getFirestore,doc,getDoc,collection,getDocs}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const FB={apiKey:"AIzaSyC6oWnbIyaZejwtNcL2S0SrHKLlLLxzUfI",authDomain:"sales-team-6aeb6.firebaseapp.com",projectId:"sales-team-6aeb6",storageBucket:"sales-team-6aeb6.firebasestorage.app",messagingSenderId:"421701680094",appId:"1:421701680094:web:1f8bc4ae716dd0d0f3bb4f"};
 const app=initializeApp(FB);
 const auth=getAuth(app);
+const db=getFirestore(app);
 
 const VENDEDORES=[
   {email:"sizenando@sabagram.com.br",nome:"Sizenando Andrade",avatar:"SA",bu:"MI",moeda:"BRL",cor:"#1a3254",whatsapp:"5528999565519",
@@ -462,9 +465,16 @@ tick();setInterval(tick,30000);
 
 onAuthStateChanged(auth,async user=>{
   if(!user){window.location.href='index.html';return;}
-  const u=AUTH_MAP[user.email.toLowerCase()];
-  if(!u||(u.perfil!=='gerente'&&u.perfil!=='admin')){await signOut(auth);window.location.href='index.html';return;}
-  if(u.perfil==='admin')$('hdrBadge').textContent='ADMIN';
+  const email=user.email.toLowerCase();
+  // Tentar Firestore primeiro, fallback para AUTH_MAP hardcoded
+  let perfil='';
+  try{
+    const snap=await getDoc(doc(db,'usuarios',email));
+    if(snap.exists())perfil=snap.data().perfil;
+  }catch(e){}
+  if(!perfil){const u=AUTH_MAP[email];perfil=u?u.perfil:'';}
+  if(perfil!=='gerente'&&perfil!=='admin'){await signOut(auth);window.location.href='index.html';return;}
+  if(perfil==='admin')$('hdrBadge').textContent='ADMIN';
   iniciar();
 });
 window.sair=async()=>{await signOut(auth);window.location.href='index.html';};
