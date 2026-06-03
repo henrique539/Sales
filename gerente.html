@@ -13,120 +13,146 @@
   --red:#c0392b;--rbg:rgba(192,57,43,.07);--rbd:rgba(192,57,43,.2);
   --amber:#d97706;--abg:rgba(217,119,6,.07);--abd:rgba(217,119,6,.2);
   --green:#1a7a4a;--gbg:rgba(26,122,74,.07);--gbd:rgba(26,122,74,.2);
-  --blue:#1e5fa0;--bbg:rgba(30,95,160,.07);--bbd:rgba(30,95,160,.2);
   --r:10px;--shadow:0 1px 3px rgba(26,50,84,.08),0 4px 12px rgba(26,50,84,.06);
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6;height:100vh;overflow:hidden}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6;height:100vh;overflow:hidden;display:flex;flex-direction:column}
 
 /* HEADER */
-.hdr{background:var(--navy);height:52px;padding:0 20px;display:flex;align-items:center;justify-content:space-between;z-index:100;box-shadow:0 2px 8px rgba(26,50,84,.25)}
+.hdr{background:var(--navy);height:52px;padding:0 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;box-shadow:0 2px 8px rgba(26,50,84,.25);position:relative;z-index:200}
 .hdr-l{display:flex;align-items:center;gap:12px}
-.logo{font-weight:800;font-size:14px;color:white;letter-spacing:.04em}
+.logo{font-weight:800;font-size:15px;color:white;letter-spacing:.04em}
 .logo span{color:var(--gold-l)}
 .hsep{width:1px;height:16px;background:rgba(255,255,255,.15)}
-.hdr-badge{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.75);font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:.06em}
+.hdr-badge{background:rgba(255,255,255,.12);border:0.5px solid rgba(255,255,255,.2);color:rgba(255,255,255,.75);font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:.06em}
 .hdr-r{display:flex;align-items:center;gap:8px}
 #clock{font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,.35)}
-.btn-upd{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.85);font-size:11px;font-weight:600;padding:6px 12px;border-radius:7px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;display:flex;align-items:center;gap:4px;transition:all .15s}
-.btn-upd:hover{background:rgba(255,255,255,.18)} .btn-upd:disabled{opacity:.4;cursor:not-allowed}
-.btn-sair{background:transparent;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.5);font-size:11px;font-weight:600;padding:5px 10px;border-radius:7px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif}
-.btn-sair:hover{color:white;border-color:rgba(255,255,255,.4)}
+.hbtn{background:rgba(255,255,255,.1);border:0.5px solid rgba(255,255,255,.18);color:rgba(255,255,255,.85);font-size:11px;font-weight:600;padding:6px 12px;border-radius:7px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;display:flex;align-items:center;gap:4px;transition:all .15s}
+.hbtn:hover{background:rgba(255,255,255,.18)}.hbtn:disabled{opacity:.4;cursor:not-allowed}
+.hbtn-ghost{background:transparent;border:0.5px solid rgba(255,255,255,.2);color:rgba(255,255,255,.5);font-size:11px;font-weight:600;padding:5px 10px;border-radius:7px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif}
+.hbtn-ghost:hover{color:white;border-color:rgba(255,255,255,.4)}
 
-/* LAYOUT PRINCIPAL */
-.layout{display:grid;grid-template-columns:220px 1fr;height:calc(100vh - 52px)}
+/* NAV BAR */
+.nav{background:var(--white);border-bottom:0.5px solid var(--border);padding:0 20px;display:flex;align-items:center;gap:6px;height:40px;flex-shrink:0;position:relative;z-index:150}
+.nbtn{display:flex;align-items:center;gap:5px;padding:0 12px;height:28px;border-radius:7px;font-size:12px;font-weight:600;background:var(--s2);border:0.5px solid var(--border);color:var(--text);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .15s;position:relative}
+.nbtn:hover{background:var(--border);border-color:var(--border)}
+.nbtn.on{background:var(--navy);color:white;border-color:var(--navy)}
+.narr{font-size:10px;opacity:.6;margin-left:1px}
+.nav-right{margin-left:auto;font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace}
 
-/* SIDEBAR */
-.sidebar{background:var(--white);border-right:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column}
+/* DROPDOWN PANEL */
+.dd-wrap{position:relative;z-index:100;flex-shrink:0}
+.dd-panel{background:var(--white);border-bottom:0.5px solid var(--border);padding:14px 20px;display:none}
+.dd-panel.open{display:block}
+.dd-top-title{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px}
 
-/* CONSOLIDADO NO TOPO DA SIDEBAR */
-.cons-wrap{padding:14px 14px 10px;border-bottom:1px solid var(--border);background:var(--navy)}
-.cons-title{font-size:9px;font-weight:700;color:rgba(255,255,255,.4);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px}
-.cons-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-.cons-item{}
-.cons-v{font-size:15px;font-weight:800;color:white;letter-spacing:-.3px;line-height:1}
-.cons-v.gold{color:var(--gold-l)}
-.cons-v.red{color:#ff8a80}
-.cons-l{font-size:9px;color:rgba(255,255,255,.35);margin-top:1px;font-family:'JetBrains Mono',monospace}
-.cons-sep{height:1px;background:rgba(255,255,255,.1);margin:8px 0}
+/* MÉTRICAS FINANCEIRAS */
+.fin-mets{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:12px}
+.fm{background:var(--s2);border:0.5px solid var(--border);border-radius:var(--r);padding:10px 12px}
+.fm-v{font-size:18px;font-weight:800;letter-spacing:-.3px;margin-bottom:2px;font-family:'JetBrains Mono',monospace}
+.fm-v.gold{color:var(--gold)}
+.fm-v.red{color:var(--red)}
+.fm-v.amber{color:var(--amber)}
+.fm-l{font-size:10px;color:var(--muted)}
 
-/* MENU BU */
-.bu-group{padding:10px 0}
-.bu-label{padding:6px 14px 4px;font-size:9px;font-weight:700;color:var(--dim);letter-spacing:.1em;text-transform:uppercase;display:flex;align-items:center;justify-content:space-between}
-.bu-tag{font-size:8px;font-weight:700;padding:1px 5px;border-radius:3px;color:white}
-.bu-tag.mi{background:var(--navy)}
-.bu-tag.obras{background:#5f3a1a}
-.bu-tag.me{background:#1a5f3a}
+/* LINHA ATIVIDADE */
+.act-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.act-block{background:var(--s2);border:0.5px solid var(--border);border-radius:var(--r);padding:10px 13px}
+.act-hdr{display:flex;align-items:center;gap:7px;margin-bottom:8px}
+.act-icon{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.act-icon.call{background:#e6f1fb;color:#185fa5}
+.act-icon.wa{background:#eaf3de;color:#1a7a4a}
+.act-lbl{font-size:12px;font-weight:700;color:var(--text)}
+.act-mets{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.am-v{font-size:15px;font-weight:700;color:var(--text);font-family:'JetBrains Mono',monospace}
+.am-v.danger{color:var(--red)}
+.am-l{font-size:10px;color:var(--muted);margin-top:1px}
 
-.v-item{display:flex;align-items:center;gap:8px;padding:7px 14px;cursor:pointer;transition:all .12s;border-left:2px solid transparent;position:relative}
-.v-item:hover{background:var(--s2)}
-.v-item.active{background:var(--bbg);border-left-color:var(--navy)}
-.v-avatar{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:white;flex-shrink:0}
-.v-info{flex:1;min-width:0}
-.v-nome{font-size:12px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.v-sub{font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace}
-.v-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
-.d-c{background:var(--red)} .d-a{background:var(--amber)} .d-b{background:var(--blue)} .d-g{background:var(--green)}
+/* ALERTA WA */
+.wa-alert{display:flex;align-items:flex-start;gap:8px;background:#faeeda;border:0.5px solid #f0c070;border-radius:8px;padding:8px 11px;font-size:12px;color:#633806;line-height:1.5}
 
-/* STATUS BAR */
-.sbar{background:var(--white);border-bottom:1px solid var(--border);padding:5px 20px;display:flex;align-items:center;gap:7px;font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+/* SBAR */
+.sbar{background:var(--white);border-bottom:0.5px solid var(--border);padding:5px 20px;display:flex;align-items:center;gap:6px;font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace;flex-shrink:0}
 .sdot{width:5px;height:5px;border-radius:50%;background:var(--green);flex-shrink:0}
 .sdot.on{background:var(--amber);animation:blink 1s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* CONTENT */
-.content{overflow-y:auto;height:100%;background:var(--bg)}
-.content-inner{padding:22px 24px 40px;max-width:780px}
+/* CONTENT SCROLL */
+.content{overflow-y:auto;flex:1;padding:18px 20px 40px}
 
-/* EMPTY STATE */
-.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:12px;color:var(--muted);text-align:center;padding:40px}
-.empty-icon{font-size:40px;opacity:.2}
-.empty-title{font-size:16px;font-weight:700;color:var(--text)}
-.empty-sub{font-size:13px;max-width:280px;line-height:1.6}
+/* BU SECTION */
+.bu-sec{margin-bottom:20px}
+.bu-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding-bottom:8px;border-bottom:0.5px solid var(--border)}
+.bu-left{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:var(--text)}
+.bu-pill{font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;color:white}
+.bu-mi{background:var(--navy)}.bu-obras{background:#5f3a1a}.bu-me{background:#1a5f3a}
+.bu-stats{font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+
+/* GRID VENDEDORES */
+.vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
 
 /* CARD VENDEDOR */
-.v-card-hdr{display:flex;align-items:center;gap:12px;margin-bottom:18px}
-.v-card-avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:white;flex-shrink:0}
-.v-card-nome{font-size:20px;font-weight:800;letter-spacing:-.3px}
-.v-card-sub{font-size:11px;color:var(--muted);margin-top:2px}
-.status-tag{display:inline-flex;align-items:center;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700}
-.st-c{background:var(--rbg);color:var(--red);border:1px solid var(--rbd)}
-.st-a{background:var(--abg);color:var(--amber);border:1px solid var(--abd)}
-.st-b{background:var(--bbg);color:var(--blue);border:1px solid var(--bbd)}
-.st-g{background:var(--gbg);color:var(--green);border:1px solid var(--gbd)}
+.vc{background:var(--white);border:0.5px solid var(--border);border-radius:var(--r);padding:12px;cursor:pointer;transition:all .15s;box-shadow:var(--shadow)}
+.vc:hover{border-color:var(--navy);box-shadow:0 2px 12px rgba(26,50,84,.12)}
+.vc.sel{border-color:var(--navy);border-width:1.5px;box-shadow:0 0 0 3px rgba(26,50,84,.08)}
+.vc-top{display:flex;align-items:center;gap:8px;margin-bottom:9px}
+.av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:white;flex-shrink:0}
+.vc-nome{font-size:13px;font-weight:700;color:var(--text);line-height:1.2}
+.vc-sub{font-size:10px;color:var(--muted);display:flex;align-items:center;gap:3px}
+.dot{display:inline-block;width:5px;height:5px;border-radius:50%}
+.dr{background:var(--red)}.da{background:var(--amber)}.dg{background:var(--green)}
+.vc-val{font-size:14px;font-weight:800;color:var(--text);letter-spacing:-.2px;margin-bottom:4px;font-family:'JetBrains Mono',monospace}
+.vprog{height:3px;background:var(--border);border-radius:2px;overflow:hidden;margin-bottom:6px}
+.vpf{height:3px;border-radius:2px}
+.vc-footer{display:flex;align-items:center;justify-content:space-between;gap:4px;flex-wrap:wrap}
+.vf-item{font-size:10px;color:var(--muted);display:flex;align-items:center;gap:3px}
+.wa-badge{font-size:9px;font-weight:700;padding:1px 5px;border-radius:3px}
+.wb-ok{background:#eaf3de;color:#1a5f3a}
+.wb-warn{background:#faeeda;color:#633806}
+.wb-na{background:var(--s2);color:var(--muted)}
 
-/* MÉTRICAS */
-.metrics-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
-.metric{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;box-shadow:var(--shadow)}
-.metric-v{font-size:20px;font-weight:800;letter-spacing:-.4px;margin-bottom:2px;font-family:'JetBrains Mono',monospace}
-.metric-l{font-size:9px;font-weight:700;color:var(--dim);letter-spacing:.07em;text-transform:uppercase}
-.prog{height:5px;background:var(--border);border-radius:3px;overflow:hidden;margin:10px 0 4px}
-.prog-fill{height:5px;border-radius:3px;transition:width .8s}
-.prog-lbl{font-size:10px;color:var(--muted);text-align:right;font-family:'JetBrains Mono',monospace}
+/* DETALHE VENDEDOR */
+.detail{background:var(--white);border:0.5px solid var(--border);border-radius:12px;padding:20px;margin-top:18px;box-shadow:var(--shadow)}
+.detail-hdr{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.av-lg{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:white;flex-shrink:0}
+.detail-title{font-size:20px;font-weight:800;letter-spacing:-.3px}
+.detail-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.st-tag{display:inline-flex;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;margin-left:8px;vertical-align:middle}
+.st-c{background:var(--rbg);color:var(--red);border:0.5px solid var(--rbd)}
+.st-a{background:var(--abg);color:var(--amber);border:0.5px solid var(--abd)}
+.st-g{background:var(--gbg);color:var(--green);border:0.5px solid var(--gbd)}
+.det-mets{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:12px}
+.dm{background:var(--s2);border:0.5px solid var(--border);border-radius:8px;padding:9px 11px}
+.dm-v{font-size:15px;font-weight:800;letter-spacing:-.2px;font-family:'JetBrains Mono',monospace;margin-bottom:2px}
+.dm-l{font-size:9px;font-weight:700;color:var(--dim);letter-spacing:.07em;text-transform:uppercase}
+.det-prog{height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-bottom:4px}
+.det-prog-fill{height:4px;border-radius:2px;transition:width .8s}
+.det-prog-lbl{font-size:10px;color:var(--muted);text-align:right;font-family:'JetBrains Mono',monospace;margin-bottom:14px}
 
-/* IA SEÇÃO */
-.ia-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);margin-top:16px}
-.ia-card-hdr{padding:12px 16px;border-bottom:1px solid var(--border);background:var(--s2);display:flex;align-items:center;gap:8px}
-.ia-badge{background:var(--navy);color:white;font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;display:flex;align-items:center;gap:3px}
+/* IA */
+.ia-wrap{border:0.5px solid var(--border);border-radius:var(--r);overflow:hidden}
+.ia-hdr{padding:10px 14px;background:var(--s2);border-bottom:0.5px solid var(--border);display:flex;align-items:center;gap:7px}
+.ia-badge{background:var(--navy);color:white;font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;display:flex;align-items:center;gap:3px}
 .ia-dot{width:4px;height:4px;border-radius:50%;background:var(--gold-l)}
 .ia-dot.on{animation:blink 1s infinite}
-.ia-title{font-size:11px;font-weight:600;color:var(--muted)}
-.ia-card-body{padding:16px}
+.ia-lbl{font-size:11px;font-weight:600;color:var(--muted)}
+.ia-body-wrap{padding:16px}
 .ia-body{font-size:13px;line-height:1.85;color:var(--text2)}
-.ia-body p{margin-bottom:8px} .ia-body p:last-child{margin-bottom:0}
+.ia-body p{margin-bottom:8px}.ia-body p:last-child{margin-bottom:0}
 .ia-body strong{color:var(--text);font-weight:700}
-.ia-body h3{font-size:11px;font-weight:800;color:var(--navy);margin:12px 0 4px;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--border);padding-bottom:4px}
-.spin-wrap{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);padding:8px 0}
-.spinner{width:14px;height:14px;border:2px solid var(--border);border-top-color:var(--navy);border-radius:50%;animation:spin 1s linear infinite}
+.ia-body h3{font-size:11px;font-weight:800;color:var(--navy);margin:14px 0 5px;text-transform:uppercase;letter-spacing:.05em;border-bottom:0.5px solid var(--border);padding-bottom:4px}
+.spin-wrap{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
+.spinner{width:13px;height:13px;border:2px solid var(--border);border-top-color:var(--navy);border-radius:50%;animation:spin 1s linear infinite}
 
 .topbar{position:fixed;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--navy),var(--gold));transform:scaleX(0);transform-origin:left;z-index:999;transition:transform .4s}
-.topbar.on{transform:scaleX(.85)} .topbar.done{transform:scaleX(1);opacity:0;transition:opacity .5s}
+.topbar.on{transform:scaleX(.85)}.topbar.done{transform:scaleX(1);opacity:0;transition:opacity .5s}
 </style>
 </head>
 <body>
 <div class="topbar" id="topbar"></div>
 
+<!-- HEADER -->
 <header class="hdr">
   <div class="hdr-l">
     <div class="logo">SABA<span>GRAM</span></div>
@@ -135,58 +161,143 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
   </div>
   <div class="hdr-r">
     <div id="clock"></div>
-    <button class="btn-upd" id="btnUpd" onclick="carregarTodos()"><span id="btnIcon">↻</span> Atualizar</button>
-    <button class="btn-sair" onclick="sair()">Sair</button>
+    <button class="hbtn" id="btnUpd" onclick="carregarTodos()"><span id="btnIcon">↻</span> Atualizar</button>
+    <button class="hbtn-ghost" onclick="sair()">Sair</button>
   </div>
 </header>
 
-<div class="layout">
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
-    <!-- Consolidado -->
-    <div class="cons-wrap">
-      <div class="cons-title">Time · Junho/26</div>
-      <div class="cons-grid">
-        <div class="cons-item"><div class="cons-v gold" id="cFatBRL">—</div><div class="cons-l">BRL fat.</div></div>
-        <div class="cons-item"><div class="cons-v gold" id="cFatUSD">—</div><div class="cons-l">USD fat.</div></div>
-        <div class="cons-sep" style="grid-column:1/-1"></div>
-        <div class="cons-item"><div class="cons-v" id="cMetaBRL">—</div><div class="cons-l">Meta BRL</div></div>
-        <div class="cons-item"><div class="cons-v" id="cMetaUSD">—</div><div class="cons-l">Meta USD</div></div>
+<!-- NAV -->
+<div class="nav">
+  <button class="nbtn on" id="nb-geral" onclick="togglePanel('geral',this)">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+    Time geral <span class="narr">▾</span>
+  </button>
+  <button class="nbtn" id="nb-mi" onclick="togglePanel('mi',this)">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    BU MI <span class="narr">▾</span>
+  </button>
+  <button class="nbtn" id="nb-obras" onclick="togglePanel('obras',this)">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+    BU Obras <span class="narr">▾</span>
+  </button>
+  <button class="nbtn" id="nb-me" onclick="togglePanel('me',this)">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+    BU ME (USD) <span class="narr">▾</span>
+  </button>
+  <div class="nav-right" id="navRight">Atualizado às —</div>
+</div>
+
+<!-- DROPDOWN PANELS -->
+<div class="dd-wrap">
+  <!-- GERAL -->
+  <div class="dd-panel open" id="panel-geral">
+    <div class="dd-top-title">Time geral · junho/2026 · <span id="pDias">—</span> dias úteis restantes</div>
+    <div class="fin-mets">
+      <div class="fm"><div class="fm-v gold" id="pFatBRL">—</div><div class="fm-l">Faturado BRL</div></div>
+      <div class="fm"><div class="fm-v gold" id="pFatUSD">—</div><div class="fm-l">Faturado USD</div></div>
+      <div class="fm"><div class="fm-v red" id="pFaltaBRL">—</div><div class="fm-l">Falta meta BRL</div></div>
+      <div class="fm"><div class="fm-v red" id="pFaltaUSD">—</div><div class="fm-l">Falta meta USD</div></div>
+      <div class="fm"><div class="fm-v amber" id="pCriticos">—</div><div class="fm-l">Vendedores críticos</div></div>
+    </div>
+    <div class="act-row">
+      <div class="act-block">
+        <div class="act-hdr">
+          <div class="act-icon call">☎</div>
+          <div class="act-lbl">Ligações hoje — time</div>
+        </div>
+        <div class="act-mets">
+          <div><div class="am-v" id="pLigTotal">—</div><div class="am-l">Total feitas</div></div>
+          <div><div class="am-v" id="pLigTaxa">—</div><div class="am-l">Taxa atendimento</div></div>
+          <div><div class="am-v" id="pLigDuracao">—</div><div class="am-l">Duração média</div></div>
+        </div>
       </div>
-      <div style="margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(255,255,255,.3)" id="cDias">— dias úteis restantes</div>
-    </div>
-
-    <!-- Menu BU MI -->
-    <div class="bu-group">
-      <div class="bu-label">Mercado Interno <span class="bu-tag mi">BRL</span></div>
-      <div id="menuMI"></div>
-    </div>
-
-    <!-- Menu BU Obras -->
-    <div class="bu-group" style="border-top:1px solid var(--border)">
-      <div class="bu-label">Obras <span class="bu-tag obras">BRL</span></div>
-      <div id="menuObras"></div>
-    </div>
-
-    <!-- Menu BU ME -->
-    <div class="bu-group" style="border-top:1px solid var(--border)">
-      <div class="bu-label">Mercado Externo <span class="bu-tag me">USD</span></div>
-      <div id="menuME"></div>
-    </div>
-  </aside>
-
-  <!-- CONTENT -->
-  <div style="display:flex;flex-direction:column;height:100%">
-    <div class="sbar"><div class="sdot" id="sDot"></div><span id="sTxt">Inicializando...</span></div>
-    <div class="content" id="content">
-      <div class="empty" id="emptyState">
-        <div class="empty-icon">👥</div>
-        <div class="empty-title">Selecione um vendedor</div>
-        <div class="empty-sub">Clique em qualquer vendedor no menu para ver o diagnóstico e plano de ação</div>
+      <div class="act-block">
+        <div class="act-hdr">
+          <div class="act-icon wa">💬</div>
+          <div class="act-lbl">WhatsApp hoje — time</div>
+        </div>
+        <div class="act-mets">
+          <div><div class="am-v" id="pWaMsgs">—</div><div class="am-l">Msgs enviadas</div></div>
+          <div><div class="am-v" id="pWaChats">—</div><div class="am-l">Chats ativos</div></div>
+          <div><div class="am-v danger" id="pWaAlerta">—</div><div class="am-l">Tom pessoal</div></div>
+        </div>
       </div>
-      <div class="content-inner" id="contentInner" style="display:none"></div>
+    </div>
+    <div class="wa-alert" id="waAlertBox" style="display:none">
+      ⚠ <span id="waAlertText"></span>
     </div>
   </div>
+
+  <!-- BU MI -->
+  <div class="dd-panel" id="panel-mi">
+    <div class="dd-top-title">BU MI — Mercado Interno · BRL</div>
+    <div class="fin-mets" style="grid-template-columns:repeat(4,1fr)">
+      <div class="fm"><div class="fm-v gold" id="miFat">—</div><div class="fm-l">Faturado</div></div>
+      <div class="fm"><div class="fm-v" id="miMeta">—</div><div class="fm-l">Meta consolidada</div></div>
+      <div class="fm"><div class="fm-v red" id="miFalta">—</div><div class="fm-l">Falta</div></div>
+      <div class="fm"><div class="fm-v amber" id="miLig">—</div><div class="fm-l">Ligações hoje</div></div>
+    </div>
+  </div>
+
+  <!-- BU Obras -->
+  <div class="dd-panel" id="panel-obras">
+    <div class="dd-top-title">BU Obras — Construção & Projetos · BRL</div>
+    <div class="fin-mets" style="grid-template-columns:repeat(4,1fr)">
+      <div class="fm"><div class="fm-v gold" id="obrasFat">—</div><div class="fm-l">Faturado</div></div>
+      <div class="fm"><div class="fm-v" id="obrasMeta">—</div><div class="fm-l">Meta</div></div>
+      <div class="fm"><div class="fm-v red" id="obrasFalta">—</div><div class="fm-l">Falta</div></div>
+      <div class="fm"><div class="fm-v amber" id="obrasLig">—</div><div class="fm-l">Ligações hoje</div></div>
+    </div>
+  </div>
+
+  <!-- BU ME -->
+  <div class="dd-panel" id="panel-me">
+    <div class="dd-top-title">BU ME — Mercado Externo · USD</div>
+    <div class="fin-mets" style="grid-template-columns:repeat(4,1fr)">
+      <div class="fm"><div class="fm-v gold" id="meFat">—</div><div class="fm-l">Faturado USD</div></div>
+      <div class="fm"><div class="fm-v" id="meMeta">—</div><div class="fm-l">Meta USD</div></div>
+      <div class="fm"><div class="fm-v red" id="meFalta">—</div><div class="fm-l">Falta USD</div></div>
+      <div class="fm"><div class="fm-v amber" id="meLig">—</div><div class="fm-l">Ligações hoje</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- STATUS BAR -->
+<div class="sbar"><div class="sdot" id="sDot"></div><span id="sTxt">Inicializando...</span></div>
+
+<!-- CONTENT -->
+<div class="content">
+
+  <!-- BU MI -->
+  <div class="bu-sec">
+    <div class="bu-hdr">
+      <div class="bu-left"><span class="bu-pill bu-mi">BU MI</span> Mercado Interno</div>
+      <div class="bu-stats" id="statsMI">—</div>
+    </div>
+    <div class="vgrid" id="gridMI"></div>
+  </div>
+
+  <!-- BU Obras -->
+  <div class="bu-sec">
+    <div class="bu-hdr">
+      <div class="bu-left"><span class="bu-pill bu-obras">BU Obras</span> Obras & Construção</div>
+      <div class="bu-stats" id="statsObras">—</div>
+    </div>
+    <div class="vgrid" id="gridObras"></div>
+  </div>
+
+  <!-- BU ME -->
+  <div class="bu-sec">
+    <div class="bu-hdr">
+      <div class="bu-left"><span class="bu-pill bu-me">BU ME</span> Mercado Externo (USD)</div>
+      <div class="bu-stats" id="statsME">—</div>
+    </div>
+    <div class="vgrid" id="gridME"></div>
+  </div>
+
+  <!-- DETALHE VENDEDOR -->
+  <div id="detalhe" style="display:none"></div>
+
 </div>
 
 <script type="module">
@@ -203,265 +314,339 @@ const FIREBASE_CONFIG = {
 };
 
 const VENDEDORES = [
-  { email:"sizenando@sabagram.com.br", nome:"Sizenando Andrade", avatar:"SA", bu:"MI",    moeda:"BRL", cor:"#1a3254", ideVen:["001TW000003LbquYAC","001TW000003LcYSYA0"], userId:"005TW0000002BnNYAU", meta:233289 },
-  { email:"kelly@sabagram.com.br",     nome:"Kelly Julião",      avatar:"KJ", bu:"MI",    moeda:"BRL", cor:"#1a5f3a", ideVen:["001TW000005ag14YAA","001TW000005ah3ZYAQ"], userId:"005TW0000003rpNYAQ", meta:161563 },
-  { email:"marcelo@sabagram.com.br",   nome:"Marcelo Melo",      avatar:"MM", bu:"MI",    moeda:"BRL", cor:"#8b1a1a", ideVen:["0014S00000BK1xDQAT"],                       userId:"0054S000002TkpGQAS", meta:463680 },
-  { email:"renata@sabagram.com.br",    nome:"Renata Santana",    avatar:"RS", bu:"MI",    moeda:"BRL", cor:"#6b1a5f", ideVen:["001TW00000Buxa9YAB","001TW00000BusqcYAB","001TW00000C09VzYAJ"], userId:"005TW000000ANTBYA4", meta:105777 },
-  { email:"wesley@sabagram.com.br",    nome:"Wesley Matieli",    avatar:"WM", bu:"Obras", moeda:"BRL", cor:"#1a4a2a", ideVen:["0014S00000Br0ySQAR"],                       userId:"005TW000000C7AbYAK", meta:172431 },
-  { email:"cezar@sabagram.com.br",     nome:"Cezar Fiorio",      avatar:"CF", bu:"ME",    moeda:"USD", cor:"#1a3a6b", ideVen:["001TW00000C114rYAB"],                       userId:"005TW000000APunYAG", meta:172800 },
-  { email:"diana@sabagram.com.br",     nome:"Diana Rigoni",      avatar:"DR", bu:"ME",    moeda:"USD", cor:"#5f1a4a", ideVen:["001TW00000AooaAYAR"],                       userId:"0054S000002TkpZQAS", meta:25000  },
+  { email:"sizenando@sabagram.com.br", nome:"Sizenando Andrade", avatar:"SA", bu:"MI",    moeda:"BRL", cor:"#1a3254", ideVen:["001TW000003LbquYAC","001TW000003LcYSYA0"], userId:"005TW0000002BnNYAU", meta:233289, whatsapp:"5528999565519" },
+  { email:"kelly@sabagram.com.br",     nome:"Kelly Julião",      avatar:"KJ", bu:"MI",    moeda:"BRL", cor:"#1a5f3a", ideVen:["001TW000005ag14YAA","001TW000005ah3ZYAQ"], userId:"005TW0000003rpNYAQ", meta:161563, whatsapp:"5528999688866" },
+  { email:"marcelo@sabagram.com.br",   nome:"Marcelo Melo",      avatar:"MM", bu:"MI",    moeda:"BRL", cor:"#8b1a1a", ideVen:["0014S00000BK1xDQAT"],                       userId:"0054S000002TkpGQAS", meta:463680, whatsapp:"" },
+  { email:"renata@sabagram.com.br",    nome:"Renata Santana",    avatar:"RS", bu:"MI",    moeda:"BRL", cor:"#6b1a5f", ideVen:["001TW00000Buxa9YAB","001TW00000BusqcYAB","001TW00000C09VzYAJ"], userId:"005TW000000ANTBYA4", meta:105777, whatsapp:"" },
+  { email:"wesley@sabagram.com.br",    nome:"Wesley Matieli",    avatar:"WM", bu:"Obras", moeda:"BRL", cor:"#1a4a2a", ideVen:["0014S00000Br0ySQAR"],                       userId:"005TW000000C7AbYAK", meta:172431, whatsapp:"" },
+  { email:"cezar@sabagram.com.br",     nome:"Cezar Fiorio",      avatar:"CF", bu:"ME",    moeda:"USD", cor:"#1a3a6b", ideVen:["001TW00000C114rYAB"],                       userId:"005TW000000APunYAG", meta:172800, whatsapp:"" },
+  { email:"diana@sabagram.com.br",     nome:"Diana Rigoni",      avatar:"DR", bu:"ME",    moeda:"USD", cor:"#5f1a4a", ideVen:["001TW00000AooaAYAR"],                       userId:"0054S000002TkpZQAS", meta:25000,  whatsapp:"" },
 ];
 
-const AUTH_MAP = {
-  "henrique@sabagram.com.br":{perfil:"admin"},
-  "dhiego@sabagram.com.br":{perfil:"gerente"},
-};
-VENDEDORES.forEach(v=>{ AUTH_MAP[v.email]={perfil:"vendedor"}; });
+const AUTH_MAP = {"henrique@sabagram.com.br":{perfil:"admin"},"dhiego@sabagram.com.br":{perfil:"gerente"}};
+VENDEDORES.forEach(v=>{AUTH_MAP[v.email]={perfil:"vendedor"};});
 
-const app = initializeApp(FIREBASE_CONFIG);
-const auth = getAuth(app);
-let gerente = null;
-let dadosCache = {}; // cache dos dados buscados
-let ativoEmail = null;
+const app=initializeApp(FIREBASE_CONFIG);
+const auth=getAuth(app);
+let dadosCache={}, waCache={}, ativoEmail=null;
 
-onAuthStateChanged(auth, async user => {
+onAuthStateChanged(auth,async user=>{
   if(!user){window.location.href='index.html';return;}
-  const u = AUTH_MAP[user.email.toLowerCase()];
+  const u=AUTH_MAP[user.email.toLowerCase()];
   if(!u||(u.perfil!=='gerente'&&u.perfil!=='admin')){await signOut(auth);window.location.href='index.html';return;}
-  gerente = {email:user.email.toLowerCase()};
   if(u.perfil==='admin') $('hdrBadge').textContent='ADMIN';
   carregarTodos();
 });
+window.sair=async()=>{await signOut(auth);window.location.href='index.html';};
 
-window.sair = async () => { await signOut(auth); window.location.href='index.html'; };
-
-const $ = id => document.getElementById(id);
-const fmt = (v,m='BRL') => m==='USD'?'US$'+Math.round(v/1000)+'k':'R$'+Math.round(v/1000)+'k';
-const fmt2 = (v,m='BRL') => m==='USD'?'US$'+Math.round(v):'R$'+Math.round(v/1000)+'k';
-const setStatus = (t,on=false) => { $('sTxt').textContent=t; $('sDot').className='sdot'+(on?' on':''); };
-const diasUteis = () => {
-  const h=new Date(),f=new Date(h.getFullYear(),h.getMonth()+1,0);
-  let c=0,d=new Date(h);d.setDate(d.getDate()+1);
-  while(d<=f){if(d.getDay()!==0&&d.getDay()!==6)c++;d.setDate(d.getDate()+1);}
-  return c;
-};
+const $=id=>document.getElementById(id);
+const fmt=(v,m='BRL')=>m==='USD'?'US$'+Math.round(v/1000)+'k':'R$'+Math.round(v/1000)+'k';
+const fmt2=(v,m='BRL')=>m==='USD'?'US$'+Math.round(v):'R$'+Math.round(v/1000)+'k';
+const setStatus=(t,on=false)=>{$('sTxt').textContent=t;$('sDot').className='sdot'+(on?' on':'');};
+const diasUteis=()=>{const h=new Date(),f=new Date(h.getFullYear(),h.getMonth()+1,0);let c=0,d=new Date(h);d.setDate(d.getDate()+1);while(d<=f){if(d.getDay()!==0&&d.getDay()!==6)c++;d.setDate(d.getDate()+1);}return c;};
 const tick=()=>$('clock').textContent=new Date().toLocaleString('pt-BR',{weekday:'short',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}).toUpperCase();
 tick();setInterval(tick,30000);
+const md2html=t=>t.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/^###\s+(.+)$/gm,'<h3>$1</h3>').replace(/^##\s+(.+)$/gm,'<h3>$1</h3>').replace(/\n\n+/g,'</p><p>').replace(/\n/g,'<br>');
 
-const md2html = t => t
-  .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
-  .replace(/^###\s+(.+)$/gm,'<h3>$1</h3>')
-  .replace(/^##\s+(.+)$/gm,'<h3>$1</h3>')
-  .replace(/\n\n+/g,'</p><p>').replace(/\n/g,'<br>');
+// Toggle painel
+window.togglePanel=(id,btn)=>{
+  const panels=['geral','mi','obras','me'];
+  const btns=['nb-geral','nb-mi','nb-obras','nb-me'];
+  const isOpen=$('panel-'+id).classList.contains('open');
+  panels.forEach(p=>$('panel-'+p).classList.remove('open'));
+  btns.forEach(b=>$('nb-'+b.replace('nb-',''))?.classList.remove('on'));
+  document.querySelectorAll('.nbtn').forEach(b=>b.classList.remove('on'));
+  if(!isOpen){$('panel-'+id).classList.add('open');btn.classList.add('on');}
+};
 
-function getStatus(fat,meta,ligHoje) {
+function getStatus(fat,meta,lig){
   const p=meta>0?fat/meta*100:0;
-  if(p<5&&ligHoje<3)  return {cls:'st-c',txt:'🔴 CRÍTICO',dot:'d-c'};
-  if(p<20||ligHoje<5) return {cls:'st-a',txt:'🟡 ALERTA',dot:'d-a'};
-  if(p<50)            return {cls:'st-b',txt:'🔵 EM PROGRESSO',dot:'d-b'};
-  return              {cls:'st-g',txt:'✅ NO CAMINHO',dot:'d-g'};
+  if(p<5&&lig<3) return{cls:'st-c',txt:'🔴 Crítico',dot:'dr'};
+  if(p<20||lig<5) return{cls:'st-a',txt:'🟡 Alerta',dot:'da'};
+  return{cls:'st-g',txt:'✅ OK',dot:'dg'};
 }
 
-async function apiClaude(prompt) {
-  const r = await fetch('/api/claude',{
-    method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({
-      model:'claude-haiku-4-5-20251001',max_tokens:1200,
-      mcp_servers:[{type:'url',url:'https://api.salesforce.com/platform/mcp/v1/platform/sobject-all',name:'salesforce'}],
-      system:`Consultor de performance comercial. Sabagram, granitos/mármores, ES. Data: ${new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}. Dias úteis restantes: ${diasUteis()}. Direto, específico, acionável. Português.`,
-      messages:[{role:'user',content:prompt}]
-    })
-  });
-  if(!r.ok) throw new Error('HTTP '+r.status);
+async function apiClaude(prompt,useMCP=true){
+  const servers=useMCP?[
+    {type:'url',url:'https://api.salesforce.com/platform/mcp/v1/platform/sobject-all',name:'salesforce'},
+    {type:'url',url:'https://sabagram-mcp.nitzap.com/mcp/master',name:'nitzap'}
+  ]:[];
+  const r=await fetch('/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:1200,
+      ...(servers.length?{mcp_servers:servers}:{}),
+      system:`Consultor de performance comercial. Sabagram, granitos/mármores. ${new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}. Dias úteis restantes: ${diasUteis()}. Português, direto, cite dados reais.`,
+      messages:[{role:'user',content:prompt}]})});
+  if(!r.ok)throw new Error('HTTP '+r.status);
   const d=await r.json();
   return d.content?.map(b=>b.text||'').join('')||'';
 }
 
-async function buscarDados(v) {
-  if(dadosCache[v.email]) return dadosCache[v.email];
+async function buscarDados(v){
+  if(dadosCache[v.email])return dadosCache[v.email];
   const mes=new Date().toISOString().slice(0,7)+'-01';
-  let fat=0,clientes=0,ligHoje=0,ligAtend=0;
+  let fat=0,clientes=0,ligHoje=0,ligAtend=0,ligDurTotal=0;
   try{
     const r=await fetch('/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:150,
+      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:200,
         mcp_servers:[{type:'url',url:'https://api.salesforce.com/platform/mcp/v1/platform/sobject-all',name:'salesforce'}],
         system:'Retorne apenas os dados solicitados.',
         messages:[{role:'user',content:`Salesforce:
 Q1: SELECT SUM(VlrLiq__c) fat, COUNT_DISTINCT(IdeCli__c) cli FROM Pedido__c WHERE IdeVen__c IN ('${v.ideVen.join("','")}') AND StsPed__c='Faturado' AND DatFat__c >= ${mes}
-Q2: SELECT COUNT(Id) tot, CallDisposition FROM Task WHERE OwnerId='${v.userId}' AND ActivityDate=TODAY AND Type='Call' GROUP BY CallDisposition
-Retorne APENAS:
-FAT:X CLI:X LIG:X ATEND:X`}]})});
+Q2: SELECT COUNT(Id) tot, CallDisposition, SUM(CallDurationInSeconds) dur FROM Task WHERE OwnerId='${v.userId}' AND ActivityDate=TODAY AND Type='Call' GROUP BY CallDisposition
+Retorne APENAS: FAT:X CLI:X LIG:X ATEND:X DUR:X`}]})});
     const d=await r.json();
     const buf=d.content?.map(b=>b.text||'').join('')||'';
-    const fm=buf.match(/FAT[:\s]+(\d+(?:[.,]\d+)?)/);
-    const cm=buf.match(/CLI[:\s]+(\d+)/);
-    const lm=buf.match(/LIG[:\s]+(\d+)/);
-    const la=buf.match(/ATEND[:\s]+(\d+)/);
-    fat=fm?parseFloat(fm[1].replace(',','.')):0;
-    clientes=cm?parseInt(cm[1]):0;
-    ligHoje=lm?parseInt(lm[1]):0;
-    ligAtend=la?parseInt(la[1]):0;
+    fat=parseFloat((buf.match(/FAT[:\s]+(\d+(?:[.,]\d+)?)/)||[0,0])[1].toString().replace(',','.'))||0;
+    clientes=parseInt((buf.match(/CLI[:\s]+(\d+)/)||[0,0])[1])||0;
+    ligHoje=parseInt((buf.match(/LIG[:\s]+(\d+)/)||[0,0])[1])||0;
+    ligAtend=parseInt((buf.match(/ATEND[:\s]+(\d+)/)||[0,0])[1])||0;
+    ligDurTotal=parseInt((buf.match(/DUR[:\s]+(\d+)/)||[0,0])[1])||0;
   }catch{}
-  const dados={fat,clientes,ligHoje,ligAtend};
-  dadosCache[v.email]=dados;
-  return dados;
+  dadosCache[v.email]={fat,clientes,ligHoje,ligAtend,ligDurTotal};
+  return dadosCache[v.email];
 }
 
-function renderMenuItem(v,d) {
-  const st=getStatus(d?.fat||0,v.meta,d?.ligHoje||0);
-  const pct=v.meta>0?Math.min(100,Math.round((d?.fat||0)/v.meta*100)):0;
-  return `<div class="v-item${ativoEmail===v.email?' active':''}" onclick="selecionarVendedor('${v.email}')" id="mi-${v.avatar}">
-    <div class="v-avatar" style="background:${v.cor}">${v.avatar}</div>
-    <div class="v-info">
-      <div class="v-nome">${v.nome.split(' ')[0]}</div>
-      <div class="v-sub">${d?fmt(d.fat,v.moeda)+' · '+pct+'%':'carregando...'}</div>
-    </div>
-    <div class="v-dot ${st.dot}" id="dot-${v.avatar}"></div>
-  </div>`;
+async function buscarWA(v){
+  if(!v.whatsapp||waCache[v.email])return waCache[v.email]||{msgs:0,chats:0,tomPessoal:false,ultimaMsg:''};
+  try{
+    const r=await fetch('/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:200,
+        mcp_servers:[{type:'url',url:'https://sabagram-mcp.nitzap.com/mcp/master',name:'nitzap'}],
+        system:'Retorne apenas os dados solicitados.',
+        messages:[{role:'user',content:`Nitzap — vendedor ${v.nome} (WhatsApp: ${v.whatsapp}):
+Busque os últimos 10 chats (mywhatsid: ${v.whatsapp}@s.whatsapp.net, isgroup: false, ORDER BY dt_lastmessage DESC, últimas 24h).
+Analise as últimas mensagens enviadas (isent: true).
+Retorne APENAS:
+MSGS:X
+CHATS:X
+PESSOAL:sim/nao
+ULTIMA:[texto da última mensagem enviada, max 60 chars]`}]})});
+    const d=await r.json();
+    const buf=d.content?.map(b=>b.text||'').join('')||'';
+    const msgs=parseInt((buf.match(/MSGS[:\s]+(\d+)/)||[0,0])[1])||0;
+    const chats=parseInt((buf.match(/CHATS[:\s]+(\d+)/)||[0,0])[1])||0;
+    const pessoal=/PESSOAL[:\s]+sim/i.test(buf);
+    const ultimaMatch=buf.match(/ULTIMA[:\s]+(.+)/);
+    const ultimaMsg=ultimaMatch?ultimaMatch[1].trim():'';
+    waCache[v.email]={msgs,chats,tomPessoal:pessoal,ultimaMsg};
+  }catch{
+    waCache[v.email]={msgs:0,chats:0,tomPessoal:false,ultimaMsg:''};
+  }
+  return waCache[v.email];
 }
 
-function renderMenu() {
-  const mi    = VENDEDORES.filter(v=>v.bu==='MI');
-  const obras = VENDEDORES.filter(v=>v.bu==='Obras');
-  const me    = VENDEDORES.filter(v=>v.bu==='ME');
-  $('menuMI').innerHTML    = mi.map(v=>renderMenuItem(v,dadosCache[v.email])).join('');
-  $('menuObras').innerHTML  = obras.map(v=>renderMenuItem(v,dadosCache[v.email])).join('');
-  $('menuME').innerHTML     = me.map(v=>renderMenuItem(v,dadosCache[v.email])).join('');
+function renderCards(bu){
+  const lista=VENDEDORES.filter(v=>v.bu===bu);
+  const ids={MI:'gridMI',Obras:'gridObras',ME:'gridME'};
+  const el=$(ids[bu]);
+  if(!el)return;
+  el.innerHTML=lista.map(v=>{
+    const d=dadosCache[v.email]||{fat:0,clientes:0,ligHoje:0,ligAtend:0};
+    const wa=waCache[v.email];
+    const pct=Math.min(100,Math.round(d.fat/v.meta*100));
+    const corP=pct<10?'var(--red)':pct<40?'var(--amber)':'var(--green)';
+    const st=getStatus(d.fat,v.meta,d.ligHoje);
+    const m=v.moeda;
+    const waBadge=!v.whatsapp?'<span class="wa-badge wb-na">não monit.</span>':wa?.tomPessoal?'<span class="wa-badge wb-warn">⚠ pessoal</span>':'<span class="wa-badge wb-ok">✓ comercial</span>';
+    return`<div class="vc${ativoEmail===v.email?' sel':''}" onclick="selecionarVendedor('${v.email}')">
+      <div class="vc-top">
+        <div class="av" style="background:${v.cor}">${v.avatar}</div>
+        <div>
+          <div class="vc-nome">${v.nome.split(' ')[0]}</div>
+          <div class="vc-sub"><span class="dot ${st.dot}"></span>${st.txt}</div>
+        </div>
+      </div>
+      <div class="vc-val">${fmt(d.fat,m)} <span style="font-size:10px;color:var(--muted)">/ ${fmt(v.meta,m)}</span></div>
+      <div class="vprog"><div class="vpf" style="width:${pct}%;background:${corP}"></div></div>
+      <div class="vc-footer">
+        <div class="vf-item">☎ ${d.ligHoje} lig.</div>
+        <div class="vf-item">💬 ${v.whatsapp&&wa?wa.msgs+' msgs':' —'} ${waBadge}</div>
+      </div>
+    </div>`;
+  }).join('');
 }
 
-window.selecionarVendedor = async (email) => {
-  ativoEmail = email;
-  const v = VENDEDORES.find(x=>x.email===email);
-  if(!v) return;
-  renderMenu();
+window.selecionarVendedor=async(email)=>{
+  ativoEmail=email;
+  ['MI','Obras','ME'].forEach(b=>renderCards(b));
+  const v=VENDEDORES.find(x=>x.email===email);
+  if(!v)return;
+  const det=$('detalhe');
+  det.style.display='block';
+  det.scrollIntoView({behavior:'smooth',block:'start'});
 
-  $('emptyState').style.display='none';
-  const ci=$('contentInner');
-  ci.style.display='block';
-
-  const d = dadosCache[v.email] || await buscarDados(v);
+  const d=dadosCache[v.email]||{fat:0,clientes:0,ligHoje:0,ligAtend:0,ligDurTotal:0};
+  const wa=waCache[v.email];
   const pct=Math.min(100,Math.round(d.fat/v.meta*100));
   const falta=v.meta-d.fat;
   const dias=diasUteis();
   const corP=pct<10?'var(--red)':pct<40?'var(--amber)':'var(--green)';
   const st=getStatus(d.fat,v.meta,d.ligHoje);
   const m=v.moeda;
+  const durMedia=d.ligAtend>0?Math.round(d.ligDurTotal/d.ligAtend):0;
+  const durStr=durMedia>0?Math.floor(durMedia/60)+'m'+String(durMedia%60).padStart(2,'0')+'s':'—';
 
-  ci.innerHTML=`
-    <div class="v-card-hdr">
-      <div class="v-card-avatar" style="background:${v.cor}">${v.avatar}</div>
-      <div style="flex:1">
-        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-          <div class="v-card-nome">${v.nome}</div>
-          <span class="status-tag ${st.cls}">${st.txt}</span>
+  det.innerHTML=`
+    <div class="detail">
+      <div class="detail-hdr">
+        <div class="av-lg" style="background:${v.cor}">${v.avatar}</div>
+        <div>
+          <div class="detail-title">${v.nome}<span class="st-tag ${st.cls}">${st.txt}</span></div>
+          <div class="detail-sub">BU ${v.bu} · ${m} · Meta ${fmt(v.meta,m)} · ${dias} dias úteis restantes</div>
         </div>
-        <div class="v-card-sub">BU ${v.bu} · ${m} · Meta ${fmt(v.meta,m)}</div>
       </div>
-    </div>
-
-    <div class="metrics-grid">
-      <div class="metric"><div class="metric-v" style="color:var(--navy)">${fmt(d.fat,m)}</div><div class="metric-l">Faturado</div></div>
-      <div class="metric"><div class="metric-v" style="color:${corP}">${pct}%</div><div class="metric-l">Atingido</div></div>
-      <div class="metric"><div class="metric-v" style="color:var(--red)">${fmt(falta,m)}</div><div class="metric-l">Falta</div></div>
-      <div class="metric"><div class="metric-v" style="color:${d.ligHoje>=8?'var(--green)':d.ligHoje>=4?'var(--amber)':'var(--red)'}">${d.ligHoje}</div><div class="metric-l">Lig. hoje</div></div>
-      <div class="metric"><div class="metric-v" style="color:var(--text2)">${d.clientes}</div><div class="metric-l">Clientes/mês</div></div>
-      <div class="metric"><div class="metric-v" style="color:var(--text2)">${fmt2(Math.round(falta/Math.max(dias,1)),m)}</div><div class="metric-l">Falta/dia</div></div>
-    </div>
-    <div class="prog"><div class="prog-fill" style="width:${pct}%;background:${corP}"></div></div>
-    <div class="prog-lbl">${pct}% da meta · ${dias} dias úteis restantes</div>
-
-    <div class="ia-card">
-      <div class="ia-card-hdr">
-        <div class="ia-badge"><div class="ia-dot on" id="iaDot"></div>IA</div>
-        <div class="ia-title">Ligações · WhatsApp · Diagnóstico · Plano de ação</div>
+      <div class="det-mets">
+        <div class="dm"><div class="dm-v" style="color:var(--navy)">${fmt(d.fat,m)}</div><div class="dm-l">Faturado</div></div>
+        <div class="dm"><div class="dm-v" style="color:${corP}">${pct}%</div><div class="dm-l">Atingido</div></div>
+        <div class="dm"><div class="dm-v" style="color:var(--red)">${fmt(falta,m)}</div><div class="dm-l">Falta</div></div>
+        <div class="dm"><div class="dm-v" style="color:${d.ligHoje>=8?'var(--green)':d.ligHoje>=4?'var(--amber)':'var(--red)'}">${d.ligHoje}</div><div class="dm-l">Lig. hoje</div></div>
+        <div class="dm"><div class="dm-v">${d.clientes}</div><div class="dm-l">Clientes/mês</div></div>
+        <div class="dm"><div class="dm-v">${fmt2(Math.round(falta/Math.max(dias,1)),m)}</div><div class="dm-l">Falta/dia</div></div>
       </div>
-      <div class="ia-card-body">
-        <div class="ia-body" id="iaBody">
-          <div class="spin-wrap"><div class="spinner"></div> Analisando dados do Salesforce...</div>
+      <div class="det-prog"><div class="det-prog-fill" style="width:${pct}%;background:${corP}"></div></div>
+      <div class="det-prog-lbl">${pct}% da meta</div>
+      <div class="ia-wrap">
+        <div class="ia-hdr">
+          <div class="ia-badge"><div class="ia-dot on" id="iaDot"></div>IA</div>
+          <div class="ia-lbl">Ligações · WhatsApp · Diagnóstico · Plano de ação</div>
+        </div>
+        <div class="ia-body-wrap">
+          <div class="ia-body" id="iaBody"><div class="spin-wrap"><div class="spinner"></div> Analisando ligações, WhatsApp e Salesforce...</div></div>
         </div>
       </div>
     </div>`;
 
-  // Gerar análise
-  const waNum = v.whatsapp || null;
   const prompt=`Analise ${v.nome} (BU ${v.bu}, ${m}) — Junho/2026.
 
 DADOS FINANCEIROS:
-- Faturado: ${fmt(d.fat,m)} de ${fmt(v.meta,m)} (${pct}% da meta)
+- Faturado: ${fmt(d.fat,m)} de ${fmt(v.meta,m)} (${pct}%)
 - Falta: ${fmt(falta,m)} em ${dias} dias úteis = ${fmt2(Math.round(falta/Math.max(dias,1)),m)}/dia útil
-- Clientes únicos no mês: ${d.clientes}
+- Clientes únicos: ${d.clientes}
 
-DADOS DE ATIVIDADE (Salesforce):
-- Ligações hoje: ${d.ligHoje} (${d.ligAtend} atendidas)
-- Busque no Salesforce as últimas 10 Tasks (OwnerId: ${v.userId}) para analisar padrão de ligações: duração média, % atendidas, horários, assuntos
+LIGAÇÕES HOJE (Salesforce):
+- Total: ${d.ligHoje} | Atendidas: ${d.ligAtend} | Duração média: ${durStr}
+- Busque as últimas 10 Tasks (OwnerId: ${v.userId}, Type='Call') para analisar padrão real
 
-COMPORTAMENTO NO WHATSAPP:${waNum ? `
-- Busque no Nitzap os últimos 10 chats ativos (mywhatsid: ${v.whatsapp}@s.whatsapp.net, isgroup: false, ordenados por dt_lastmessage DESC)
-- Analise: tom das mensagens (comercial vs pessoal), últimas mensagens enviadas, padrão de abertura, se usa "ajuda o amigo" ou abordagem centrada no cliente` : '
-- WhatsApp não monitorado para este vendedor'}
+WHATSAPP:${v.whatsapp?`
+- Sessão: ${v.whatsapp} — busque os últimos 8 chats ativos (mywhatsid: ${v.whatsapp}@s.whatsapp.net, isgroup:false, ORDER BY dt_lastmessage DESC)
+- Tom detectado: ${wa?.tomPessoal?'PESSOAL (⚠ problema identificado)':'comercial'}
+- Última mensagem enviada: "${wa?.ultimaMsg||'—'}"
+- Analise o padrão: é comercial ou de amizade? Cita a necessidade do cliente ou do vendedor?`:'\n- Não monitorado para este vendedor.'}
 
-Gere para o gerente Dhiego (máx 400 palavras):
+Gere para o gerente (máx 380 palavras):
 
 ### 📞 Qualidade das ligações
-Padrão identificado: volume, taxa de atendimento, duração média, horários. O que está bom e o que está errado.
+Volume, taxa de atendimento, duração. Padrão identificado. O que está certo e errado.
 
-### 💬 Comportamento no WhatsApp
-Tom e padrão das últimas mensagens: é comercial ou pessoal? Usa abordagem centrada no cliente ou no vendedor? Cite exemplos reais das mensagens.
+### 💬 Comportamento no WhatsApp${v.whatsapp?`
+Tom das mensagens: cite exemplos reais. É centrado no cliente ou no vendedor? "Ajuda o amigo" ou oferta de valor?`:'\nNão monitorado.'}
 
-### 🔍 Diagnóstico geral
-O que está acontecendo de fato com este vendedor. 2-3 frases diretas.
+### 🔍 Diagnóstico
+O que está acontecendo. 2-3 frases diretas.
 
 ### 🎯 Ações para Dhiego esta semana
-3 ações concretas e específicas baseadas nos padrões identificados.
+3 ações concretas e específicas.
 
 ### 💬 Pergunta para o 1:1
-1 pergunta exata que revela a causa raiz.
-
-### 📊 Métrica de acompanhamento
-Número atual → meta até sexta.`;
+1 pergunta que revela a causa raiz.`;
 
   try{
-    const txt=await apiClaude(prompt);
+    const txt=await apiClaude(prompt,true);
     const el=$('iaBody');
-    if(el){ el.innerHTML=`<p>${md2html(txt)}</p>`; }
-    const dot=$('iaDot');
-    if(dot) dot.classList.remove('on');
+    if(el){el.innerHTML=`<p>${md2html(txt)}</p>`;}
+    const dot=$('iaDot');if(dot)dot.classList.remove('on');
   }catch(e){
     const el=$('iaBody');
-    if(el) el.innerHTML=`<span style="color:var(--red);font-size:12px;font-family:'JetBrains Mono',monospace">Erro: ${e.message}</span>`;
+    if(el)el.innerHTML=`<span style="color:var(--red);font-size:12px;font-family:'JetBrains Mono',monospace">Erro: ${e.message}</span>`;
   }
 };
 
-window.carregarTodos = async () => {
+window.carregarTodos=async()=>{
   const btn=$('btnUpd');btn.disabled=true;$('btnIcon').textContent='↻';
   $('topbar').className='topbar on';
-  setStatus('Buscando dados de todos os vendedores...', true);
-  dadosCache={};
+  setStatus('Buscando dados do time...',true);
+  dadosCache={};waCache={};
+  const dias=diasUteis();
+  $('pDias').textContent=dias;
 
-  $('cDias').textContent=diasUteis()+' dias úteis restantes';
-
-  // Buscar todos em paralelo
-  await Promise.all(VENDEDORES.map(v=>buscarDados(v)));
+  // Buscar tudo em paralelo
+  await Promise.all([
+    ...VENDEDORES.map(v=>buscarDados(v)),
+    ...VENDEDORES.filter(v=>v.whatsapp).map(v=>buscarWA(v))
+  ]);
 
   // Consolidados
-  let fatBRL=0,metaBRL=0,fatUSD=0,metaUSD=0;
+  let fatBRL=0,metaBRL=0,fatUSD=0,metaUSD=0,ligTotal=0,ligAtendTotal=0,durTotal=0,criticos=0;
+  let waMsgsTotal=0,waChatsTotal=0,waAlertas=[];
   VENDEDORES.forEach(v=>{
     const d=dadosCache[v.email];
+    const wa=waCache[v.email];
     if(v.moeda==='BRL'){fatBRL+=d.fat;metaBRL+=v.meta;}
     else{fatUSD+=d.fat;metaUSD+=v.meta;}
+    ligTotal+=d.ligHoje;ligAtendTotal+=d.ligAtend;durTotal+=d.ligDurTotal;
+    if(wa){waMsgsTotal+=wa.msgs;waChatsTotal+=wa.chats;if(wa.tomPessoal)waAlertas.push(v.nome.split(' ')[0]);}
+    const st=getStatus(d.fat,v.meta,d.ligHoje);
+    if(st.cls==='st-c')criticos++;
   });
-  $('cFatBRL').textContent='R$'+Math.round(fatBRL/1000)+'k';
-  $('cFatUSD').textContent='US$'+Math.round(fatUSD/1000)+'k';
-  $('cMetaBRL').textContent='R$'+Math.round(metaBRL/1000)+'k';
-  $('cMetaUSD').textContent='US$'+Math.round(metaUSD/1000)+'k';
 
-  renderMenu();
+  // Painel geral
+  $('pFatBRL').textContent='R$'+Math.round(fatBRL/1000)+'k';
+  $('pFatUSD').textContent='US$'+Math.round(fatUSD/1000)+'k';
+  $('pFaltaBRL').textContent='R$'+Math.round((metaBRL-fatBRL)/1000)+'k';
+  $('pFaltaUSD').textContent='US$'+Math.round((metaUSD-fatUSD)/1000)+'k';
+  $('pCriticos').textContent=criticos;
+  $('pLigTotal').textContent=ligTotal;
+  $('pLigTaxa').textContent=ligTotal>0?Math.round(ligAtendTotal/ligTotal*100)+'%':'0%';
+  const durM=ligAtendTotal>0?Math.round(durTotal/ligAtendTotal):0;
+  $('pLigDuracao').textContent=durM>0?Math.floor(durM/60)+'m'+String(durM%60).padStart(2,'0')+'s':'—';
+  $('pWaMsgs').textContent=waMsgsTotal;
+  $('pWaChats').textContent=waChatsTotal;
+  $('pWaAlerta').textContent=waAlertas.length>0?waAlertas.length+' ⚠':'0';
+  if(waAlertas.length>0){
+    $('waAlertBox').style.display='flex';
+    $('waAlertText').innerHTML='<strong>'+waAlertas.join('</strong> e <strong>')+'</strong> com tom pessoal no WhatsApp — abordagem centrada no vendedor, não no cliente. Ver diagnóstico individual.';
+  }
 
-  // Se tinha vendedor ativo, recarregar
-  if(ativoEmail) window.selecionarVendedor(ativoEmail);
+  // Painel BU MI
+  const mi=VENDEDORES.filter(v=>v.bu==='MI');
+  const fatMI=mi.reduce((s,v)=>s+dadosCache[v.email].fat,0);
+  const metaMI=mi.reduce((s,v)=>s+v.meta,0);
+  const ligMI=mi.reduce((s,v)=>s+dadosCache[v.email].ligHoje,0);
+  $('miFat').textContent='R$'+Math.round(fatMI/1000)+'k';
+  $('miMeta').textContent='R$'+Math.round(metaMI/1000)+'k';
+  $('miFalta').textContent='R$'+Math.round((metaMI-fatMI)/1000)+'k';
+  $('miLig').textContent=ligMI;
+  $('statsMI').textContent='R$'+Math.round(fatMI/1000)+'k / R$'+Math.round(metaMI/1000)+'k · '+Math.round(fatMI/metaMI*100)+'%';
+
+  // Painel BU Obras
+  const ob=VENDEDORES.filter(v=>v.bu==='Obras');
+  const fatOb=ob.reduce((s,v)=>s+dadosCache[v.email].fat,0);
+  const metaOb=ob.reduce((s,v)=>s+v.meta,0);
+  const ligOb=ob.reduce((s,v)=>s+dadosCache[v.email].ligHoje,0);
+  $('obrasFat').textContent='R$'+Math.round(fatOb/1000)+'k';
+  $('obrasMeta').textContent='R$'+Math.round(metaOb/1000)+'k';
+  $('obrasFalta').textContent='R$'+Math.round((metaOb-fatOb)/1000)+'k';
+  $('obrasLig').textContent=ligOb;
+  $('statsObras').textContent='R$'+Math.round(fatOb/1000)+'k / R$'+Math.round(metaOb/1000)+'k · '+Math.round(fatOb/metaOb*100)+'%';
+
+  // Painel BU ME
+  const me=VENDEDORES.filter(v=>v.bu==='ME');
+  const fatME=me.reduce((s,v)=>s+dadosCache[v.email].fat,0);
+  const metaME=me.reduce((s,v)=>s+v.meta,0);
+  const ligME=me.reduce((s,v)=>s+dadosCache[v.email].ligHoje,0);
+  $('meFat').textContent='US$'+Math.round(fatME/1000)+'k';
+  $('meMeta').textContent='US$'+Math.round(metaME/1000)+'k';
+  $('meFalta').textContent='US$'+Math.round((metaME-fatME)/1000)+'k';
+  $('meLig').textContent=ligME;
+  $('statsME').textContent='US$'+Math.round(fatME/1000)+'k / US$'+Math.round(metaME/1000)+'k · '+Math.round(fatME/metaME*100)+'%';
+
+  // Cards
+  ['MI','Obras','ME'].forEach(b=>renderCards(b));
+  if(ativoEmail)window.selecionarVendedor(ativoEmail);
 
   const ts=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
-  setStatus(`Atualizado às ${ts}`, false);
+  $('navRight').textContent='Atualizado às '+ts;
+  setStatus('Atualizado às '+ts,false);
   $('topbar').className='topbar done';
   setTimeout(()=>$('topbar').className='topbar',600);
   btn.disabled=false;$('btnIcon').textContent='↻';
@@ -469,7 +654,7 @@ window.carregarTodos = async () => {
 
 setInterval(()=>{
   const h=new Date().getHours(),m=new Date().getMinutes();
-  if((h===6||h===12)&&m<5) window.carregarTodos();
+  if((h===6||h===12)&&m<5)window.carregarTodos();
 },60000);
 </script>
 </body>
