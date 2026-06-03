@@ -832,32 +832,40 @@ async function carregarDia(v, dia){
 
   let ligacoes=[], waChats=[];
   try{
-    const r=await fetch('/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:800,
-        mcp_servers:[
-          {type:'url',url:'https://api.salesforce.com/platform/mcp/v1/platform/sobject-all',name:'salesforce'},
-          ...(v.whatsapp?[{type:'url',url:'https://sabagram-mcp.nitzap.com/mcp/master',name:'nitzap'}]:[])
-        ],
-        system:'Retorne apenas JSON válido, sem explicações.',
-        messages:[{role:'user',content:`Dados de ${label.toUpperCase()} para ${v.nome}:
+    // Buscar ligações direto do SF
+    const sfR=await sfQuery(`SELECT Subject, CallDisposition, CallDurationInSeconds, CreatedDate FROM Task WHERE OwnerId='${v.userId}' AND ActivityDate=${dataSF} AND Type='Call' ORDER BY CreatedDate DESC LIMIT 30`);
+    ligacoes=(sfR.records||[]).map(rec=>{
+      const dt=new Date(rec.CreatedDate);
+      const hora=(dt.getUTCHours()-3+24)%24;
+      const min=dt.getUTCMinutes();
+      const horaStr=String(hora).padStart(2,'0')+':'+String(min).padStart(2,'0');
+      const tipo=rec.Subject?.includes('Feita')?'Feita':'Recebida';
+      const resultado=rec.CallDisposition==='Atendeu'?'Atendeu':'Não Atendeu';
+      const dur=rec.CallDurationInSeconds||0;
+      const durStr=dur>0?Math.floor(dur/60)+'m'+String(dur%60).padStart(2,'0')+'s':'—';
+      return{hora:horaStr,tipo,resultado,duracao:durStr};
+    });
+  }catch(e){console.error('sf lig',e);}
 
-Salesforce — ligações de ${dia==='hoje'?'TODAY':ontem}:
-SELECT Subject, CallDisposition, CallDurationInSeconds, CreatedDate FROM Task WHERE OwnerId='${v.userId}' AND ActivityDate=${dataSF} AND Type='Call' ORDER BY CreatedDate DESC LIMIT 30
-
-${v.whatsapp?`Nitzap — chats ativos de ${label} (mywhatsid: ${v.whatsapp}@s.whatsapp.net, isgroup:false, dt_lastmessage >= '${dataWAInicio}' AND dt_lastmessage <= '${dataWAFim}', ORDER BY dt_lastmessage DESC LIMIT 15)`:''}
-
-Retorne JSON (horários no fuso Brasil UTC-3):
-{
-  "ligacoes":[{"hora":"HH:MM","tipo":"Feita/Recebida","resultado":"Atendeu/Não Atendeu","duracao":"Xm Xs ou —"}],
-  "whatsapp":[{"hora":"HH:MM","contato":"nome do contato","mensagem":"última msg max 55 chars","tom":"comercial/pessoal/logistica/interno","isent":true}]
-}`}]})});
-    const d=await r.json();
-    const buf=d.content?.map(b=>b.text||'').join('')||'';
-    const clean=buf.replace(/```json|```/g,'').trim();
-    const json=JSON.parse(clean);
-    ligacoes=json.ligacoes||[];
-    waChats=json.whatsapp||[];
-  }catch(e){}
+  if(v.whatsapp){
+    try{
+      const waR=await nitzapQuery(`mywhatsid='${v.whatsapp}@s.whatsapp.net' AND isgroup=false AND dt_lastmessage >= '${dataWAInicio}' AND dt_lastmessage <= '${dataWAFim}' ORDER BY dt_lastmessage DESC LIMIT 15`);
+      const pessoalWords=['meu amigo','minha amiga','como vai','tudo bem por ai','como você está','bom dia amigo','boa tarde amigo','perturbar','rsrs','haha','kkk'];
+      waChats=(Array.isArray(waR)?waR:[]).map(c=>{
+        const dt=new Date(c.dt_lastmessage||c.dt_second_last_message);
+        const hora=(dt.getUTCHours()-3+24)%24;
+        const min=dt.getUTCMinutes();
+        const horaStr=String(hora).padStart(2,'0')+':'+String(min).padStart(2,'0');
+        const msg=(c.text_last_message||'').slice(0,55);
+        const txt=msg.toLowerCase();
+        let tom='comercial';
+        if(['Fernandinho','Dhiego','Henrique'].some(n=>c.name?.includes(n)))tom='interno';
+        else if(['Motorista','Frete','Entrega'].some(n=>c.name?.includes(n)))tom='logistica';
+        else if(pessoalWords.some(w=>txt.includes(w)))tom='pessoal';
+        return{hora:horaStr,contato:c.name||'—',mensagem:msg||'🎤 áudio',tom,isent:c.isent};
+      });
+    }catch(e){console.error('nitzap wa',e);}
+  }
 
   el.innerHTML=renderTimeline(ligacoes, waChats, label);
 }
