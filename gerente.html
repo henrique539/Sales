@@ -17,95 +17,116 @@
   --r:10px;--shadow:0 1px 3px rgba(26,50,84,.08),0 4px 12px rgba(26,50,84,.06);
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6}
-.hdr{background:var(--navy);height:56px;padding:0 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(26,50,84,.25)}
-.hdr-l{display:flex;align-items:center;gap:14px}
-.logo{font-weight:800;font-size:15px;color:white;letter-spacing:.04em}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6;height:100vh;overflow:hidden}
+
+/* HEADER */
+.hdr{background:var(--navy);height:52px;padding:0 20px;display:flex;align-items:center;justify-content:space-between;z-index:100;box-shadow:0 2px 8px rgba(26,50,84,.25)}
+.hdr-l{display:flex;align-items:center;gap:12px}
+.logo{font-weight:800;font-size:14px;color:white;letter-spacing:.04em}
 .logo span{color:var(--gold-l)}
-.hsep{width:1px;height:18px;background:rgba(255,255,255,.15)}
-.hdr-badge{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.8);font-size:10px;font-weight:700;padding:3px 10px;border-radius:5px;letter-spacing:.06em}
-.hdr-r{display:flex;align-items:center;gap:10px}
-#clock{font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,.4)}
-.btn-sm{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.85);font-size:12px;font-weight:600;padding:7px 13px;border-radius:8px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;display:flex;align-items:center;gap:5px;transition:all .15s}
-.btn-sm:hover{background:rgba(255,255,255,.18)} .btn-sm:disabled{opacity:.4;cursor:not-allowed}
-.btn-sair{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.6);font-size:11px;font-weight:600;padding:5px 11px;border-radius:7px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif}
-.btn-sair:hover{background:rgba(255,255,255,.15);color:white}
-.sbar{background:white;border-bottom:1px solid var(--border);padding:6px 28px;display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace}
-.sdot{width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0}
+.hsep{width:1px;height:16px;background:rgba(255,255,255,.15)}
+.hdr-badge{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.75);font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:.06em}
+.hdr-r{display:flex;align-items:center;gap:8px}
+#clock{font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,.35)}
+.btn-upd{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.85);font-size:11px;font-weight:600;padding:6px 12px;border-radius:7px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;display:flex;align-items:center;gap:4px;transition:all .15s}
+.btn-upd:hover{background:rgba(255,255,255,.18)} .btn-upd:disabled{opacity:.4;cursor:not-allowed}
+.btn-sair{background:transparent;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.5);font-size:11px;font-weight:600;padding:5px 10px;border-radius:7px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif}
+.btn-sair:hover{color:white;border-color:rgba(255,255,255,.4)}
+
+/* LAYOUT PRINCIPAL */
+.layout{display:grid;grid-template-columns:220px 1fr;height:calc(100vh - 52px)}
+
+/* SIDEBAR */
+.sidebar{background:var(--white);border-right:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column}
+
+/* CONSOLIDADO NO TOPO DA SIDEBAR */
+.cons-wrap{padding:14px 14px 10px;border-bottom:1px solid var(--border);background:var(--navy)}
+.cons-title{font-size:9px;font-weight:700;color:rgba(255,255,255,.4);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px}
+.cons-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.cons-item{}
+.cons-v{font-size:15px;font-weight:800;color:white;letter-spacing:-.3px;line-height:1}
+.cons-v.gold{color:var(--gold-l)}
+.cons-v.red{color:#ff8a80}
+.cons-l{font-size:9px;color:rgba(255,255,255,.35);margin-top:1px;font-family:'JetBrains Mono',monospace}
+.cons-sep{height:1px;background:rgba(255,255,255,.1);margin:8px 0}
+
+/* MENU BU */
+.bu-group{padding:10px 0}
+.bu-label{padding:6px 14px 4px;font-size:9px;font-weight:700;color:var(--dim);letter-spacing:.1em;text-transform:uppercase;display:flex;align-items:center;justify-content:space-between}
+.bu-tag{font-size:8px;font-weight:700;padding:1px 5px;border-radius:3px;color:white}
+.bu-tag.mi{background:var(--navy)}
+.bu-tag.obras{background:#5f3a1a}
+.bu-tag.me{background:#1a5f3a}
+
+.v-item{display:flex;align-items:center;gap:8px;padding:7px 14px;cursor:pointer;transition:all .12s;border-left:2px solid transparent;position:relative}
+.v-item:hover{background:var(--s2)}
+.v-item.active{background:var(--bbg);border-left-color:var(--navy)}
+.v-avatar{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:white;flex-shrink:0}
+.v-info{flex:1;min-width:0}
+.v-nome{font-size:12px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.v-sub{font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+.v-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.d-c{background:var(--red)} .d-a{background:var(--amber)} .d-b{background:var(--blue)} .d-g{background:var(--green)}
+
+/* STATUS BAR */
+.sbar{background:var(--white);border-bottom:1px solid var(--border);padding:5px 20px;display:flex;align-items:center;gap:7px;font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+.sdot{width:5px;height:5px;border-radius:50%;background:var(--green);flex-shrink:0}
 .sdot.on{background:var(--amber);animation:blink 1s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-.wrap{max-width:1200px;margin:0 auto;padding:24px 28px 60px}
-.page-hdr{margin-bottom:20px}
-.page-date{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px}
-.page-title{font-size:22px;font-weight:800;letter-spacing:-.3px}
-.page-title span{color:var(--navy)}
+/* CONTENT */
+.content{overflow-y:auto;height:100%;background:var(--bg)}
+.content-inner{padding:22px 24px 40px;max-width:780px}
 
-/* BU SECTIONS */
-.bu-section{margin-bottom:28px}
-.bu-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding-bottom:10px;border-bottom:2px solid var(--border)}
-.bu-title{font-size:13px;font-weight:800;color:var(--navy);letter-spacing:.04em;text-transform:uppercase;display:flex;align-items:center;gap:8px}
-.bu-badge{background:var(--navy);color:white;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px}
-.bu-badge.usd{background:#1a5f3a}
-.bu-badge.obras{background:#5f3a1a}
-.bu-stats{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);display:flex;gap:16px}
+/* EMPTY STATE */
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:12px;color:var(--muted);text-align:center;padding:40px}
+.empty-icon{font-size:40px;opacity:.2}
+.empty-title{font-size:16px;font-weight:700;color:var(--text)}
+.empty-sub{font-size:13px;max-width:280px;line-height:1.6}
 
-/* GRID VENDEDORES */
-.v-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px}
-
-/* CARD */
-.vcard{background:var(--white);border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
-.vcard-hdr{padding:12px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border)}
-.avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:white;flex-shrink:0}
-.vcard-info{flex:1}
-.vcard-nome{font-size:13px;font-weight:800;margin-bottom:1px}
-.vcard-sub{font-size:10px;color:var(--muted)}
-.status-tag{display:inline-flex;align-items:center;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700}
+/* CARD VENDEDOR */
+.v-card-hdr{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.v-card-avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:white;flex-shrink:0}
+.v-card-nome{font-size:20px;font-weight:800;letter-spacing:-.3px}
+.v-card-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.status-tag{display:inline-flex;align-items:center;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700}
 .st-c{background:var(--rbg);color:var(--red);border:1px solid var(--rbd)}
 .st-a{background:var(--abg);color:var(--amber);border:1px solid var(--abd)}
 .st-b{background:var(--bbg);color:var(--blue);border:1px solid var(--bbd)}
 .st-g{background:var(--gbg);color:var(--green);border:1px solid var(--gbd)}
 
-.vcard-body{padding:14px 16px}
-.vmetrics{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:12px}
-.vm{background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:8px 10px}
-.vm-v{font-size:15px;font-weight:800;letter-spacing:-.3px;margin-bottom:1px;font-family:'JetBrains Mono',monospace}
-.vm-l{font-size:9px;font-weight:700;color:var(--dim);letter-spacing:.07em;text-transform:uppercase}
-.prog{height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin:8px 0 3px}
-.prog-fill{height:4px;border-radius:2px;transition:width .8s}
-.prog-lbl{font-size:9px;color:var(--muted);text-align:right;font-family:'JetBrains Mono',monospace}
+/* MÉTRICAS */
+.metrics-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.metric{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;box-shadow:var(--shadow)}
+.metric-v{font-size:20px;font-weight:800;letter-spacing:-.4px;margin-bottom:2px;font-family:'JetBrains Mono',monospace}
+.metric-l{font-size:9px;font-weight:700;color:var(--dim);letter-spacing:.07em;text-transform:uppercase}
+.prog{height:5px;background:var(--border);border-radius:3px;overflow:hidden;margin:10px 0 4px}
+.prog-fill{height:5px;border-radius:3px;transition:width .8s}
+.prog-lbl{font-size:10px;color:var(--muted);text-align:right;font-family:'JetBrains Mono',monospace}
 
-/* IA */
-.ia-wrap{border-top:1px solid var(--border);padding-top:12px;margin-top:12px}
-.ia-hdr{display:flex;align-items:center;gap:6px;margin-bottom:8px}
-.ia-badge{background:var(--navy);color:white;font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;display:flex;align-items:center;gap:3px}
+/* IA SEÇÃO */
+.ia-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);margin-top:16px}
+.ia-card-hdr{padding:12px 16px;border-bottom:1px solid var(--border);background:var(--s2);display:flex;align-items:center;gap:8px}
+.ia-badge{background:var(--navy);color:white;font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;display:flex;align-items:center;gap:3px}
 .ia-dot{width:4px;height:4px;border-radius:50%;background:var(--gold-l)}
 .ia-dot.on{animation:blink 1s infinite}
-.ia-lbl{font-size:11px;font-weight:600;color:var(--muted)}
-.ia-body{font-size:12px;line-height:1.8;color:var(--text2)}
-.ia-body p{margin-bottom:7px} .ia-body p:last-child{margin-bottom:0}
+.ia-title{font-size:11px;font-weight:600;color:var(--muted)}
+.ia-card-body{padding:16px}
+.ia-body{font-size:13px;line-height:1.85;color:var(--text2)}
+.ia-body p{margin-bottom:8px} .ia-body p:last-child{margin-bottom:0}
 .ia-body strong{color:var(--text);font-weight:700}
-.ia-body h3{font-size:11px;font-weight:800;color:var(--text);margin:8px 0 3px;text-transform:uppercase;letter-spacing:.04em}
-.spin-sm{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)}
-.spinner-sm{width:13px;height:13px;border:2px solid var(--border);border-top-color:var(--navy);border-radius:50%;animation:spin 1s linear infinite}
+.ia-body h3{font-size:11px;font-weight:800;color:var(--navy);margin:12px 0 4px;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--border);padding-bottom:4px}
+.spin-wrap{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);padding:8px 0}
+.spinner{width:14px;height:14px;border:2px solid var(--border);border-top-color:var(--navy);border-radius:50%;animation:spin 1s linear infinite}
 
-/* CONSOLIDADO */
-.consolid{background:var(--navy);border-radius:12px;padding:16px 22px;margin-bottom:24px;display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
-.cv{font-size:20px;font-weight:800;color:white;letter-spacing:-.4px;line-height:1;margin-bottom:2px}
-.cv.gold{color:var(--gold-l)} .cv.red{color:#ff8a80}
-.cl{font-size:9px;font-weight:600;color:rgba(255,255,255,.4);letter-spacing:.07em;text-transform:uppercase}
-.cs{font-size:10px;color:rgba(255,255,255,.28);margin-top:1px;font-family:'JetBrains Mono',monospace}
-
-.toast{position:fixed;bottom:18px;right:18px;background:var(--navy);color:white;border-radius:var(--r);padding:9px 15px;font-size:12px;font-weight:600;transform:translateY(60px);opacity:0;transition:all .25s;z-index:999}
-.toast.show{transform:translateY(0);opacity:1}
 .topbar{position:fixed;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--navy),var(--gold));transform:scaleX(0);transform-origin:left;z-index:999;transition:transform .4s}
 .topbar.on{transform:scaleX(.85)} .topbar.done{transform:scaleX(1);opacity:0;transition:opacity .5s}
-@media(max-width:768px){.consolid{grid-template-columns:1fr 1fr}.v-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div class="topbar" id="topbar"></div>
+
 <header class="hdr">
   <div class="hdr-l">
     <div class="logo">SABA<span>GRAM</span></div>
@@ -114,55 +135,59 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
   </div>
   <div class="hdr-r">
     <div id="clock"></div>
-    <button class="btn-sm" id="btnR" onclick="carregarTudo()"><span id="btnIcon">↻</span> Atualizar</button>
+    <button class="btn-upd" id="btnUpd" onclick="carregarTodos()"><span id="btnIcon">↻</span> Atualizar</button>
     <button class="btn-sair" onclick="sair()">Sair</button>
   </div>
 </header>
-<div class="sbar"><div class="sdot" id="sDot"></div><span id="sTxt">Inicializando...</span></div>
 
-<div class="wrap">
-  <div class="page-hdr">
-    <div class="page-date" id="pageDate"></div>
-    <div class="page-title">Bom dia, <span id="gNome">Dhiego</span>. Como está o time hoje.</div>
-  </div>
-
-  <div class="consolid">
-    <div><div class="cv gold" id="cFatBRL">—</div><div class="cl">Total BRL</div><div class="cs">junho/26</div></div>
-    <div><div class="cv gold" id="cFatUSD">—</div><div class="cl">Total USD</div><div class="cs">junho/26</div></div>
-    <div><div class="cv" id="cMetaBRL">—</div><div class="cl">Meta BRL</div><div class="cs">BU MI + Obras</div></div>
-    <div><div class="cv" id="cMetaUSD">—</div><div class="cl">Meta USD</div><div class="cs">BU ME</div></div>
-    <div><div class="cv" id="cDias">—</div><div class="cl">Dias úteis</div><div class="cs">restantes</div></div>
-  </div>
-
-  <!-- BU MI -->
-  <div class="bu-section">
-    <div class="bu-header">
-      <div class="bu-title"><span class="bu-badge">BU MI</span> Mercado Interno</div>
-      <div class="bu-stats" id="statsMI">—</div>
+<div class="layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <!-- Consolidado -->
+    <div class="cons-wrap">
+      <div class="cons-title">Time · Junho/26</div>
+      <div class="cons-grid">
+        <div class="cons-item"><div class="cons-v gold" id="cFatBRL">—</div><div class="cons-l">BRL fat.</div></div>
+        <div class="cons-item"><div class="cons-v gold" id="cFatUSD">—</div><div class="cons-l">USD fat.</div></div>
+        <div class="cons-sep" style="grid-column:1/-1"></div>
+        <div class="cons-item"><div class="cons-v" id="cMetaBRL">—</div><div class="cons-l">Meta BRL</div></div>
+        <div class="cons-item"><div class="cons-v" id="cMetaUSD">—</div><div class="cons-l">Meta USD</div></div>
+      </div>
+      <div style="margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(255,255,255,.3)" id="cDias">— dias úteis restantes</div>
     </div>
-    <div class="v-grid" id="gridMI"></div>
-  </div>
 
-  <!-- BU Obras -->
-  <div class="bu-section">
-    <div class="bu-header">
-      <div class="bu-title"><span class="bu-badge obras">BU Obras</span> Obras & Construção</div>
-      <div class="bu-stats" id="statsObras">—</div>
+    <!-- Menu BU MI -->
+    <div class="bu-group">
+      <div class="bu-label">Mercado Interno <span class="bu-tag mi">BRL</span></div>
+      <div id="menuMI"></div>
     </div>
-    <div class="v-grid" id="gridObras"></div>
-  </div>
 
-  <!-- BU ME -->
-  <div class="bu-section">
-    <div class="bu-header">
-      <div class="bu-title"><span class="bu-badge usd">BU ME</span> Mercado Externo (USD)</div>
-      <div class="bu-stats" id="statsME">—</div>
+    <!-- Menu BU Obras -->
+    <div class="bu-group" style="border-top:1px solid var(--border)">
+      <div class="bu-label">Obras <span class="bu-tag obras">BRL</span></div>
+      <div id="menuObras"></div>
     </div>
-    <div class="v-grid" id="gridME"></div>
+
+    <!-- Menu BU ME -->
+    <div class="bu-group" style="border-top:1px solid var(--border)">
+      <div class="bu-label">Mercado Externo <span class="bu-tag me">USD</span></div>
+      <div id="menuME"></div>
+    </div>
+  </aside>
+
+  <!-- CONTENT -->
+  <div style="display:flex;flex-direction:column;height:100%">
+    <div class="sbar"><div class="sdot" id="sDot"></div><span id="sTxt">Inicializando...</span></div>
+    <div class="content" id="content">
+      <div class="empty" id="emptyState">
+        <div class="empty-icon">👥</div>
+        <div class="empty-title">Selecione um vendedor</div>
+        <div class="empty-sub">Clique em qualquer vendedor no menu para ver o diagnóstico e plano de ação</div>
+      </div>
+      <div class="content-inner" id="contentInner" style="display:none"></div>
+    </div>
   </div>
 </div>
-
-<div class="toast" id="toast"></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -177,48 +202,43 @@ const FIREBASE_CONFIG = {
   appId:"1:421701680094:web:1f8bc4ae716dd0d0f3bb4f"
 };
 
-// TODOS OS VENDEDORES
 const VENDEDORES = [
-  // BU MI
-  { email:"sizenando@sabagram.com.br", nome:"Sizenando Andrade", avatar:"SA", bu:"MI",  moeda:"BRL", cor:"#1a3254", ideVen:["001TW000003LbquYAC","001TW000003LcYSYA0"], userId:"005TW0000002BnNYAU", meta:233289 },
-  { email:"kelly@sabagram.com.br",     nome:"Kelly Julião",      avatar:"KJ", bu:"MI",  moeda:"BRL", cor:"#1a5f3a", ideVen:["001TW000005ag14YAA","001TW000005ah3ZYAQ"], userId:"005TW0000003rpNYAQ", meta:161563 },
-  { email:"marcelo@sabagram.com.br",   nome:"Marcelo Melo",      avatar:"MM", bu:"MI",  moeda:"BRL", cor:"#8b1a1a", ideVen:["0014S00000BK1xDQAT"],                       userId:"0054S000002TkpGQAS", meta:463680 },
-  { email:"renata@sabagram.com.br",    nome:"Renata Santana",    avatar:"RS", bu:"MI",  moeda:"BRL", cor:"#6b1a5f", ideVen:["001TW00000Buxa9YAB","001TW00000BusqcYAB","001TW00000C09VzYAJ"], userId:"005TW000000ANTBYA4", meta:105777 },
-  // BU Obras
-  { email:"wesley@sabagram.com.br",    nome:"Wesley Matieli",    avatar:"WM", bu:"Obras", moeda:"BRL", cor:"#1a4a2a", ideVen:["0014S00000Br0ySQAR"],                   userId:"005TW000000C7AbYAK", meta:172431 },
-  // BU ME
-  { email:"cezar@sabagram.com.br",     nome:"Cezar Fiorio",      avatar:"CF", bu:"ME",  moeda:"USD", cor:"#1a3a6b", ideVen:["0014S00000BK1xDQAT"],                       userId:"005TW000000APunYAG", meta:172800 },
-  { email:"diana@sabagram.com.br",     nome:"Diana Rigoni",      avatar:"DR", bu:"ME",  moeda:"USD", cor:"#5f1a4a", ideVen:["001TW00000AooaAYAR"],                       userId:"0054S000002TkpZQAS", meta:25000  },
+  { email:"sizenando@sabagram.com.br", nome:"Sizenando Andrade", avatar:"SA", bu:"MI",    moeda:"BRL", cor:"#1a3254", ideVen:["001TW000003LbquYAC","001TW000003LcYSYA0"], userId:"005TW0000002BnNYAU", meta:233289 },
+  { email:"kelly@sabagram.com.br",     nome:"Kelly Julião",      avatar:"KJ", bu:"MI",    moeda:"BRL", cor:"#1a5f3a", ideVen:["001TW000005ag14YAA","001TW000005ah3ZYAQ"], userId:"005TW0000003rpNYAQ", meta:161563 },
+  { email:"marcelo@sabagram.com.br",   nome:"Marcelo Melo",      avatar:"MM", bu:"MI",    moeda:"BRL", cor:"#8b1a1a", ideVen:["0014S00000BK1xDQAT"],                       userId:"0054S000002TkpGQAS", meta:463680 },
+  { email:"renata@sabagram.com.br",    nome:"Renata Santana",    avatar:"RS", bu:"MI",    moeda:"BRL", cor:"#6b1a5f", ideVen:["001TW00000Buxa9YAB","001TW00000BusqcYAB","001TW00000C09VzYAJ"], userId:"005TW000000ANTBYA4", meta:105777 },
+  { email:"wesley@sabagram.com.br",    nome:"Wesley Matieli",    avatar:"WM", bu:"Obras", moeda:"BRL", cor:"#1a4a2a", ideVen:["0014S00000Br0ySQAR"],                       userId:"005TW000000C7AbYAK", meta:172431 },
+  { email:"cezar@sabagram.com.br",     nome:"Cezar Fiorio",      avatar:"CF", bu:"ME",    moeda:"USD", cor:"#1a3a6b", ideVen:["001TW00000C114rYAB"],                       userId:"005TW000000APunYAG", meta:172800 },
+  { email:"diana@sabagram.com.br",     nome:"Diana Rigoni",      avatar:"DR", bu:"ME",    moeda:"USD", cor:"#5f1a4a", ideVen:["001TW00000AooaAYAR"],                       userId:"0054S000002TkpZQAS", meta:25000  },
 ];
 
-const USUARIOS_AUTH = {
+const AUTH_MAP = {
   "henrique@sabagram.com.br":{perfil:"admin"},
   "dhiego@sabagram.com.br":{perfil:"gerente"},
 };
-VENDEDORES.forEach(v=>{ USUARIOS_AUTH[v.email]={perfil:"vendedor"}; });
+VENDEDORES.forEach(v=>{ AUTH_MAP[v.email]={perfil:"vendedor"}; });
 
 const app = initializeApp(FIREBASE_CONFIG);
 const auth = getAuth(app);
 let gerente = null;
+let dadosCache = {}; // cache dos dados buscados
+let ativoEmail = null;
 
 onAuthStateChanged(auth, async user => {
   if(!user){window.location.href='index.html';return;}
-  const email = user.email.toLowerCase();
-  const u = USUARIOS_AUTH[email];
+  const u = AUTH_MAP[user.email.toLowerCase()];
   if(!u||(u.perfil!=='gerente'&&u.perfil!=='admin')){await signOut(auth);window.location.href='index.html';return;}
-  gerente = {email, nome: email.includes('henrique')?'Henrique':'Dhiego'};
-  document.getElementById('gNome').textContent = gerente.nome.split(' ')[0];
-  document.getElementById('pageDate').textContent = new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'}).toUpperCase();
-  if(u.perfil==='admin') document.getElementById('hdrBadge').textContent='ADMIN';
-  carregarTudo();
+  gerente = {email:user.email.toLowerCase()};
+  if(u.perfil==='admin') $('hdrBadge').textContent='ADMIN';
+  carregarTodos();
 });
 
 window.sair = async () => { await signOut(auth); window.location.href='index.html'; };
 
 const $ = id => document.getElementById(id);
-const fmt = (v,m='BRL') => m==='USD' ? 'US$'+Math.round(v/1000)+'k' : 'R$'+Math.round(v/1000)+'k';
-const fmtK = (v,m='BRL') => m==='USD' ? 'US$'+Math.round(v) : 'R$'+Math.round(v/1000)+'k';
-const setStatus = (txt,on=false) => { $('sTxt').textContent=txt; $('sDot').className='sdot'+(on?' on':''); };
+const fmt = (v,m='BRL') => m==='USD'?'US$'+Math.round(v/1000)+'k':'R$'+Math.round(v/1000)+'k';
+const fmt2 = (v,m='BRL') => m==='USD'?'US$'+Math.round(v):'R$'+Math.round(v/1000)+'k';
+const setStatus = (t,on=false) => { $('sTxt').textContent=t; $('sDot').className='sdot'+(on?' on':''); };
 const diasUteis = () => {
   const h=new Date(),f=new Date(h.getFullYear(),h.getMonth()+1,0);
   let c=0,d=new Date(h);d.setDate(d.getDate()+1);
@@ -234,212 +254,222 @@ const md2html = t => t
   .replace(/^##\s+(.+)$/gm,'<h3>$1</h3>')
   .replace(/\n\n+/g,'</p><p>').replace(/\n/g,'<br>');
 
+function getStatus(fat,meta,ligHoje) {
+  const p=meta>0?fat/meta*100:0;
+  if(p<5&&ligHoje<3)  return {cls:'st-c',txt:'🔴 CRÍTICO',dot:'d-c'};
+  if(p<20||ligHoje<5) return {cls:'st-a',txt:'🟡 ALERTA',dot:'d-a'};
+  if(p<50)            return {cls:'st-b',txt:'🔵 EM PROGRESSO',dot:'d-b'};
+  return              {cls:'st-g',txt:'✅ NO CAMINHO',dot:'d-g'};
+}
+
 async function apiClaude(prompt) {
   const r = await fetch('/api/claude',{
-    method:'POST', headers:{'Content-Type':'application/json'},
+    method:'POST',headers:{'Content-Type':'application/json'},
     body:JSON.stringify({
-      model:'claude-haiku-4-5-20251001', max_tokens:1200,
+      model:'claude-haiku-4-5-20251001',max_tokens:1200,
       mcp_servers:[{type:'url',url:'https://api.salesforce.com/platform/mcp/v1/platform/sobject-all',name:'salesforce'}],
-      system:`Consultor de alta performance comercial analisando equipe da Sabagram (granitos/mármores, ES).
-Data: ${new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'})} | Dias úteis restantes: ${diasUteis()}
-Seja direto, específico, acionável. Use dados reais. Português.`,
+      system:`Consultor de performance comercial. Sabagram, granitos/mármores, ES. Data: ${new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}. Dias úteis restantes: ${diasUteis()}. Direto, específico, acionável. Português.`,
       messages:[{role:'user',content:prompt}]
     })
   });
   if(!r.ok) throw new Error('HTTP '+r.status);
-  const d = await r.json();
+  const d=await r.json();
   return d.content?.map(b=>b.text||'').join('')||'';
 }
 
-async function buscarDadosVendedor(v) {
-  const mesAtual = new Date().toISOString().slice(0,7)+'-01';
-  let fat=0, clientes=0, ligHoje=0, ligAtend=0;
-  try {
-    let buf='';
-    await (async()=>{
-      const r = await fetch('/api/claude',{
-        method:'POST', headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({
-          model:'claude-haiku-4-5-20251001', max_tokens:200,
-          mcp_servers:[{type:'url',url:'https://api.salesforce.com/platform/mcp/v1/platform/sobject-all',name:'salesforce'}],
-          system:'Retorne apenas os dados solicitados sem explicação.',
-          messages:[{role:'user',content:`Execute no Salesforce:
-Query 1: SELECT SUM(VlrLiq__c) fat, COUNT_DISTINCT(IdeCli__c) cli FROM Pedido__c WHERE IdeVen__c IN ('${v.ideVen.join("','")}') AND StsPed__c='Faturado' AND DatFat__c >= ${mesAtual}
-Query 2: SELECT COUNT(Id) total, CallDisposition FROM Task WHERE OwnerId='${v.userId}' AND ActivityDate=TODAY AND Type='Call' GROUP BY CallDisposition
+async function buscarDados(v) {
+  if(dadosCache[v.email]) return dadosCache[v.email];
+  const mes=new Date().toISOString().slice(0,7)+'-01';
+  let fat=0,clientes=0,ligHoje=0,ligAtend=0;
+  try{
+    const r=await fetch('/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:150,
+        mcp_servers:[{type:'url',url:'https://api.salesforce.com/platform/mcp/v1/platform/sobject-all',name:'salesforce'}],
+        system:'Retorne apenas os dados solicitados.',
+        messages:[{role:'user',content:`Salesforce:
+Q1: SELECT SUM(VlrLiq__c) fat, COUNT_DISTINCT(IdeCli__c) cli FROM Pedido__c WHERE IdeVen__c IN ('${v.ideVen.join("','")}') AND StsPed__c='Faturado' AND DatFat__c >= ${mes}
+Q2: SELECT COUNT(Id) tot, CallDisposition FROM Task WHERE OwnerId='${v.userId}' AND ActivityDate=TODAY AND Type='Call' GROUP BY CallDisposition
 Retorne APENAS:
-FAT:XXXXX
-CLI:X
-LIG_TOTAL:X
-LIG_ATEND:X`}]
-        })
-      });
-      const data = await r.json();
-      buf = data.content?.map(b=>b.text||'').join('')||'';
-    })();
+FAT:X CLI:X LIG:X ATEND:X`}]})});
+    const d=await r.json();
+    const buf=d.content?.map(b=>b.text||'').join('')||'';
     const fm=buf.match(/FAT[:\s]+(\d+(?:[.,]\d+)?)/);
     const cm=buf.match(/CLI[:\s]+(\d+)/);
-    const lm=buf.match(/LIG_TOTAL[:\s]+(\d+)/);
-    const la=buf.match(/LIG_ATEND[:\s]+(\d+)/);
+    const lm=buf.match(/LIG[:\s]+(\d+)/);
+    const la=buf.match(/ATEND[:\s]+(\d+)/);
     fat=fm?parseFloat(fm[1].replace(',','.')):0;
     clientes=cm?parseInt(cm[1]):0;
     ligHoje=lm?parseInt(lm[1]):0;
     ligAtend=la?parseInt(la[1]):0;
-  } catch {}
-  return {fat, clientes, ligHoje, ligAtend};
+  }catch{}
+  const dados={fat,clientes,ligHoje,ligAtend};
+  dadosCache[v.email]=dados;
+  return dados;
 }
 
-function getStatus(fat, meta, ligHoje) {
-  const pct = meta>0?fat/meta*100:0;
-  if(pct<5&&ligHoje<3) return {cls:'st-c',txt:'🔴 CRÍTICO'};
-  if(pct<20||ligHoje<5) return {cls:'st-a',txt:'🟡 ALERTA'};
-  if(pct<50) return {cls:'st-b',txt:'🔵 EM PROGRESSO'};
-  return {cls:'st-g',txt:'✅ NO CAMINHO'};
-}
-
-function renderCard(v, d) {
-  const pct = Math.min(100,Math.round(d.fat/v.meta*100));
-  const falta = v.meta - d.fat;
-  const dias = diasUteis();
-  const corP = pct<10?'var(--red)':pct<40?'var(--amber)':'var(--green)';
-  const st = getStatus(d.fat, v.meta, d.ligHoje);
-  const m = v.moeda;
-
-  return `<div class="vcard" id="card-${v.avatar}">
-    <div class="vcard-hdr">
-      <div class="avatar" style="background:${v.cor}">${v.avatar}</div>
-      <div class="vcard-info">
-        <div class="vcard-nome">${v.nome}</div>
-        <div class="vcard-sub">${v.bu==='ME'?'BU ME · '+m:'BU '+v.bu+' · '+m} · Meta ${fmt(v.meta,m)}</div>
-      </div>
-      <span class="status-tag ${st.cls}">${st.txt}</span>
+function renderMenuItem(v,d) {
+  const st=getStatus(d?.fat||0,v.meta,d?.ligHoje||0);
+  const pct=v.meta>0?Math.min(100,Math.round((d?.fat||0)/v.meta*100)):0;
+  return `<div class="v-item${ativoEmail===v.email?' active':''}" onclick="selecionarVendedor('${v.email}')" id="mi-${v.avatar}">
+    <div class="v-avatar" style="background:${v.cor}">${v.avatar}</div>
+    <div class="v-info">
+      <div class="v-nome">${v.nome.split(' ')[0]}</div>
+      <div class="v-sub">${d?fmt(d.fat,v.moeda)+' · '+pct+'%':'carregando...'}</div>
     </div>
-    <div class="vcard-body">
-      <div class="vmetrics">
-        <div class="vm"><div class="vm-v" style="color:var(--navy)">${fmt(d.fat,m)}</div><div class="vm-l">Faturado</div></div>
-        <div class="vm"><div class="vm-v" style="color:${corP}">${pct}%</div><div class="vm-l">Atingido</div></div>
-        <div class="vm"><div class="vm-v" style="color:var(--red)">${fmt(falta,m)}</div><div class="vm-l">Falta</div></div>
-        <div class="vm"><div class="vm-v" style="color:${d.ligHoje>=8?'var(--green)':d.ligHoje>=4?'var(--amber)':'var(--red)'}">${d.ligHoje}</div><div class="vm-l">Lig. hoje</div></div>
-        <div class="vm"><div class="vm-v" style="color:var(--text2)">${d.clientes}</div><div class="vm-l">Clientes</div></div>
-        <div class="vm"><div class="vm-v" style="color:var(--text2)">${fmtK(Math.round(falta/Math.max(dias,1)),m)}</div><div class="vm-l">Falta/dia</div></div>
-      </div>
-      <div class="prog"><div class="prog-fill" style="width:${pct}%;background:${corP}"></div></div>
-      <div class="prog-lbl">${pct}% · ${dias} dias úteis restantes</div>
-      <div class="ia-wrap">
-        <div class="ia-hdr">
-          <div class="ia-badge"><div class="ia-dot on" id="dot-${v.avatar}"></div>IA</div>
-          <div class="ia-lbl">Diagnóstico + plano de ação</div>
-        </div>
-        <div class="ia-body" id="ia-${v.avatar}">
-          <div class="spin-sm"><div class="spinner-sm"></div> Analisando...</div>
-        </div>
-      </div>
-    </div>
+    <div class="v-dot ${st.dot}" id="dot-${v.avatar}"></div>
   </div>`;
 }
 
-async function gerarAnalise(v, d) {
-  const el = $('ia-'+v.avatar);
-  const dot = $('dot-'+v.avatar);
-  if(!el) return;
-  const pct = v.meta>0?Math.round(d.fat/v.meta*100):0;
-  const falta = v.meta - d.fat;
-  const dias = diasUteis();
-  const m = v.moeda;
-
-  const prompt = `Analise ${v.nome} (${v.bu==='ME'?'Mercado Externo':'Mercado Interno'}) — Junho/2026.
-
-DADOS REAIS:
-- Faturado: ${fmt(d.fat,m)} de ${fmt(v.meta,m)} (${pct}%)
-- Falta: ${fmt(falta,m)} em ${dias} dias úteis = ${fmtK(Math.round(falta/Math.max(dias,1)),m)}/dia útil
-- Ligações hoje: ${d.ligHoje} (${d.ligAtend} atendidas)
-- Clientes únicos no mês: ${d.clientes}
-
-Busque no Salesforce as últimas 5 Tasks do vendedor (OwnerId: ${v.userId}) para enriquecer com dados reais de atividade.
-
-Gere para o gerente Dhiego (máx 280 palavras):
-
-### 🔍 Diagnóstico
-O que está acontecendo. 2 frases diretas baseadas nos dados.
-
-### 🚨 Problemas (2-3 itens)
-Cada um: problema + impacto direto.
-
-### 🎯 Ações para Dhiego (esta semana)
-3 ações concretas e específicas para este vendedor agora.
-
-### 💬 Pergunta para o 1:1
-1 pergunta exata que revela a causa raiz e força comprometimento.`;
-
-  try {
-    const txt = await apiClaude(prompt);
-    el.innerHTML = `<p>${md2html(txt)}</p>`;
-    if(dot) dot.classList.remove('on');
-  } catch(e) {
-    el.innerHTML = `<span style="color:var(--red);font-size:11px;font-family:'JetBrains Mono',monospace">Erro: ${e.message}</span>`;
-  }
-}
-
-window.carregarTudo = async () => {
-  const btn=$('btnR'); btn.disabled=true; $('btnIcon').textContent='↻';
-  $('topbar').className='topbar on';
-  setStatus('Buscando dados do time...', true);
-  const dias = diasUteis();
-  $('cDias').textContent = dias;
-
-  // Buscar dados de todos em paralelo
-  const dados = {};
-  await Promise.all(VENDEDORES.map(async v => {
-    dados[v.email] = await buscarDadosVendedor(v);
-  }));
-
-  // Calcular consolidados por moeda
-  let fatBRL=0, metaBRL=0, fatUSD=0, metaUSD=0;
-  VENDEDORES.forEach(v => {
-    const d = dados[v.email];
-    if(v.moeda==='BRL'){ fatBRL+=d.fat; metaBRL+=v.meta; }
-    else { fatUSD+=d.fat; metaUSD+=v.meta; }
-  });
-  $('cFatBRL').textContent = 'R$'+Math.round(fatBRL/1000)+'k';
-  $('cFatUSD').textContent = 'US$'+Math.round(fatUSD/1000)+'k';
-  $('cMetaBRL').textContent = 'R$'+Math.round(metaBRL/1000)+'k';
-  $('cMetaUSD').textContent = 'US$'+Math.round(metaUSD/1000)+'k';
-
-  // Renderizar por BU
+function renderMenu() {
   const mi    = VENDEDORES.filter(v=>v.bu==='MI');
   const obras = VENDEDORES.filter(v=>v.bu==='Obras');
   const me    = VENDEDORES.filter(v=>v.bu==='ME');
+  $('menuMI').innerHTML    = mi.map(v=>renderMenuItem(v,dadosCache[v.email])).join('');
+  $('menuObras').innerHTML  = obras.map(v=>renderMenuItem(v,dadosCache[v.email])).join('');
+  $('menuME').innerHTML     = me.map(v=>renderMenuItem(v,dadosCache[v.email])).join('');
+}
 
-  const fatMI = mi.reduce((s,v)=>s+dados[v.email].fat,0);
-  const metaMI = mi.reduce((s,v)=>s+v.meta,0);
-  $('statsMI').textContent = `Faturado: R$${Math.round(fatMI/1000)}k / R$${Math.round(metaMI/1000)}k (${Math.round(fatMI/metaMI*100)}%)`;
+window.selecionarVendedor = async (email) => {
+  ativoEmail = email;
+  const v = VENDEDORES.find(x=>x.email===email);
+  if(!v) return;
+  renderMenu();
 
-  const fatObras = obras.reduce((s,v)=>s+dados[v.email].fat,0);
-  const metaObras = obras.reduce((s,v)=>s+v.meta,0);
-  $('statsObras').textContent = `Faturado: R$${Math.round(fatObras/1000)}k / R$${Math.round(metaObras/1000)}k (${Math.round(fatObras/metaObras*100)}%)`;
+  $('emptyState').style.display='none';
+  const ci=$('contentInner');
+  ci.style.display='block';
 
-  const fatME = me.reduce((s,v)=>s+dados[v.email].fat,0);
-  const metaME = me.reduce((s,v)=>s+v.meta,0);
-  $('statsME').textContent = `Faturado: US$${Math.round(fatME/1000)}k / US$${Math.round(metaME/1000)}k (${Math.round(fatME/metaME*100)}%)`;
+  const d = dadosCache[v.email] || await buscarDados(v);
+  const pct=Math.min(100,Math.round(d.fat/v.meta*100));
+  const falta=v.meta-d.fat;
+  const dias=diasUteis();
+  const corP=pct<10?'var(--red)':pct<40?'var(--amber)':'var(--green)';
+  const st=getStatus(d.fat,v.meta,d.ligHoje);
+  const m=v.moeda;
 
-  $('gridMI').innerHTML    = mi.map(v=>renderCard(v,dados[v.email])).join('');
-  $('gridObras').innerHTML  = obras.map(v=>renderCard(v,dados[v.email])).join('');
-  $('gridME').innerHTML     = me.map(v=>renderCard(v,dados[v.email])).join('');
+  ci.innerHTML=`
+    <div class="v-card-hdr">
+      <div class="v-card-avatar" style="background:${v.cor}">${v.avatar}</div>
+      <div style="flex:1">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <div class="v-card-nome">${v.nome}</div>
+          <span class="status-tag ${st.cls}">${st.txt}</span>
+        </div>
+        <div class="v-card-sub">BU ${v.bu} · ${m} · Meta ${fmt(v.meta,m)}</div>
+      </div>
+    </div>
 
-  setStatus('Gerando análises com IA...', true);
+    <div class="metrics-grid">
+      <div class="metric"><div class="metric-v" style="color:var(--navy)">${fmt(d.fat,m)}</div><div class="metric-l">Faturado</div></div>
+      <div class="metric"><div class="metric-v" style="color:${corP}">${pct}%</div><div class="metric-l">Atingido</div></div>
+      <div class="metric"><div class="metric-v" style="color:var(--red)">${fmt(falta,m)}</div><div class="metric-l">Falta</div></div>
+      <div class="metric"><div class="metric-v" style="color:${d.ligHoje>=8?'var(--green)':d.ligHoje>=4?'var(--amber)':'var(--red)'}">${d.ligHoje}</div><div class="metric-l">Lig. hoje</div></div>
+      <div class="metric"><div class="metric-v" style="color:var(--text2)">${d.clientes}</div><div class="metric-l">Clientes/mês</div></div>
+      <div class="metric"><div class="metric-v" style="color:var(--text2)">${fmt2(Math.round(falta/Math.max(dias,1)),m)}</div><div class="metric-l">Falta/dia</div></div>
+    </div>
+    <div class="prog"><div class="prog-fill" style="width:${pct}%;background:${corP}"></div></div>
+    <div class="prog-lbl">${pct}% da meta · ${dias} dias úteis restantes</div>
 
-  // Análise IA em paralelo
-  await Promise.all(VENDEDORES.map(v => gerarAnalise(v, dados[v.email])));
+    <div class="ia-card">
+      <div class="ia-card-hdr">
+        <div class="ia-badge"><div class="ia-dot on" id="iaDot"></div>IA</div>
+        <div class="ia-title">Ligações · WhatsApp · Diagnóstico · Plano de ação</div>
+      </div>
+      <div class="ia-card-body">
+        <div class="ia-body" id="iaBody">
+          <div class="spin-wrap"><div class="spinner"></div> Analisando dados do Salesforce...</div>
+        </div>
+      </div>
+    </div>`;
+
+  // Gerar análise
+  const waNum = v.whatsapp || null;
+  const prompt=`Analise ${v.nome} (BU ${v.bu}, ${m}) — Junho/2026.
+
+DADOS FINANCEIROS:
+- Faturado: ${fmt(d.fat,m)} de ${fmt(v.meta,m)} (${pct}% da meta)
+- Falta: ${fmt(falta,m)} em ${dias} dias úteis = ${fmt2(Math.round(falta/Math.max(dias,1)),m)}/dia útil
+- Clientes únicos no mês: ${d.clientes}
+
+DADOS DE ATIVIDADE (Salesforce):
+- Ligações hoje: ${d.ligHoje} (${d.ligAtend} atendidas)
+- Busque no Salesforce as últimas 10 Tasks (OwnerId: ${v.userId}) para analisar padrão de ligações: duração média, % atendidas, horários, assuntos
+
+COMPORTAMENTO NO WHATSAPP:${waNum ? `
+- Busque no Nitzap os últimos 10 chats ativos (mywhatsid: ${v.whatsapp}@s.whatsapp.net, isgroup: false, ordenados por dt_lastmessage DESC)
+- Analise: tom das mensagens (comercial vs pessoal), últimas mensagens enviadas, padrão de abertura, se usa "ajuda o amigo" ou abordagem centrada no cliente` : '
+- WhatsApp não monitorado para este vendedor'}
+
+Gere para o gerente Dhiego (máx 400 palavras):
+
+### 📞 Qualidade das ligações
+Padrão identificado: volume, taxa de atendimento, duração média, horários. O que está bom e o que está errado.
+
+### 💬 Comportamento no WhatsApp
+Tom e padrão das últimas mensagens: é comercial ou pessoal? Usa abordagem centrada no cliente ou no vendedor? Cite exemplos reais das mensagens.
+
+### 🔍 Diagnóstico geral
+O que está acontecendo de fato com este vendedor. 2-3 frases diretas.
+
+### 🎯 Ações para Dhiego esta semana
+3 ações concretas e específicas baseadas nos padrões identificados.
+
+### 💬 Pergunta para o 1:1
+1 pergunta exata que revela a causa raiz.
+
+### 📊 Métrica de acompanhamento
+Número atual → meta até sexta.`;
+
+  try{
+    const txt=await apiClaude(prompt);
+    const el=$('iaBody');
+    if(el){ el.innerHTML=`<p>${md2html(txt)}</p>`; }
+    const dot=$('iaDot');
+    if(dot) dot.classList.remove('on');
+  }catch(e){
+    const el=$('iaBody');
+    if(el) el.innerHTML=`<span style="color:var(--red);font-size:12px;font-family:'JetBrains Mono',monospace">Erro: ${e.message}</span>`;
+  }
+};
+
+window.carregarTodos = async () => {
+  const btn=$('btnUpd');btn.disabled=true;$('btnIcon').textContent='↻';
+  $('topbar').className='topbar on';
+  setStatus('Buscando dados de todos os vendedores...', true);
+  dadosCache={};
+
+  $('cDias').textContent=diasUteis()+' dias úteis restantes';
+
+  // Buscar todos em paralelo
+  await Promise.all(VENDEDORES.map(v=>buscarDados(v)));
+
+  // Consolidados
+  let fatBRL=0,metaBRL=0,fatUSD=0,metaUSD=0;
+  VENDEDORES.forEach(v=>{
+    const d=dadosCache[v.email];
+    if(v.moeda==='BRL'){fatBRL+=d.fat;metaBRL+=v.meta;}
+    else{fatUSD+=d.fat;metaUSD+=v.meta;}
+  });
+  $('cFatBRL').textContent='R$'+Math.round(fatBRL/1000)+'k';
+  $('cFatUSD').textContent='US$'+Math.round(fatUSD/1000)+'k';
+  $('cMetaBRL').textContent='R$'+Math.round(metaBRL/1000)+'k';
+  $('cMetaUSD').textContent='US$'+Math.round(metaUSD/1000)+'k';
+
+  renderMenu();
+
+  // Se tinha vendedor ativo, recarregar
+  if(ativoEmail) window.selecionarVendedor(ativoEmail);
 
   const ts=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
   setStatus(`Atualizado às ${ts}`, false);
   $('topbar').className='topbar done';
   setTimeout(()=>$('topbar').className='topbar',600);
-  btn.disabled=false; $('btnIcon').textContent='↻';
+  btn.disabled=false;$('btnIcon').textContent='↻';
 };
 
 setInterval(()=>{
   const h=new Date().getHours(),m=new Date().getMinutes();
-  if((h===6||h===12)&&m<5) window.carregarTudo();
+  if((h===6||h===12)&&m<5) window.carregarTodos();
 },60000);
 </script>
 </body>
