@@ -634,16 +634,20 @@ const FILAS = {
 
 function renderFilaHTML(fila, fat, meta, falta, dias, m, email) {
   const conv = CONVERSAO[email] || {};
-  const contatosDia = conv.contatos_dia || Math.ceil(falta/Math.max(dias,1)/((conv.ticket||15000)));
+  const contatosDia = conv.contatos_dia || Math.max(1, Math.ceil(falta / Math.max(dias,1) / (conv.ticket||15000)));
+  const explicacao = conv.explicacao || '';
+  const distribuicao = conv.distribuicao || '';
+  const frequencia = conv.frequencia || 'URGENTE: 1x/semana (4x/mês) · ALTA: 2x/mês · MÉDIA: 1x/mês';
+
   const html = fila.map((c,i) => {
     const pc = c.prioridade==='URGENTE'?'color:var(--red)':c.prioridade==='ALTA'?'color:var(--amber)':'color:var(--blue)';
     const mc = (c.modo||'WhatsApp')==='WhatsApp'?'fb-wa':'fb-call';
-    const stars = c.score?'⭐'.repeat(parseInt(c.score)||3):'';
+    const stars = c.score?'⭐'.repeat(Math.min(parseInt(c.score)||3,5)):'';
     return `<div class="fila-item">
       <div class="fila-hdr">
         <div>
           <div class="fila-nome">${i+1}. ${c.nome} ${stars}</div>
-          <div style="font-size:10px;color:var(--muted);margin-top:1px">${c.fat||c.fatHistorico} histórico · ${c.dias||c.diasInativo} dias sem comprar · ${c.status||''}</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:1px">${c.fat||c.fatHistorico||''} histórico · ${c.dias||c.diasInativo||0} dias sem comprar · ${c.status||''}</div>
         </div>
         <div style="display:flex;align-items:center;gap:6px">
           <span style="font-size:10px;font-weight:700;${pc}">${c.prioridade}</span>
@@ -651,19 +655,34 @@ function renderFilaHTML(fila, fat, meta, falta, dias, m, email) {
         </div>
       </div>
       <div class="fila-body">
-        <div class="fila-motivo">📌 ${c.motivo}</div>
-        <div class="fila-motivo">🎯 <strong>Assunto:</strong> ${c.assunto}</div>
-        <div class="fila-script"><div class="fila-script-tag">Script</div>${c.script}</div>
+        <div class="fila-motivo">📌 ${c.motivo||''}</div>
+        <div class="fila-motivo">🎯 <strong>Assunto:</strong> ${c.assunto||''}</div>
+        <div class="fila-script"><div class="fila-script-tag">Script</div>${c.script||''}</div>
       </div>
     </div>`;
   }).join('');
+
   return `
-    <div style="background:var(--navy);border-radius:8px;padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between">
-      <div>
-        <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,.5);letter-spacing:.07em;text-transform:uppercase;margin-bottom:3px">Meta do dia — fim do mês com folga</div>
-        <div style="font-size:13px;color:white">Precisa de <strong style="color:var(--gold-l)">${fmt(porDia,m)}/dia útil</strong> · Priorize os <strong style="color:var(--gold-l)">URGENTES</strong> primeiro</div>
+    <div style="background:var(--navy);border-radius:8px;padding:12px 14px;margin-bottom:10px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:${explicacao?'8px':'0'}">
+        <div>
+          <div style="font-size:9px;font-weight:700;color:rgba(255,255,255,.45);letter-spacing:.08em;text-transform:uppercase;margin-bottom:3px">Meta do dia — fim do mês com folga</div>
+          <div style="font-size:13px;color:white">Precisa de <strong style="color:var(--gold-l)">${contatosDia} contatos/dia</strong> · Priorize os <strong style="color:var(--gold-l)">URGENTES</strong> primeiro</div>
+        </div>
+        <div style="text-align:right"><div style="font-size:20px;font-weight:800;color:var(--gold-l)">${fila.length}</div><div style="font-size:9px;color:rgba(255,255,255,.4)">clientes na fila</div></div>
       </div>
-      <div style="text-align:right"><div style="font-size:20px;font-weight:800;color:var(--gold-l)">${fila.length}</div><div style="font-size:9px;color:rgba(255,255,255,.4)">clientes na fila</div></div>
+      ${explicacao ? `<div style="border-top:0.5px solid rgba(255,255,255,.1);padding-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div>
+          <div style="font-size:9px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.07em;margin-bottom:2px">Por que esse número?</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.7);line-height:1.5">${explicacao}</div>
+        </div>
+        <div>
+          ${distribuicao?`<div style="font-size:9px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.07em;margin-bottom:2px">Distribuição semanal</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.7);margin-bottom:6px">${distribuicao}</div>`:''}
+          <div style="font-size:9px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.07em;margin-bottom:2px">Frequência por cliente</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.7)">${frequencia}</div>
+        </div>
+      </div>` : ''}
     </div>
     ${html}`;
 }
