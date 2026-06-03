@@ -271,7 +271,7 @@ tick(); setInterval(tick,30000);
 async function claude(prompt, onChunk, useMCP=true) {
   if(!usuario) throw new Error('sem usuário');
   const body = {
-    model:'claude-sonnet-4-20250514', max_tokens:1000,
+    model:'claude-sonnet-4-5-20251022', max_tokens:1000,
     system:`Você é o assistente comercial de ${usuario.nome}, vendedor(a) da Sabagram (granitos e mármores, ES).
 WhatsApp: ${usuario.whatsapp} | Salesforce IdeVen__c: ${usuario.salesforce.ideVen.join(', ')}
 Data: ${new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}

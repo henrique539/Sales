@@ -215,7 +215,7 @@ const tick=()=>$('clock').textContent=new Date().toLocaleString('pt-BR',{weekday
 tick();setInterval(tick,30000);
 
 async function claude(prompt,onChunk,useMCP=true){
-  const body={model:'claude-sonnet-4-20250514',max_tokens:1500,
+  const body={model:'claude-sonnet-4-5-20251022',max_tokens:1500,
     system:`Você é o assistente do gerente comercial ${gerente?.nome||'Dhiego'} da Sabagram (granitos e mármores, ES).
 Data: ${new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}
 Você tem acesso ao Salesforce com dados de vendas e ao WhatsApp via Nitzap.
