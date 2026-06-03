@@ -183,6 +183,18 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
   </div>
   <div style="display:flex;align-items:center;gap:8px">
     <div id="clock"></div>
+    <div style="position:relative" id="previewWrap">
+      <button class="hbtn" onclick="togglePreview()" style="font-size:10px;padding:5px 10px">👤 Ver como vendedor</button>
+      <div id="previewMenu" style="display:none;position:absolute;right:0;top:36px;background:white;border:0.5px solid #e2e7ef;border-radius:10px;padding:6px;min-width:180px;z-index:999;box-shadow:0 4px 16px rgba(0,0,0,.12)">
+        <div style="font-size:9px;font-weight:700;color:#7589a8;text-transform:uppercase;letter-spacing:.07em;padding:4px 8px 6px">Visualizar como</div>
+        <a href="vendedor.html?preview=sizenando@sabagram.com.br" target="_blank" style="display:block;padding:6px 8px;font-size:12px;font-weight:600;color:#1a2540;text-decoration:none;border-radius:6px;background:transparent" onmouseover="this.style.background='#f4f6f9'" onmouseout="this.style.background='transparent'">SA · Sizenando</a>
+        <a href="vendedor.html?preview=kelly@sabagram.com.br" target="_blank" style="display:block;padding:6px 8px;font-size:12px;font-weight:600;color:#1a2540;text-decoration:none;border-radius:6px" onmouseover="this.style.background='#f4f6f9'" onmouseout="this.style.background='transparent'">KJ · Kelly</a>
+        <a href="vendedor.html?preview=marcelo@sabagram.com.br" target="_blank" style="display:block;padding:6px 8px;font-size:12px;font-weight:600;color:#1a2540;text-decoration:none;border-radius:6px" onmouseover="this.style.background='#f4f6f9'" onmouseout="this.style.background='transparent'">MM · Marcelo</a>
+        <a href="vendedor.html?preview=renata@sabagram.com.br" target="_blank" style="display:block;padding:6px 8px;font-size:12px;font-weight:600;color:#1a2540;text-decoration:none;border-radius:6px" onmouseover="this.style.background='#f4f6f9'" onmouseout="this.style.background='transparent'">RS · Renata</a>
+        <a href="vendedor.html?preview=cezar@sabagram.com.br" target="_blank" style="display:block;padding:6px 8px;font-size:12px;font-weight:600;color:#1a2540;text-decoration:none;border-radius:6px" onmouseover="this.style.background='#f4f6f9'" onmouseout="this.style.background='transparent'">CF · Cezar</a>
+        <a href="vendedor.html?preview=diana@sabagram.com.br" target="_blank" style="display:block;padding:6px 8px;font-size:12px;font-weight:600;color:#1a2540;text-decoration:none;border-radius:6px" onmouseover="this.style.background='#f4f6f9'" onmouseout="this.style.background='transparent'">DR · Diana</a>
+      </div>
+    </div>
     <button class="hbtn-ghost" onclick="sair()">Sair</button>
   </div>
 </header>
@@ -456,6 +468,17 @@ onAuthStateChanged(auth,async user=>{
   iniciar();
 });
 window.sair=async()=>{await signOut(auth);window.location.href='index.html';};
+window.togglePreview=()=>{
+  const m=document.getElementById('previewMenu');
+  m.style.display=m.style.display==='none'?'block':'none';
+};
+document.addEventListener('click',e=>{
+  const w=document.getElementById('previewWrap');
+  if(w&&!w.contains(e.target)){
+    const m=document.getElementById('previewMenu');
+    if(m)m.style.display='none';
+  }
+});
 
 // ── NAVEGAÇÃO ──
 window.showSection=(id,btn)=>{
