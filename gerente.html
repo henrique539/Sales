@@ -523,7 +523,7 @@ async function gerarFila(v,d,fat,meta,falta,dias,m){
         messages:[{role:'user',content:`Crie uma fila de contatos prioritários para ${v.nome} (${v.bu}) para hoje.
 Dados: ${fmt(fat,m)} faturado de ${fmt(meta,m)} (${Math.floor(fat/meta*100)}%) — ${dias} dias úteis restantes.
 Clientes com histórico de compra que ainda não compraram em junho. Baseie nos padrões do setor de granitos/mármores.
-Retorne JSON array com 5 objetos:
+Retorne JSON array com 10 objetos priorizados por maior valor histórico:
 [{"nome":"Nome Cliente","fatHistorico":"R$XXk","diasInativo":X,"modo":"WhatsApp","prioridade":"URGENTE","motivo":"motivo específico","assunto":"produto ou pergunta específica","script":"mensagem exata começando pelo nome do cliente e pergunta sobre necessidade DELE"}]
 Modos: WhatsApp, Ligação. Prioridades: URGENTE, ALTA, MÉDIA.`}]})});
     const data=await r.json();
