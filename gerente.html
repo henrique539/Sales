@@ -215,7 +215,7 @@ const tick=()=>$('clock').textContent=new Date().toLocaleString('pt-BR',{weekday
 tick();setInterval(tick,30000);
 
 async function claude(prompt,onChunk,useMCP=true){
-  const body={model:'claude-sonnet-4-20250514',max_tokens:1500,stream:true,
+  const body={model:'claude-sonnet-4-20250514',max_tokens:1500,
     system:`Você é o assistente do gerente comercial ${gerente?.nome||'Dhiego'} da Sabagram (granitos e mármores, ES).
 Data: ${new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}
 Você tem acesso ao Salesforce com dados de vendas e ao WhatsApp via Nitzap.
@@ -224,18 +224,9 @@ Responda em português, direto e acionável. Foco em o que COBRAR e COMO COBRAR 
   if(useMCP)body.mcp_servers=[{type:'url',url:API.salesforce,name:'salesforce'},{type:'url',url:API.nitzap,name:'nitzap'}];
   const r=await fetch(API.claude,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
   if(!r.ok)throw new Error('HTTP '+r.status);
-  const reader=r.body.getReader(),dec=new TextDecoder();
-  let buf='',full='';
-  while(true){
-    const{done,value}=await reader.read();if(done)break;
-    buf+=dec.decode(value,{stream:true});
-    const lines=buf.split('\n');buf=lines.pop();
-    for(const line of lines){
-      if(!line.startsWith('data: '))continue;
-      const d=line.slice(6);if(d==='[DONE]')continue;
-      try{const j=JSON.parse(d);if(j.type==='content_block_delta'&&j.delta?.type==='text_delta'){full+=j.delta.text;onChunk(j.delta.text)}}catch{}
-    }
-  }
+  const data=await r.json();
+  const full=data.content?.map(b=>b.text||'').join('')||'';
+  if(onChunk)onChunk(full);
   return full;
 }
 
