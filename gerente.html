@@ -513,42 +513,144 @@ function renderAtividades(d){
   return html+'</div>';
 }
 
+const FILAS = {
+  "sizenando@sabagram.com.br": [
+    {nome:"NILGRAN",                    fat:"R$37k",  dias:278, score:5, status:"1A60",    prioridade:"URGENTE", modo:"WhatsApp",
+     motivo:"Score ⭐⭐⭐⭐⭐ — 278 dias sem comprar. Risco alto de perda para concorrente.",
+     assunto:"Verificar necessidade atual — pode estar comprando de outro fornecedor",
+     script:"Bom dia [nome], tudo bem? Faz um tempo que a gente não faz negócio. Qual material você está precisando agora para o próximo mês?"},
+    {nome:"2A DECOR",                   fat:"R$181k", dias:229, score:5, status:"Inativo",  prioridade:"URGENTE", modo:"Ligação",
+     motivo:"Score ⭐⭐⭐⭐⭐ — R$181k histórico, inativo há 229 dias. Um dos maiores clientes parado.",
+     assunto:"Reativação — entender o que aconteceu e apresentar novos lotes",
+     script:"Oi [nome], Sizenando da Sabagram. Sumiu! Já faz uns 8 meses que a gente não faz negócio. O que aconteceu? Tem algum material que você está precisando?"},
+    {nome:"POSTO JUPARANA",             fat:"R$122k", dias:125, score:5, status:"61A90",    prioridade:"URGENTE", modo:"WhatsApp",
+     motivo:"Score ⭐⭐⭐⭐⭐ — R$122k histórico, 61A90. Janela crítica antes de virar inativo.",
+     assunto:"Oferta específica — estoque disponível e necessidade de pedido",
+     script:"[Nome], bom dia! Passou um tempinho desde o último pedido. Tenho uns lotes novos que chegaram agora. Qual material está em falta na sua loja?"},
+    {nome:"STUDIO MARMORES E GRANITOS", fat:"R$37k",  dias:117, score:5, status:"91A120",  prioridade:"URGENTE", modo:"WhatsApp",
+     motivo:"Score ⭐⭐⭐⭐⭐ — status 91A120, quase inativo. 117 dias sem comprar.",
+     assunto:"Reativação urgente",
+     script:"Oi [nome]! Sizenando aqui. Vi que faz um tempo que a gente não faz negócio. Tá precisando de algum material? Tenho algumas novidades."},
+    {nome:"TECHNOGRAN",                 fat:"R$281k", dias:223, score:3, status:"Inativo",  prioridade:"ALTA",   modo:"Ligação",
+     motivo:"Maior cliente por volume (R$281k) — inativo há 223 dias. Score 3 mas potencial enorme.",
+     assunto:"Reativação — descobrir por que parou",
+     script:"Oi [nome], aqui é o Sizenando da Sabagram. Faz quase 8 meses que não fazemos negócio. O que precisaria mudar para voltarmos a trabalhar juntos?"},
+    {nome:"DEPOSITO DE PEDRAS CACHOEIRO",fat:"R$73k", dias:68,  score:5, status:"1A60",    prioridade:"ALTA",   modo:"WhatsApp",
+     motivo:"Score ⭐⭐⭐⭐⭐ — 68 dias sem comprar. Perto de virar 61A90.",
+     assunto:"Pedido de reposição",
+     script:"[Nome], bom dia! Tá na hora de repor estoque? Qual o seu prazo para o próximo pedido?"},
+    {nome:"MARMORARIA TOCANTINS",       fat:"R$300k", dias:54,  score:5, status:"1A60",    prioridade:"ALTA",   modo:"WhatsApp",
+     motivo:"Maior cliente ativo (R$300k) — 54 dias sem comprar. Manter relacionamento.",
+     assunto:"Follow-up + oferta de novos lotes",
+     script:"[Nome], tudo bem? Queria saber como estão as coisas e te mostrar uns lotes novos. Quando você tem 5 minutos?"},
+    {nome:"TUBARÃO COM. PEDRAS",        fat:"R$53k",  dias:34,  score:5, status:"1A60",    prioridade:"ALTA",   modo:"WhatsApp",
+     motivo:"Score ⭐⭐⭐⭐⭐ — 34 dias sem comprar. Acompanhamento mensal.",
+     assunto:"Próximo pedido",
+     script:"Oi [nome]! Sizenando aqui. Queria saber se você vai precisar de material esse mês. Tenho algumas opções disponíveis agora."},
+    {nome:"MARMORARIA TOCANTINS LTDA",  fat:"R$149k", dias:12,  score:5, status:"1A60",    prioridade:"MÉDIA",  modo:"WhatsApp",
+     motivo:"Score ⭐⭐⭐⭐⭐ — comprou recentemente (12 dias). Pós-venda.",
+     assunto:"Pós-venda — chegou o material? Próxima necessidade?",
+     script:"[Nome], o material chegou bem? Tudo certo? Quando precisar do próximo lote me avisa com antecedência."},
+    {nome:"STILLOS MARMORARIA",         fat:"R$37k",  dias:478, score:3, status:"Inativo", prioridade:"MÉDIA",  modo:"WhatsApp",
+     motivo:"Score 3⭐ — inativo há 478 dias. Vale tentar reativar.",
+     assunto:"Reativação com oferta específica",
+     script:"Oi [nome], Sizenando da Sabagram. Faz um tempão que a gente não fala. Tenho um material novo que lembrei de você. Posso te mandar uma foto?"},
+  ],
+  "cezar@sabagram.com.br": [
+    {nome:"ONE ST VINCENT GROUP INC",   fat:"US$180k", dias:98,  score:5, status:"91A120", prioridade:"URGENTE", modo:"Ligação",
+     motivo:"Score ⭐⭐⭐⭐⭐ — US$180k histórico, 91A120. Janela crítica antes de perder a conta.",
+     assunto:"Próximo container — necessidade para Q3",
+     script:"Hi [Name], this is Cezar from Sabagram. It's been about 3 months since your last order — just checking in to see what you have coming up. Are you planning any containers for the next few months?"},
+    {nome:"ARCHITECTURAL SURFACES GROUP",fat:"US$523k",dias:338, score:4, status:"Inativo",prioridade:"URGENTE", modo:"Ligação",
+     motivo:"Score ⭐⭐⭐⭐ — US$523k histórico, inativo há 11 meses. Enorme potencial.",
+     assunto:"Reativação — entender o que mudou",
+     script:"Hi [Name], Cezar from Sabagram. It's been almost a year since we last worked together. Has something changed, or is there something we could do to get back on your vendor list?"},
+    {nome:"EVEREST STONE LLC",          fat:"US$28k",  dias:96,  score:5, status:"61A90",  prioridade:"URGENTE", modo:"WhatsApp",
+     motivo:"Score ⭐⭐⭐⭐⭐ — 61A90, risco iminente de perder para concorrente.",
+     assunto:"Novos lotes disponíveis",
+     script:"Hi [Name], Cezar here from Sabagram. Haven't heard from you in a while — we just received new material that you might be interested in. What are you currently sourcing?"},
+    {nome:"UMI - UNITED MATERIALS INC", fat:"US$179k", dias:1013,score:4, status:"Inativo",prioridade:"URGENTE", modo:"Ligação",
+     motivo:"Score ⭐⭐⭐⭐ — US$179k histórico, inativo há 3 anos. Tentativa de reativação.",
+     assunto:"Reativação com portfólio atual",
+     script:"Hi [Name], Cezar from Sabagram. I know it's been a long time, but I wanted to personally reach out. Are you still in the market for Brazilian granite and marble?"},
+    {nome:"EAST WEST MARBLE CO",        fat:"US$2.3M", dias:56,  score:4, status:"1A60",   prioridade:"ALTA",   modo:"Ligação",
+     motivo:"Score ⭐⭐⭐⭐ — MAIOR cliente (US$2.3M), 56 dias sem comprar. Relacionamento estratégico.",
+     assunto:"Próximo container",
+     script:"Hi [Name], Cezar here. Just checking in on our next order — do you have anything planned for the coming months? I have some new inventory I'd love to show you."},
+    {nome:"MARMOLETTI INT USA LLC",     fat:"US$68k",  dias:127, score:4, status:"91A120", prioridade:"ALTA",   modo:"WhatsApp",
+     motivo:"Score ⭐⭐⭐⭐ — US$68k, 91A120. Quase inativo.",
+     assunto:"Próxima necessidade + novos materiais",
+     script:"Hi [Name], Cezar from Sabagram! It's been a few months — just reaching out to see if you need anything. What materials are you focusing on this quarter?"},
+    {nome:"MJ GRANITE LLC",             fat:"US$117k", dias:223, score:4, status:"Inativo",prioridade:"ALTA",   modo:"WhatsApp",
+     motivo:"Score ⭐⭐⭐⭐ — US$117k, inativo desde outubro 2025.",
+     assunto:"Novos lotes + pricing competitivo",
+     script:"Hi [Name], Cezar here from Sabagram. Haven't heard from you since last fall — are you looking for material for the summer season? We have some really competitive pricing right now."},
+    {nome:"SUNSHINE GRANITE AND MARBLE",fat:"US$18k",  dias:44,  score:5, status:"1A60",   prioridade:"ALTA",   modo:"WhatsApp",
+     motivo:"Score ⭐⭐⭐⭐⭐ — 44 dias sem comprar. Acompanhamento mensal.",
+     assunto:"Reposição de estoque",
+     script:"Hi [Name]! Cezar from Sabagram. Just checking in — are you running low on any materials? We have great availability right now."},
+    {nome:"EARTH STONE E TILE",         fat:"US$160k", dias:56,  score:4, status:"1A60",   prioridade:"MÉDIA",  modo:"WhatsApp",
+     motivo:"Score ⭐⭐⭐⭐ — US$160k, 56 dias sem comprar.",
+     assunto:"Próximo pedido",
+     script:"Hi [Name], Cezar from Sabagram. How are things going? Just checking if you have any upcoming orders we should be preparing for."},
+    {nome:"MSI - M S INTERNATIONAL",    fat:"US$1.9M", dias:5,   score:4, status:"1A60",   prioridade:"MÉDIA",  modo:"WhatsApp",
+     motivo:"Score ⭐⭐⭐⭐ — US$1.9M, comprou há 5 dias. Pós-venda.",
+     assunto:"Pós-venda + próximo container",
+     script:"Hi [Name], Cezar from Sabagram. How is everything going with the last order? Anything we should know about for the next one?"},
+  ],
+};
+
+function renderFilaHTML(fila, fat, meta, falta, dias, m) {
+  const porDia = Math.ceil(falta/Math.max(dias,1));
+  const html = fila.map((c,i) => {
+    const pc = c.prioridade==='URGENTE'?'color:var(--red)':c.prioridade==='ALTA'?'color:var(--amber)':'color:var(--blue)';
+    const mc = (c.modo||'WhatsApp')==='WhatsApp'?'fb-wa':'fb-call';
+    const stars = c.score?'⭐'.repeat(parseInt(c.score)||3):'';
+    return `<div class="fila-item">
+      <div class="fila-hdr">
+        <div>
+          <div class="fila-nome">${i+1}. ${c.nome} ${stars}</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:1px">${c.fat||c.fatHistorico} histórico · ${c.dias||c.diasInativo} dias sem comprar · ${c.status||''}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span style="font-size:10px;font-weight:700;${pc}">${c.prioridade}</span>
+          <span class="fila-badge ${mc}">${c.modo||'WhatsApp'}</span>
+        </div>
+      </div>
+      <div class="fila-body">
+        <div class="fila-motivo">📌 ${c.motivo}</div>
+        <div class="fila-motivo">🎯 <strong>Assunto:</strong> ${c.assunto}</div>
+        <div class="fila-script"><div class="fila-script-tag">Script</div>${c.script}</div>
+      </div>
+    </div>`;
+  }).join('');
+  return `
+    <div style="background:var(--navy);border-radius:8px;padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between">
+      <div>
+        <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,.5);letter-spacing:.07em;text-transform:uppercase;margin-bottom:3px">Meta do dia — fim do mês com folga</div>
+        <div style="font-size:13px;color:white">Precisa de <strong style="color:var(--gold-l)">${fmt(porDia,m)}/dia útil</strong> · Priorize os <strong style="color:var(--gold-l)">URGENTES</strong> primeiro</div>
+      </div>
+      <div style="text-align:right"><div style="font-size:20px;font-weight:800;color:var(--gold-l)">${fila.length}</div><div style="font-size:9px;color:rgba(255,255,255,.4)">clientes na fila</div></div>
+    </div>
+    ${html}`;
+}
+
 async function gerarFila(v,d,fat,meta,falta,dias,m){
   const el=$('tab-fila');
   if(!el)return;
-  try{
-    const r=await fetch('/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:1200,
-        system:'Consultor comercial. Retorne APENAS JSON válido sem explicações ou markdown.',
-        messages:[{role:'user',content:`Crie uma fila de contatos prioritários para ${v.nome} (${v.bu}) para hoje.
-Dados: ${fmt(fat,m)} faturado de ${fmt(meta,m)} (${Math.floor(fat/meta*100)}%) — ${dias} dias úteis restantes.
-Clientes com histórico de compra que ainda não compraram em junho. Baseie nos padrões do setor de granitos/mármores.
-Retorne JSON array com 10 objetos priorizados por maior valor histórico:
-[{"nome":"Nome Cliente","fatHistorico":"R$XXk","diasInativo":X,"modo":"WhatsApp","prioridade":"URGENTE","motivo":"motivo específico","assunto":"produto ou pergunta específica","script":"mensagem exata começando pelo nome do cliente e pergunta sobre necessidade DELE"}]
-Modos: WhatsApp, Ligação. Prioridades: URGENTE, ALTA, MÉDIA.`}]})});
-    const data=await r.json();
-    const buf=data.content?.map(b=>b.text||'').join('')||'';
-    const match=buf.match(/\[[\s\S]*\]/);
-    if(!match)throw new Error('JSON não encontrado');
-    const fila=JSON.parse(match[0]);
-    el.innerHTML=fila.map(c=>{
-      const pc=c.prioridade==='URGENTE'?'color:var(--red)':c.prioridade==='ALTA'?'color:var(--amber)':'color:var(--blue)';
-      const mc=c.modo==='WhatsApp'?'fb-wa':'fb-call';
-      return`<div class="fila-item">
-        <div class="fila-hdr">
-          <div><div class="fila-nome">${c.nome}</div><div style="font-size:10px;color:var(--muted);margin-top:1px">${c.fatHistorico} histórico · ${c.diasInativo} dias sem comprar</div></div>
-          <div style="display:flex;align-items:center;gap:6px"><span style="font-size:10px;font-weight:700;${pc}">${c.prioridade}</span><span class="fila-badge ${mc}">${c.modo}</span></div>
-        </div>
-        <div class="fila-body">
-          <div class="fila-motivo">📌 ${c.motivo}</div>
-          <div class="fila-motivo">🎯 <strong>Assunto:</strong> ${c.assunto}</div>
-          <div class="fila-script"><div class="fila-script-tag">Script</div>${c.script}</div>
-        </div>
-      </div>`;
-    }).join('');
-  }catch(e){
-    if(el)el.innerHTML=`<span style="color:var(--red);font-size:12px">Erro: ${e.message}</span>`;
+
+  const filaReal = FILAS[v.email];
+  if(filaReal && filaReal.length>0){
+    el.innerHTML = renderFilaHTML(filaReal, fat, meta, falta, dias, m);
+    return;
   }
+
+  // Vendedores sem fila configurada
+  el.innerHTML=`<div style="background:var(--s2);border:0.5px solid var(--border);border-radius:8px;padding:16px;text-align:center;color:var(--muted)">
+    <div style="font-size:16px;margin-bottom:6px">📋</div>
+    <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px">Fila não configurada para ${v.nome}</div>
+    <div style="font-size:12px;line-height:1.6">Os clientes prioritários precisam ser buscados do Salesforce com score real.<br>Acesse este chat para gerar a fila atualizada.</div>
+  </div>`;
 }
 
 window.switchTab=(id,btn)=>{
