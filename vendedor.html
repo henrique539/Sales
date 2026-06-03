@@ -3,547 +3,630 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Sabagram · Briefing</title>
+<title>Sabagram · Vendedor</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
-  --navy:#1a3254;--navy-mid:#1e3d65;--navy-light:#2a4f80;
-  --gold:#c8960a;--gold-light:#e0aa18;--gold-bg:rgba(200,150,10,.08);--gold-border:rgba(200,150,10,.25);
-  --bg:#f4f6f9;--white:#fff;--surface2:#f8f9fc;
-  --border:#e2e7ef;--border2:#d0d8e8;
-  --text:#1a2540;--text2:#3d5073;--muted:#7589a8;--dim:#a8b8cf;
-  --red:#c0392b;--red-bg:rgba(192,57,43,.07);--red-border:rgba(192,57,43,.2);
-  --amber:#d97706;--amber-bg:rgba(217,119,6,.07);--amber-border:rgba(217,119,6,.2);
-  --green:#1a7a4a;--green-bg:rgba(26,122,74,.07);--green-border:rgba(26,122,74,.2);
-  --blue:#1e5fa0;--blue-bg:rgba(30,95,160,.07);--blue-border:rgba(30,95,160,.2);
-  --accent:var(--navy);
-  --radius:10px;
-  --shadow:0 1px 3px rgba(26,50,84,.08),0 4px 12px rgba(26,50,84,.06);
+  --navy:#1a3254;--navy2:#0f1f35;--gold:#c8960a;--gold-l:#e0aa18;
+  --bg:#f4f6f9;--white:#fff;--s2:#f8f9fc;
+  --border:#e2e7ef;--text:#1a2540;--text2:#3d5073;--muted:#7589a8;--dim:#a8b8cf;
+  --red:#c0392b;--rbg:rgba(192,57,43,.08);--rbd:rgba(192,57,43,.25);
+  --amber:#d97706;--abg:rgba(217,119,6,.08);--abd:rgba(217,119,6,.25);
+  --green:#1a7a4a;--gbg:rgba(26,122,74,.08);--gbd:rgba(26,122,74,.25);
+  --blue:#1e5fa0;--bbg:rgba(30,95,160,.08);
+  --r:10px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6;min-height:100vh}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;height:100vh;overflow:hidden;display:flex;flex-direction:column}
 
 /* HEADER */
-.hdr{background:var(--navy);height:56px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(26,50,84,.25)}
-.hdr-l{display:flex;align-items:center;gap:14px}
-.logo{font-weight:800;font-size:15px;color:white;letter-spacing:.04em}
-.logo span{color:var(--gold-light)}
-.hsep{width:1px;height:18px;background:rgba(255,255,255,.15)}
-.hdr-user{display:flex;align-items:center;gap:8px}
-.avatar{width:30px;height:30px;border-radius:50%;background:var(--gold);color:white;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center}
-.hdr-name{font-size:13px;font-weight:600;color:rgba(255,255,255,.85)}
-.hdr-r{display:flex;align-items:center;gap:10px}
-#clock{font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,.4)}
-.btn-sair{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.6);font-size:11px;font-weight:600;padding:5px 11px;border-radius:7px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .15s}
-.btn-sair:hover{background:rgba(255,255,255,.15);color:white}
-.btn-upd{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.85);font-size:12px;font-weight:600;padding:7px 13px;border-radius:8px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;display:flex;align-items:center;gap:5px;transition:all .15s}
-.btn-upd:hover{background:rgba(255,255,255,.18)}
-.btn-upd:disabled{opacity:.4;cursor:not-allowed}
-
-/* STATUS */
-.sbar{background:white;border-bottom:1px solid var(--border);padding:6px 24px;display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace}
-.sdot{width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0}
-.sdot.on{background:var(--amber);animation:blink 1s infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-
-/* LAYOUT */
-.main{display:grid;grid-template-columns:270px 1fr;min-height:calc(100vh - 88px)}
-
-/* SIDEBAR */
-.sidebar{background:white;border-right:1px solid var(--border);padding:16px 13px;display:flex;flex-direction:column;gap:18px;overflow-y:auto;max-height:calc(100vh - 88px)}
-.slabel{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-bottom:9px}
-.metrics{display:grid;grid-template-columns:1fr 1fr;gap:7px}
-.metric{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px}
-.metric-v{font-size:19px;font-weight:800;line-height:1;margin-bottom:2px;letter-spacing:-.4px}
-.metric-l{font-size:9px;font-weight:700;color:var(--dim);letter-spacing:.08em;text-transform:uppercase}
-.metric-s{font-size:10px;color:var(--muted);margin-top:2px}
-.prog-bar{height:5px;background:var(--border);border-radius:3px;overflow:hidden;margin-top:9px}
-.prog-fill{height:5px;border-radius:3px;transition:width .8s}
-.prog-label{font-size:10px;color:var(--muted);text-align:right;margin-top:3px;font-family:'JetBrains Mono',monospace}
-
-/* FILA */
-.qi{padding:9px 11px;border-radius:var(--radius);border:1px solid var(--border);margin-bottom:5px;cursor:pointer;transition:all .15s;position:relative;background:white}
-.qi:hover{border-color:var(--border2);background:var(--surface2)}
-.qi.active{border-color:var(--navy-light);background:var(--blue-bg)}
-.qi.done{opacity:.3;pointer-events:none}
-.qi-name{font-size:12px;font-weight:700;color:var(--text);margin-bottom:3px;padding-right:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.qi-row{display:flex;gap:5px;align-items:center;flex-wrap:wrap}
-.qi-dot{position:absolute;top:9px;right:9px;width:5px;height:5px;border-radius:50%}
-.d1{background:var(--red)}.d2{background:var(--amber)}.d3{background:var(--green)}
-.tag{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;font-size:9px;font-weight:700}
-.tag-call{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)}
-.tag-wa{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)}
-.tag-follow{background:var(--gold-bg);color:var(--gold);border:1px solid var(--gold-border)}
-.tag-hot{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border);animation:blink 2s infinite}
-.qi-sub{font-size:9px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+.hdr{background:var(--navy);height:52px;padding:0 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;z-index:200}
+.logo{font-weight:800;font-size:15px;color:white;letter-spacing:.04em}.logo span{color:var(--gold-l)}
+#clock{font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,.35)}
+.hbtn{background:rgba(255,255,255,.1);border:0.5px solid rgba(255,255,255,.2);color:rgba(255,255,255,.8);font-size:11px;font-weight:600;padding:5px 11px;border-radius:7px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif}
 
 /* CONTENT */
-.content{padding:22px 26px;overflow-y:auto;max-height:calc(100vh - 88px)}
-.loading-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:360px;gap:14px;text-align:center}
-.spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--navy);border-radius:50%;animation:spin 1s linear infinite}
+.content{overflow-y:auto;flex:1;padding:14px 20px 40px}
+
+/* TABS */
+.tabs{display:flex;gap:6px;margin-bottom:14px}
+.tab{padding:7px 16px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:0.5px solid var(--border);background:var(--s2);color:var(--muted);transition:all .15s;font-family:'Plus Jakarta Sans',sans-serif}
+.tab.on{background:var(--navy);color:white;border-color:var(--navy)}
+
+/* VENDOR HEADER CARD */
+.vhdr{background:var(--navy);border-radius:12px;padding:14px 16px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
+.av{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:white;flex-shrink:0}
+.vhdr-nome{font-size:15px;font-weight:800;color:white}
+.vhdr-sub{font-size:10px;color:rgba(255,255,255,.45);margin-top:1px}
+.vhdr-stat{background:rgba(255,255,255,.1);border-radius:8px;padding:6px 12px;text-align:center}
+.vhdr-val{font-size:16px;font-weight:800;font-family:'JetBrains Mono',monospace}
+.vhdr-lbl{font-size:9px;color:rgba(255,255,255,.4);margin-top:1px}
+
+/* METRIC GRID */
+.mets{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+.met{background:var(--white);border:0.5px solid var(--border);border-radius:10px;padding:10px 12px;text-align:center}
+.met-v{font-size:22px;font-weight:800;font-family:'JetBrains Mono',monospace;margin-bottom:3px}
+.met-periodo{font-size:10px;color:var(--muted);margin-bottom:4px}
+.met-sep{height:0.5px;background:var(--border);margin:5px 0}
+.met-comp{font-size:12px;font-weight:600;font-family:'JetBrains Mono',monospace;color:var(--muted)}
+.met-comp-lbl{font-size:9px;color:var(--dim)}
+.met-delta{font-size:10px;font-weight:600;margin-top:4px}
+.dg{color:var(--green)}.da{color:var(--amber)}.dr{color:var(--red)}.dm{color:var(--muted)}
+
+/* CHARTS / BARS */
+.card{background:var(--white);border:0.5px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:10px}
+.card-title{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;display:flex;align-items:center;gap:5px}
+.bar-row{display:grid;grid-template-columns:90px 1fr 55px 40px;gap:8px;align-items:center;margin-bottom:7px}
+.bar{height:7px;background:var(--s2);border-radius:4px;overflow:hidden}
+.bar-fill{height:7px;border-radius:4px}
+
+/* POSITIVOS / MELHORIAS */
+.insight-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.insight-card{background:var(--white);border:0.5px solid var(--border);border-radius:12px;padding:12px 14px;border-left:3px solid}
+.insight-item{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px}
+.insight-icon{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;font-size:10px;font-weight:700}
+.insight-titulo{font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px}
+.insight-txt{font-size:11px;color:var(--text2);line-height:1.5}
+
+/* PROJEÇÃO */
+.proj{background:var(--navy);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+
+/* FILA */
+.sync-bar{background:var(--white);border:0.5px solid var(--border);border-radius:10px;padding:9px 13px;margin-bottom:10px}
+.prog-fila{height:8px;background:var(--s2);border-radius:4px;overflow:hidden;margin:6px 0}
+.prog-fill{height:8px;border-radius:4px}
+
+.sec-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin:10px 0 6px;display:flex;align-items:center;gap:5px}
+
+.fi{border:0.5px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:8px}
+.fi-hdr{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;padding:10px 13px;background:var(--navy)}
+.fi-tags{display:flex;align-items:center;gap:5px;margin-bottom:4px;flex-wrap:wrap}
+.ftag{display:inline-flex;padding:1px 6px;border-radius:3px;font-size:9px;font-weight:700}
+.fi-nome{font-size:13px;font-weight:800;color:white}
+.fi-sub{font-size:10px;color:rgba(255,255,255,.4);margin-top:2px}
+.fi-body{padding:9px 13px;background:var(--s2)}
+.fi-ctx{font-size:11px;color:var(--text2);line-height:1.5;margin-bottom:7px}
+.fi-script{background:var(--navy);border-radius:7px;padding:8px 11px;font-size:11px;color:rgba(255,255,255,.85);font-style:italic;line-height:1.6}
+.fi-script-lbl{font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-l);font-style:normal;margin-bottom:4px}
+
+/* PONTUAL */
+.fi-pontual .fi-hdr{background:#1e3560}
+.fi-pontual{opacity:.55}
+.fi-pontual .fi-body{background:var(--bg)}
+
+/* BTNS */
+.fi-btns{display:flex;flex-direction:column;gap:5px;align-items:flex-end}
+.btn-wa{display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:7px;font-size:11px;font-weight:700;border:none;cursor:pointer;background:#dcfce7;color:#166534;font-family:'Plus Jakarta Sans',sans-serif}
+.btn-lig{display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:7px;font-size:11px;font-weight:700;border:none;cursor:pointer;background:#e6f1fb;color:#0c447c;font-family:'Plus Jakarta Sans',sans-serif}
+.btn-check{display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:7px;font-size:11px;font-weight:700;border:0.5px solid var(--border);cursor:pointer;background:var(--white);color:var(--muted);font-family:'Plus Jakarta Sans',sans-serif;transition:all .15s}
+.btn-check.done{background:#dcfce7;color:#166534;border-color:#c0dd97}
+.btn-row{display:flex;gap:5px}
+
 @keyframes spin{to{transform:rotate(360deg)}}
-.loading-title{font-size:15px;font-weight:700}
-.lstep{font-size:11px;padding:3px 10px;border-radius:6px;font-family:'JetBrains Mono',monospace}
-.lstep.done{color:var(--green)}.lstep.active{color:var(--amber);background:var(--amber-bg)}.lstep.wait{color:var(--dim)}
-
-/* BRIEFING */
-.brief-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;gap:14px}
-.brief-date{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:3px}
-.brief-title{font-size:21px;font-weight:800;letter-spacing:-.3px;line-height:1.2}
-.brief-title span{color:var(--navy)}
-.brief-resumo{font-size:13px;color:var(--text2);margin-top:7px;max-width:440px;line-height:1.7}
-.need-badge{background:var(--navy);border-radius:var(--radius);padding:13px 16px;text-align:right;flex-shrink:0}
-.need-v{font-size:21px;font-weight:800;color:var(--gold-light);letter-spacing:-.4px}
-.need-l{font-size:9px;font-weight:600;color:rgba(255,255,255,.4);letter-spacing:.06em;text-transform:uppercase;margin-top:2px}
-
-/* ALERTAS */
-.alert{padding:10px 14px;border-radius:var(--radius);margin-bottom:7px;font-size:13px;display:flex;gap:8px;align-items:center;font-weight:500}
-.alert-r{background:var(--red-bg);border:1px solid var(--red-border);color:var(--red)}
-.alert-a{background:var(--amber-bg);border:1px solid var(--amber-border);color:var(--amber)}
-.alert-g{background:var(--green-bg);border:1px solid var(--green-border);color:var(--green)}
-
-/* DIVIDER */
-.divider{display:flex;align-items:center;gap:10px;margin:20px 0 14px}
-.div-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
-.div-line{flex:1;height:1px;background:var(--border)}
-.div-hint{font-size:10px;color:var(--dim);white-space:nowrap}
-
-/* CARD */
-.client-card{background:white;border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
-.cc-hdr{background:var(--navy);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
-.cc-name{font-size:17px;font-weight:800;color:white;letter-spacing:-.2px}
-.cc-body{padding:18px}
-.cc-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:16px}
-.cc-stat{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px}
-.cc-stat-v{font-size:15px;font-weight:700;margin-bottom:2px;font-family:'JetBrains Mono',monospace}
-.cc-stat-l{font-size:9px;font-weight:700;color:var(--dim);letter-spacing:.07em;text-transform:uppercase}
-
-/* AI */
-.ai-hdr{display:flex;align-items:center;gap:8px;margin-bottom:11px;padding-bottom:9px;border-bottom:1px solid var(--border)}
-.ai-badge{background:var(--navy);color:white;font-size:9px;font-weight:700;letter-spacing:.07em;padding:3px 8px;border-radius:5px;display:flex;align-items:center;gap:4px}
-.ai-pulse{width:5px;height:5px;border-radius:50%;background:var(--gold-light)}
-.ai-pulse.on{animation:blink 1s infinite}
-.ai-title{font-size:12px;font-weight:600;color:var(--muted)}
-.ai-content{font-size:13px;line-height:1.85;color:var(--text2)}
-.ai-content p{margin-bottom:9px}
-.ai-content p:last-child{margin-bottom:0}
-.ai-content strong{color:var(--text);font-weight:600}
-
-/* SCRIPT */
-.script-box{background:#f0f5ff;border:1px solid #c5d5f0;border-left:4px solid var(--navy);border-radius:0 var(--radius) var(--radius) 0;padding:13px 15px;margin:12px 0}
-.script-label{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--navy);margin-bottom:7px}
-.script-text{font-size:13px;line-height:1.75;color:var(--text);font-style:italic}
-.cursor{display:inline-block;width:2px;height:13px;background:var(--navy);animation:blink .7s infinite;vertical-align:middle;margin-left:2px;border-radius:1px}
-
-/* AÇÕES */
-.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
-.act{font-size:12px;font-weight:700;padding:8px 13px;border-radius:8px;border:1px solid var(--border2);background:white;color:var(--text2);cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .15s;font-family:'Plus Jakarta Sans',sans-serif}
-.act:hover{border-color:var(--navy-light);color:var(--navy);background:var(--blue-bg)}
-.act.primary{background:var(--navy);border-color:var(--navy);color:white}
-.act.primary:hover{background:var(--navy-mid);color:white}
-.act.gold{background:var(--gold);border-color:var(--gold);color:white}
-.act.gold:hover{background:var(--gold-light);color:white}
-
-/* TOAST */
-.toast{position:fixed;bottom:18px;right:18px;background:var(--navy);color:white;border-radius:var(--radius);padding:9px 15px;font-size:12px;font-weight:600;transform:translateY(60px);opacity:0;transition:all .25s;z-index:999;box-shadow:var(--shadow)}
-.toast.show{transform:translateY(0);opacity:1}
-.topbar{position:fixed;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--navy),var(--gold));transform:scaleX(0);transform-origin:left;z-index:999;transition:transform .4s}
-.topbar.on{transform:scaleX(.85)}.topbar.done{transform:scaleX(1);opacity:0;transition:opacity .5s}
+.spinner{width:12px;height:12px;border:2px solid var(--border);border-top-color:var(--navy);border-radius:50%;animation:spin 1s linear infinite}
 </style>
 </head>
 <body>
-<div class="topbar" id="topbar"></div>
 
 <header class="hdr">
-  <div class="hdr-l">
+  <div style="display:flex;align-items:center;gap:12px">
     <div class="logo">SABA<span>GRAM</span></div>
-    <div class="hsep"></div>
-    <div class="hdr-user">
-      <div class="avatar" id="avatar">??</div>
-      <div class="hdr-name" id="hdrNome">Carregando...</div>
-    </div>
+    <div style="width:1px;height:16px;background:rgba(255,255,255,.15)"></div>
+    <div style="font-size:9px;font-weight:700;letter-spacing:.06em;color:rgba(255,255,255,.5);text-transform:uppercase">Portal Vendedor</div>
   </div>
-  <div class="hdr-r">
+  <div style="display:flex;align-items:center;gap:8px">
     <div id="clock"></div>
-    <button class="btn-upd" id="btnUpd" onclick="gerarBriefing()"><span id="btnIcon">↻</span> Atualizar</button>
-    <button class="btn-sair" onclick="sair()">Sair</button>
+    <button class="hbtn" onclick="sair()">Sair</button>
   </div>
 </header>
 
-<div class="sbar">
-  <div class="sdot" id="sDot"></div>
-  <span id="sTxt">Inicializando...</span>
-</div>
+<div class="content">
 
-<div class="main">
-  <aside class="sidebar">
-    <div>
-      <div class="slabel">Meta do mês</div>
-      <div class="metrics">
-        <div class="metric"><div class="metric-v" style="color:var(--navy)" id="mFat">—</div><div class="metric-l">Faturado</div><div class="metric-s" id="mFatS">este mês</div></div>
-        <div class="metric"><div class="metric-v" style="color:var(--gold)" id="mMeta">—</div><div class="metric-l">Meta</div><div class="metric-s" id="mMetaS">este mês</div></div>
-        <div class="metric"><div class="metric-v" id="mCli">—</div><div class="metric-l">Clientes</div><div class="metric-s">este mês</div></div>
-        <div class="metric"><div class="metric-v" id="mDias">—</div><div class="metric-l">Dias úteis</div><div class="metric-s">restantes</div></div>
-      </div>
-      <div class="prog-bar"><div class="prog-fill" id="pFill" style="width:0%"></div></div>
-      <div class="prog-label" id="pLabel">0% da meta</div>
-    </div>
-    <div>
-      <div class="slabel">Fila do dia <span id="qCount" style="color:var(--navy);font-weight:700"></span></div>
-      <div id="qList"><div style="font-size:11px;color:var(--dim);padding:5px 3px">Carregando...</div></div>
-    </div>
-  </aside>
-
-  <main class="content" id="mainContent">
-    <div class="loading-screen" id="loadingScreen">
-      <div class="spinner"></div>
-      <div class="loading-title">Gerando seu briefing...</div>
-      <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-start;margin-top:4px">
-        <div class="lstep active" id="ls1">⬡ Conectando ao Salesforce</div>
-        <div class="lstep wait"   id="ls2">⬡ Buscando faturamento e meta</div>
-        <div class="lstep wait"   id="ls3">⬡ Lendo conversas do WhatsApp</div>
-        <div class="lstep wait"   id="ls4">⬡ IA montando fila do dia</div>
+  <!-- VENDOR HEADER -->
+  <div class="vhdr" id="vhdr" style="display:none">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div class="av" id="vAv">SA</div>
+      <div>
+        <div class="vhdr-nome" id="vNome">—</div>
+        <div class="vhdr-sub" id="vSub">—</div>
       </div>
     </div>
-    <div id="briefingDiv" style="display:none"></div>
-  </main>
+    <div style="display:flex;gap:6px">
+      <div class="vhdr-stat">
+        <div class="vhdr-val" id="vFatJun" style="color:#e0aa18">—</div>
+        <div class="vhdr-lbl">junho até agora</div>
+      </div>
+      <div class="vhdr-stat">
+        <div class="vhdr-val" id="vFatMai" style="color:#4ade80">—</div>
+        <div class="vhdr-lbl">maio completo</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <div class="tab on" onclick="showTab('desempenho',this)">📊 Meu desempenho</div>
+    <div class="tab" onclick="showTab('fila',this)">📋 Minha fila</div>
+  </div>
+
+  <!-- ══ DESEMPENHO ══ -->
+  <div id="tab-desempenho">
+
+    <!-- 4 métricas -->
+    <div class="mets">
+      <div class="met">
+        <div style="font-size:10px;color:var(--muted);margin-bottom:5px">Faturado</div>
+        <div class="met-v dg">R$88k</div>
+        <div class="met-periodo">últimos 7 dias</div>
+        <div class="met-sep"></div>
+        <div class="met-comp">R$132k</div>
+        <div class="met-comp-lbl">maio inteiro (22 dias)</div>
+        <div class="met-delta dg">↑ ritmo 30% acima</div>
+      </div>
+      <div class="met">
+        <div style="font-size:10px;color:var(--muted);margin-bottom:5px">Clientes comprou</div>
+        <div class="met-v dg">7</div>
+        <div class="met-periodo">últimos 7 dias</div>
+        <div class="met-sep"></div>
+        <div class="met-comp">10</div>
+        <div class="met-comp-lbl">maio inteiro</div>
+        <div class="met-delta dg">↑ no ritmo certo</div>
+      </div>
+      <div class="met">
+        <div style="font-size:10px;color:var(--muted);margin-bottom:5px">Ligações feitas</div>
+        <div class="met-v" style="color:var(--navy)">74</div>
+        <div class="met-periodo">últimos 7 dias</div>
+        <div class="met-sep"></div>
+        <div class="met-comp">269</div>
+        <div class="met-comp-lbl">maio inteiro</div>
+        <div class="met-delta dm">→ volume consistente</div>
+      </div>
+      <div class="met">
+        <div style="font-size:10px;color:var(--muted);margin-bottom:5px">Taxa atendimento</div>
+        <div class="met-v da">34%</div>
+        <div class="met-periodo">últimos 7 dias</div>
+        <div class="met-sep"></div>
+        <div class="met-comp">36%</div>
+        <div class="met-comp-lbl">maio inteiro</div>
+        <div class="met-delta dm">→ estável</div>
+      </div>
+    </div>
+
+    <!-- Ticket + Conversão -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+      <div class="card">
+        <div class="card-title" style="color:var(--green)">📈 Ticket médio</div>
+        <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:8px">
+          <div style="font-size:26px;font-weight:800;font-family:'JetBrains Mono',monospace;color:var(--green)">R$12,6k</div>
+          <div style="font-size:11px;color:var(--muted)">últimos 7 dias</div>
+        </div>
+        <div class="bar"><div class="bar-fill" style="width:50%;background:var(--green)"></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;margin-top:5px">
+          <span style="color:var(--muted)">Maio: R$13,2k</span>
+          <span style="color:var(--dim)">Potencial: R$25k+</span>
+        </div>
+        <div style="margin-top:8px;padding:6px 8px;background:var(--abg);border-radius:7px;font-size:11px;color:#78350f;line-height:1.45">Focar em clientes Score 5 com histórico alto para aumentar ticket</div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--amber)">🎯 Conversão lig → pedido</div>
+        <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:8px">
+          <div style="font-size:26px;font-weight:800;font-family:'JetBrains Mono',monospace;color:var(--amber)">8,2%</div>
+          <div style="font-size:11px;color:var(--muted)">últimos 7 dias</div>
+        </div>
+        <div class="bar"><div class="bar-fill" style="width:46%;background:var(--amber)"></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;margin-top:5px">
+          <span style="color:var(--muted)">Kelly: 17,9%</span>
+          <span style="color:var(--dim)">Meta: 15%</span>
+        </div>
+        <div style="margin-top:8px;padding:6px 8px;background:var(--rbg);border-radius:7px;font-size:11px;color:#7f1d1d;line-height:1.45">Pesquisar o cliente antes de ligar dobra a conversão sem aumentar volume</div>
+      </div>
+    </div>
+
+    <!-- Pontos positivos / Melhorias -->
+    <div class="insight-grid">
+      <div class="insight-card" style="border-color:var(--green)">
+        <div class="card-title" style="color:var(--green)">✓ O que está funcionando</div>
+        <div class="insight-item">
+          <div class="insight-icon" style="background:var(--gbg);color:var(--green)">✓</div>
+          <div>
+            <div class="insight-titulo">Volume de atividade</div>
+            <div class="insight-txt">74 ligações em 7 dias — ritmo acima da média do time. Consistência é o que gera resultado.</div>
+          </div>
+        </div>
+        <div class="insight-item">
+          <div class="insight-icon" style="background:var(--gbg);color:var(--green)">✓</div>
+          <div>
+            <div class="insight-titulo">Faturamento crescendo</div>
+            <div class="insight-txt">R$88k em 7 dias vs R$132k em todo maio — ritmo 30% acima do mês passado.</div>
+          </div>
+        </div>
+        <div class="insight-item" style="margin-bottom:0">
+          <div class="insight-icon" style="background:var(--gbg);color:var(--green)">✓</div>
+          <div>
+            <div class="insight-titulo">Carteira ativa e diversa</div>
+            <div class="insight-txt">7 clientes diferentes comprando em 7 dias — base sólida, não depende de 1 cliente só.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="insight-card" style="border-color:var(--amber)">
+        <div class="card-title" style="color:var(--amber)">💡 Onde crescer esta semana</div>
+        <div class="insight-item">
+          <div class="insight-icon" style="background:var(--abg);color:var(--amber)">1</div>
+          <div>
+            <div class="insight-titulo">Qualidade do WA</div>
+            <div class="insight-txt">21% das mensagens com tom pessoal. Trocar por oferta concreta — "tenho esse produto, você precisa?"</div>
+          </div>
+        </div>
+        <div class="insight-item">
+          <div class="insight-icon" style="background:var(--abg);color:var(--amber)">2</div>
+          <div>
+            <div class="insight-titulo">Reativar inativos fiéis</div>
+            <div class="insight-txt">Technogran (R$281k, 12 pedidos) e 2A Decor (R$181k, 15 pedidos) pararam em out/25 — eram clientes certos, algo mudou.</div>
+          </div>
+        </div>
+        <div class="insight-item" style="margin-bottom:0">
+          <div class="insight-icon" style="background:var(--abg);color:var(--amber)">3</div>
+          <div>
+            <div class="insight-titulo">Preparar antes de ligar</div>
+            <div class="insight-txt">Saber o último pedido do cliente antes de ligar dobra a chance de atendimento com resultado.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Projeção -->
+    <div class="proj">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div>
+          <div style="font-size:9px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px">Projeção junho no ritmo atual</div>
+          <div style="font-size:13px;color:rgba(255,255,255,.8)">Se mantiver os últimos 7 dias até o fim do mês</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:24px;font-weight:800;color:var(--gold-l);font-family:'JetBrains Mono',monospace">R$205k</div>
+          <div style="font-size:9px;color:rgba(255,255,255,.4)">projeção junho</div>
+        </div>
+      </div>
+      <div style="height:8px;background:rgba(255,255,255,.1);border-radius:4px;overflow:hidden;margin-bottom:5px">
+        <div style="height:8px;width:88%;background:var(--gold-l);border-radius:4px"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:10px;color:rgba(255,255,255,.4);margin-bottom:10px">
+        <span>R$0</span>
+        <span style="color:var(--gold-l);font-weight:600">R$205k projetado · 88% da meta</span>
+        <span>R$233k meta</span>
+      </div>
+      <div style="background:rgba(255,255,255,.08);border-radius:8px;padding:9px 12px;font-size:11px;color:rgba(255,255,255,.7);line-height:1.55">
+        Para bater R$233k: faltam <strong style="color:var(--gold-l)">R$144k</strong> em 19 dias = <strong style="color:var(--gold-l)">R$7,6k/dia</strong>. O caminho mais rápido é reativar Technogran e 2A Decor — juntos já somam R$462k de histórico.
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══ FILA ══ -->
+  <div id="tab-fila" style="display:none">
+
+    <!-- Sync bar -->
+    <div class="sync-bar">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
+        <div style="font-size:11px;font-weight:600;color:var(--text)">Progresso da fila hoje — meta: <span style="color:var(--navy);font-family:'JetBrains Mono',monospace">27</span> contatos</div>
+        <div style="font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace">atualizado às 09:00 · próx sync 12:00</div>
+      </div>
+      <div class="prog-fila">
+        <div class="prog-fill" style="width:30%;background:var(--green)"></div>
+      </div>
+      <div style="display:flex;gap:14px;font-size:10px">
+        <span style="color:var(--green);font-weight:600">✓ 8 contatados</span>
+        <span style="color:var(--amber);font-weight:600">⏳ 19 pendentes</span>
+        <span style="color:var(--muted)">30% da fila cumprido</span>
+      </div>
+    </div>
+
+    <!-- URGENTES -->
+    <div class="sec-label" style="color:var(--red)">
+      <i class="ti ti-flame" style="font-size:13px" aria-hidden="true"></i>
+      Urgentes — eram clientes fiéis, pararam de comprar
+    </div>
+
+    <!-- TECHNOGRAN -->
+    <div class="fi">
+      <div class="fi-hdr">
+        <div>
+          <div class="fi-tags">
+            <span class="ftag" style="background:rgba(248,113,113,.25);color:#f87171">URGENTE</span>
+            <span class="ftag" style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.55)">12 pedidos · R$281k histórico</span>
+            <span class="ftag" style="background:rgba(74,222,128,.15);color:#4ade80">recorrente fiel</span>
+          </div>
+          <div class="fi-nome">TECHNOGRAN</div>
+          <div class="fi-sub">Score ⭐⭐⭐ · 223 dias sem comprar · último out/25 · comprou 12x seguidas</div>
+        </div>
+        <div class="fi-btns">
+          <div class="btn-row">
+            <button class="btn-wa" onclick="marcar(this,'TECHNOGRAN')">💬 WA</button>
+            <button class="btn-lig" onclick="marcar(this,'TECHNOGRAN')">📞 Ligar</button>
+          </div>
+          <button class="btn-check" id="chk-technogran" onclick="toggleCheck(this,'technogran')">✓ Marcar feito</button>
+        </div>
+      </div>
+      <div class="fi-body">
+        <div style="font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px">Contexto</div>
+        <div class="fi-ctx">Comprou 12x de set/24 a out/25 — era cliente fiel com padrão mensal. Parou no mesmo período que 2A Decor. Pode ter migrado para concorrente ou mudou o comprador.</div>
+        <div class="fi-script-lbl">Script sugerido</div>
+        <div class="fi-script">"Oi [nome], Sizenando da Sabagram. Estava revisando minha carteira e vi que faz quase 8 meses que a gente não faz negócio. Aconteceu algo? Tem como me dar um retorno sobre o que mudou?"</div>
+      </div>
+    </div>
+
+    <!-- 2A DECOR -->
+    <div class="fi">
+      <div class="fi-hdr">
+        <div>
+          <div class="fi-tags">
+            <span class="ftag" style="background:rgba(248,113,113,.25);color:#f87171">URGENTE</span>
+            <span class="ftag" style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.55)">15 pedidos · R$181k histórico</span>
+            <span class="ftag" style="background:rgba(74,222,128,.15);color:#4ade80">recorrente fiel</span>
+          </div>
+          <div class="fi-nome">2A DECOR</div>
+          <div class="fi-sub">Score ⭐⭐⭐⭐⭐ · 229 dias sem comprar · último out/25 · parou junto com Technogran</div>
+        </div>
+        <div class="fi-btns">
+          <div class="btn-row">
+            <button class="btn-wa" onclick="marcar(this,'2A DECOR')">💬 WA</button>
+            <button class="btn-lig" onclick="marcar(this,'2A DECOR')">📞 Ligar</button>
+          </div>
+          <button class="btn-check" id="chk-2adecor" onclick="toggleCheck(this,'2adecor')">✓ Marcar feito</button>
+        </div>
+      </div>
+      <div class="fi-body">
+        <div style="font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px">Contexto</div>
+        <div class="fi-ctx">15 pedidos de out/24 a out/25 — padrão mensal regular. Parou exatamente ao mesmo tempo que Technogran. Pode ser problema de preço ou concorrente agressivo nessa região.</div>
+        <div class="fi-script-lbl">Script sugerido</div>
+        <div class="fi-script">"[Nome], tudo bem? Sizenando da Sabagram. Faz uns 8 meses — sei que às vezes a gente muda de fornecedor por preço ou prazo. Pode me falar o que aconteceu? Quero entender como posso te ajudar de volta."</div>
+      </div>
+    </div>
+
+    <!-- R BRANCO -->
+    <div class="fi">
+      <div class="fi-hdr">
+        <div>
+          <div class="fi-tags">
+            <span class="ftag" style="background:rgba(248,113,113,.25);color:#f87171">URGENTE</span>
+            <span class="ftag" style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.55)">9 pedidos · R$166k histórico</span>
+            <span class="ftag" style="background:rgba(74,222,128,.15);color:#4ade80">recorrente fiel</span>
+          </div>
+          <div class="fi-nome">R BRANCO ENGENHARIA</div>
+          <div class="fi-sub">Score ⭐⭐ · 170 dias sem comprar · último dez/25</div>
+        </div>
+        <div class="fi-btns">
+          <div class="btn-row">
+            <button class="btn-wa" onclick="marcar(this,'R BRANCO')">💬 WA</button>
+            <button class="btn-lig" onclick="marcar(this,'R BRANCO')">📞 Ligar</button>
+          </div>
+          <button class="btn-check" id="chk-rbranco" onclick="toggleCheck(this,'rbranco')">✓ Marcar feito</button>
+        </div>
+      </div>
+      <div class="fi-body">
+        <div class="fi-ctx">9 pedidos de set/24 a dez/25 — padrão constante. Construtora com projetos contínuos, não é pontual. Boa chance de reativar se tiver nova obra.</div>
+        <div class="fi-script-lbl">Script sugerido</div>
+        <div class="fi-script">"[Nome], bom dia! Sizenando da Sabagram. Tem algum projeto novo em andamento? Tenho material em estoque pra entrega rápida."</div>
+      </div>
+    </div>
+
+    <!-- ALTAS -->
+    <div class="sec-label" style="color:var(--amber)">
+      <i class="ti ti-arrow-up" style="font-size:13px" aria-hidden="true"></i>
+      Alta prioridade — recorrentes em risco ou perto do intervalo
+    </div>
+
+    <!-- POSTO JUPARANA -->
+    <div class="fi">
+      <div class="fi-hdr">
+        <div>
+          <div class="fi-tags">
+            <span class="ftag" style="background:rgba(251,191,36,.25);color:#fbbf24">ALTA</span>
+            <span class="ftag" style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.55)">6 pedidos · R$122k · bimestral</span>
+          </div>
+          <div class="fi-nome">POSTO JUPARANA</div>
+          <div class="fi-sub">Score ⭐⭐⭐⭐⭐ · 125 dias · último jan/26 · atendeu ligação mai/25</div>
+        </div>
+        <div class="fi-btns">
+          <div class="btn-row">
+            <button class="btn-wa" onclick="marcar(this,'POSTO JUPARANA')">💬 WA</button>
+          </div>
+          <button class="btn-check" id="chk-postojuparana" onclick="toggleCheck(this,'postojuparana')">✓ Marcar feito</button>
+        </div>
+      </div>
+      <div class="fi-body">
+        <div class="fi-ctx">Ciclo bimestral — já passou do intervalo. Na última conversa estava relutante mas interessado. Proposta estava pendente.</div>
+        <div class="fi-script-lbl">Script sugerido</div>
+        <div class="fi-script">"[Nome], bom dia! Preparei aquela proposta. Tenho condições especiais pra esse mês. Quando posso te enviar?"</div>
+      </div>
+    </div>
+
+    <!-- STILLOS -->
+    <div class="fi">
+      <div class="fi-hdr">
+        <div>
+          <div class="fi-tags">
+            <span class="ftag" style="background:rgba(251,191,36,.25);color:#fbbf24">ALTA</span>
+            <span class="ftag" style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.55)">6 pedidos · R$37k · último fev/25</span>
+          </div>
+          <div class="fi-nome">STILLOS MARMORARIA</div>
+          <div class="fi-sub">Score ⭐⭐⭐ · 478 dias sem comprar · comprou 6x de out/24 a fev/25</div>
+        </div>
+        <div class="fi-btns">
+          <div class="btn-row">
+            <button class="btn-wa" onclick="marcar(this,'STILLOS')">💬 WA</button>
+            <button class="btn-lig" onclick="marcar(this,'STILLOS')">📞 Ligar</button>
+          </div>
+          <button class="btn-check" id="chk-stillos" onclick="toggleCheck(this,'stillos')">✓ Marcar feito</button>
+        </div>
+      </div>
+      <div class="fi-body">
+        <div class="fi-ctx">6 pedidos consecutivos — depois sumiu. Longa inatividade mas foi cliente fiel por 4 meses. Vale tentar reativar com novidade de material.</div>
+        <div class="fi-script-lbl">Script sugerido</div>
+        <div class="fi-script">"Oi [nome], Sizenando! Tenho um material novo que lembrei de você. Posso te mandar uma foto?"</div>
+      </div>
+    </div>
+
+    <!-- MÉDIAS -->
+    <div class="sec-label">
+      <i class="ti ti-minus" style="font-size:13px" aria-hidden="true"></i>
+      Média prioridade — ativos recentes
+    </div>
+
+    <!-- MARMORARIA TOCANTINS — feito hoje -->
+    <div class="fi">
+      <div class="fi-hdr">
+        <div>
+          <div class="fi-tags">
+            <span class="ftag" style="background:rgba(96,165,250,.2);color:#60a5fa">MÉDIA</span>
+            <span class="ftag" style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.55)">16 pedidos · R$300k · maior cliente</span>
+            <span class="ftag" style="background:rgba(74,222,128,.2);color:#4ade80">contatado hoje ✓</span>
+          </div>
+          <div class="fi-nome">MARMORARIA TOCANTINS</div>
+          <div class="fi-sub">Score ⭐⭐⭐⭐⭐ · 54 dias · WA hoje 13:52 — Quartzito Emerald Lake</div>
+        </div>
+        <div class="fi-btns">
+          <div class="btn-row">
+            <button class="btn-wa">💬 WA</button>
+          </div>
+          <button class="btn-check done">✓ Feito hoje</button>
+        </div>
+      </div>
+      <div class="fi-body">
+        <div class="fi-ctx">Maior cliente da carteira. Perguntou sobre quartzito hoje — respondeu com interesse. Enviar fotos e valores agora.</div>
+        <div class="fi-script-lbl">Próximo passo</div>
+        <div class="fi-script">"[Nome], tenho o Quartzito Emerald Lake disponível. Posso te mandar as fotos e valores agora?"</div>
+      </div>
+    </div>
+
+    <!-- SEPARADOR PONTUAIS -->
+    <div style="border:0.5px dashed var(--border);border-radius:8px;padding:9px 13px;margin:10px 0;display:flex;align-items:flex-start;gap:9px;background:var(--s2)">
+      <div style="font-size:18px;flex-shrink:0;margin-top:1px">ℹ️</div>
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:2px">Clientes pontuais — baixa prioridade</div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.5">Compraram 1-2x por projeto ou obra específica. Não tendem a voltar. Contate <strong>apenas</strong> se tiver novidade específica para o perfil deles (ex: novo empreendimento mapeado).</div>
+      </div>
+    </div>
+
+    <!-- MÉTRIKA — pontual -->
+    <div class="fi fi-pontual">
+      <div class="fi-hdr">
+        <div>
+          <div class="fi-tags">
+            <span class="ftag" style="background:rgba(148,163,184,.2);color:#94a3b8">BAIXA</span>
+            <span class="ftag" style="background:rgba(255,255,255,.08);color:rgba(255,255,255,.35)">1 pedido · R$63k · dez/24</span>
+            <span class="ftag" style="background:rgba(148,163,184,.15);color:#94a3b8">pontual · construtora</span>
+          </div>
+          <div class="fi-nome" style="color:rgba(255,255,255,.5)">MÉTRIKA EMPREENDIMENTOS</div>
+          <div class="fi-sub">1 pedido único · obra provavelmente encerrada</div>
+        </div>
+        <div class="fi-btns">
+          <button class="btn-wa" style="opacity:.5">💬 WA</button>
+        </div>
+      </div>
+      <div class="fi-body">
+        <div class="fi-ctx">Construtora com projeto único. Só contate se tiver nova obra mapeada para ela.</div>
+        <div class="fi-script-lbl">Script se tiver contexto</div>
+        <div class="fi-script">"Oi [nome], tem algum projeto novo no radar pra esse semestre?"</div>
+      </div>
+    </div>
+
+    <!-- SILICON — pontual SPE -->
+    <div class="fi fi-pontual">
+      <div class="fi-hdr">
+        <div>
+          <div class="fi-tags">
+            <span class="ftag" style="background:rgba(148,163,184,.2);color:#94a3b8">BAIXA</span>
+            <span class="ftag" style="background:rgba(255,255,255,.08);color:rgba(255,255,255,.35)">3 pedidos · R$96k · jul/25</span>
+            <span class="ftag" style="background:rgba(148,163,184,.15);color:#94a3b8">SPE · projeto encerrado</span>
+          </div>
+          <div class="fi-nome" style="color:rgba(255,255,255,.5)">SILICON ENGENHARIA (SPE)</div>
+          <div class="fi-sub">Empresa de propósito específico — empreendimento concluído</div>
+        </div>
+        <div class="fi-btns">
+          <button class="btn-wa" style="opacity:.5">💬 WA</button>
+        </div>
+      </div>
+      <div class="fi-body">
+        <div class="fi-ctx">SPE = criada para 1 empreendimento. Após obra não há mais compras. Investigue se o responsável tem outras empresas antes de investir tempo.</div>
+        <div class="fi-script-lbl">Script se tiver contexto</div>
+        <div class="fi-script">"[Nome], vocês têm outro empreendimento em andamento? Tenho material que pode te interessar."</div>
+      </div>
+    </div>
+
+    <div style="text-align:center;font-size:10px;color:var(--muted);margin-top:12px;font-family:'JetBrains Mono',monospace">
+      Fila montada às 06:00 · 27 clientes total · dados do Firebase
+    </div>
+
+  </div>
 </div>
 
-<div class="toast" id="toast"></div>
-
-<!-- Firebase + App -->
 <script type="module">
-import { initializeApp }                     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import{getAuth,onAuthStateChanged,signOut}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-const FIREBASE_CONFIG = {
-  apiKey:"AIzaSyC6oWnbIyaZejwtNcL2S0SrHKLlLLxzUfI",
-  authDomain:"sales-team-6aeb6.firebaseapp.com",
-  projectId:"sales-team-6aeb6",
-  storageBucket:"sales-team-6aeb6.firebasestorage.app",
-  messagingSenderId:"421701680094",
-  appId:"1:421701680094:web:1f8bc4ae716dd0d0f3bb4f"
-};
-const USUARIOS = {
-  "henrique@sabagram.com.br":{nome:"Henrique Sabadine",perfil:"admin",avatar:"HS"},
-  "dhiego@sabagram.com.br":{nome:"Dhiego Zanardi",perfil:"gerente",avatar:"DZ"},
-  "sizenando@sabagram.com.br":{nome:"Sizenando Andrade",perfil:"vendedor",avatar:"SA",salesforce:{ideVen:["001TW000003LbquYAC","001TW000003LcYSYA0"],userId:"005TW0000002BnNYAU"},whatsapp:"5528999565519",cor:"#1a3254"},
-  "kelly@sabagram.com.br":{nome:"Kelly Julião",perfil:"vendedor",avatar:"KJ",salesforce:{ideVen:["001TW000005ag14YAA","001TW000005ah3ZYAQ"],userId:"005TW0000003rpNYAQ"},whatsapp:"5528999688866",cor:"#1a5f3a"}
-};
-const API = {
-  claude:"/api/claude",
-  salesforce:"https://api.salesforce.com/platform/mcp/v1/platform/sobject-all",
-  nitzap:"https://sabagram-mcp.nitzap.com/mcp/master"
+const FB={apiKey:"AIzaSyC6oWnbIyaZejwtNcL2S0SrHKLlLLxzUfI",authDomain:"sales-team-6aeb6.firebaseapp.com",projectId:"sales-team-6aeb6",storageBucket:"sales-team-6aeb6.firebasestorage.app",messagingSenderId:"421701680094",appId:"1:421701680094:web:1f8bc4ae716dd0d0f3bb4f"};
+
+const VENDEDORES={
+  "sizenando@sabagram.com.br":{nome:"Sizenando Andrade",avatar:"SA",cor:"#1a3254",fatJun:"R$7k",fatMai:"R$132k",bu:"BU MI",meta:"R$233k"},
+  "kelly@sabagram.com.br":{nome:"Kelly Julião",avatar:"KJ",cor:"#1a5f3a",fatJun:"R$4k",fatMai:"R$85k",bu:"BU MI",meta:"R$161k"},
+  "marcelo@sabagram.com.br":{nome:"Marcelo Melo",avatar:"MM",cor:"#8b1a1a",fatJun:"R$26k",fatMai:"R$210k",bu:"BU MI",meta:"R$463k"},
+  "renata@sabagram.com.br":{nome:"Renata Santana",avatar:"RS",cor:"#6b1a5f",fatJun:"R$10k",fatMai:"R$78k",bu:"BU MI",meta:"R$105k"},
+  "wesley@sabagram.com.br":{nome:"Wesley Matieli",avatar:"WM",cor:"#1a4a2a",fatJun:"R$12k",fatMai:"R$95k",bu:"BU Obras",meta:"R$172k"},
+  "cezar@sabagram.com.br":{nome:"Cezar Fiorio",avatar:"CF",cor:"#1a3a6b",fatJun:"US$0",fatMai:"US$77k",bu:"BU ME",meta:"US$172k"},
+  "diana@sabagram.com.br":{nome:"Diana Rigoni",avatar:"DR",cor:"#5f1a4a",fatJun:"US$0",fatMai:"US$0",bu:"BU ME",meta:"US$25k"},
 };
 
-// ── AUTH ──────────────────────────────────────────────────────────────────────
-const app  = initializeApp(FIREBASE_CONFIG);
-const auth = getAuth(app);
-let usuario = null;
+const app=initializeApp(FB);
+const auth=getAuth(app);
+const $=id=>document.getElementById(id);
 
-onAuthStateChanged(auth, async (user) => {
-  if (!user) { window.location.href = 'index.html'; return; }
-  const u = USUARIOS[user.email.toLowerCase()];
-  if (!u || u.perfil !== 'vendedor') { await signOut(auth); window.location.href = 'index.html'; return; }
-  usuario = { email: user.email, ...u };
-  // Aplicar cor do vendedor
-  document.documentElement.style.setProperty('--accent', u.cor || '#1a3254');
-  document.getElementById('avatar').textContent  = u.avatar;
-  document.getElementById('hdrNome').textContent = u.nome;
-  gerarBriefing();
+const tick=()=>{$('clock').textContent=new Date().toLocaleString('pt-BR',{weekday:'short',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}).toUpperCase();};
+tick();setInterval(tick,30000);
+
+onAuthStateChanged(auth,async user=>{
+  if(!user){window.location.href='index.html';return;}
+  const email=user.email.toLowerCase();
+  const v=VENDEDORES[email];
+  if(!v){await signOut(auth);window.location.href='index.html';return;}
+  // Preencher header
+  $('vAv').textContent=v.avatar;
+  $('vAv').style.background=v.cor;
+  $('vNome').textContent='Bom dia, '+v.nome.split(' ')[0]+'!';
+  $('vSub').textContent=v.bu+' · Meta '+v.meta+' · '+new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'});
+  $('vFatJun').textContent=v.fatJun;
+  $('vFatMai').textContent=v.fatMai;
+  $('vhdr').style.display='flex';
 });
 
-window.sair = async () => { await signOut(auth); window.location.href = 'index.html'; };
+window.sair=async()=>{await signOut(auth);window.location.href='index.html';};
 
-// ── UTILS ─────────────────────────────────────────────────────────────────────
-const $ = id => document.getElementById(id);
-const fmt = v => v >= 1000 ? 'R$' + Math.round(v/1000) + 'k' : 'R$' + Math.round(v);
-const toast = msg => { const t=$('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2800); };
-const setStatus = (txt,on=false) => { $('sTxt').textContent=txt; $('sDot').className='sdot'+(on?' on':''); };
-const setStep = n => {
-  for(let i=1;i<=4;i++){
-    const el=$('ls'+i); if(!el) continue;
-    const txt=el.textContent.replace(/^[✓⬡] /,'');
-    if(i<n){el.className='lstep done';el.textContent='✓ '+txt}
-    else if(i===n){el.className='lstep active';el.textContent='⬡ '+txt}
-    else{el.className='lstep wait';el.textContent='⬡ '+txt}
-  }
-};
-const diasUteis = () => {
-  const h=new Date(),f=new Date(h.getFullYear(),h.getMonth()+1,0);
-  let c=0,d=new Date(h); d.setDate(d.getDate()+1);
-  while(d<=f){if(d.getDay()!==0&&d.getDay()!==6)c++;d.setDate(d.getDate()+1);}
-  return c;
-};
-const md2html = t => t
-  .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
-  .replace(/^#{1,3}\s+(.+)$/gm,'<strong>$1</strong>')
-  .replace(/\n\n+/g,'</p><p>')
-  .replace(/\n/g,'<br>');
-
-// CLOCK
-const tick = () => $('clock').textContent =
-  new Date().toLocaleString('pt-BR',{weekday:'short',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}).toUpperCase();
-tick(); setInterval(tick,30000);
-
-// ── CLAUDE API ────────────────────────────────────────────────────────────────
-async function claude(prompt, onChunk, useMCP=true) {
-  if(!usuario) throw new Error('sem usuário');
-  const body = {
-    model:'claude-haiku-4-5-20251001', max_tokens:1000,
-    system:`Você é o assistente comercial de ${usuario.nome}, vendedor(a) da Sabagram (granitos e mármores, ES).
-WhatsApp: ${usuario.whatsapp} | Salesforce IdeVen__c: ${usuario.salesforce.ideVen.join(', ')}
-Data: ${new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}
-REGRAS: ❌ Nunca "ajuda o amigo","preciso te vender","mensagem genérica de bom mês".
-✅ Começar pela necessidade do CLIENTE. ✅ Produto concreto ou pergunta específica. ✅ Próximo passo com data.
-Responda em português, direto. Scripts: naturais, humanos, 30 segundos.`,
-    messages:[{role:'user',content:prompt}]
-  };
-  if(useMCP) {
-    body.mcp_servers=[
-      {type:'url',url:API.salesforce,name:'salesforce'},
-      {type:'url',url:API.nitzap,name:'nitzap'}
-    ];
-  }
-  const r = await fetch(API.claude,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-  if(!r.ok) throw new Error('HTTP '+r.status);
-  const data = await r.json();
-  const full = data.content?.map(b=>b.text||'').join('') || '';
-  if(onChunk) onChunk(full);
-  return full;
-}
-
-// ── FILA DINÂMICA (IA gera baseada nos dados reais do vendedor) ───────────────
-let fila=[], idxAtivo=0, scriptAtual='';
-
-function renderFila(){
-  $('qCount').textContent=`(${fila.filter(c=>!c.done).length})`;
-  $('qList').innerHTML=fila.map((c,i)=>`
-    <div class="qi${i===idxAtivo?' active':''}${c.done?' done':''}" onclick="selCliente(${i})" id="qi-${i}">
-      <div class="qi-dot ${c.p===1?'d1':c.p===2?'d2':'d3'}"></div>
-      <div class="qi-name">${c.nome}</div>
-      <div class="qi-row">
-        <span class="tag ${c.tag==='hot'?'tag-hot':c.tag==='call'?'tag-call':c.tag==='wa'?'tag-wa':'tag-follow'}">
-          ${c.tag==='hot'?'🔥 Urgente':c.tag==='call'?'☎ Ligar':c.tag==='wa'?'💬 WA':'↩ Follow'}
-        </span>
-        <span class="qi-sub">${c.fat2025>0?fmt(c.fat2025)+'/ano':c.status}</span>
-      </div>
-    </div>`).join('');
-}
-
-window.selCliente = async(idx) => { idxAtivo=idx; renderFila(); await renderCard(fila[idx]); };
-
-// ── CARD ──────────────────────────────────────────────────────────────────────
-async function renderCard(c){
-  const area=$('cardArea');if(!area)return;
-  const corP=c.p===1?'var(--red)':c.p===2?'var(--amber)':'var(--green)';
-  area.innerHTML=`
-    <div class="client-card">
-      <div class="cc-hdr">
-        <div class="cc-name">${c.nome}</div>
-        <span class="tag ${c.tag==='hot'?'tag-hot':c.tag==='call'?'tag-call':c.tag==='wa'?'tag-wa':'tag-follow'}" style="font-size:10px;padding:3px 9px">
-          ${c.tag==='hot'?'🔥 Fechar hoje':c.tag==='call'?'☎ Ligar agora':c.tag==='wa'?'💬 WhatsApp':'↩ Follow-up'}
-        </span>
-      </div>
-      <div class="cc-body">
-        <div class="cc-stats">
-          <div class="cc-stat"><div class="cc-stat-v" style="color:var(--gold)">${c.fat>0?fmt(c.fat):'—'}</div><div class="cc-stat-l">Comprado 2025</div></div>
-          <div class="cc-stat"><div class="cc-stat-v" style="color:${corP}">${['','Crítico','Alta','Média'][c.p]}</div><div class="cc-stat-l">Prioridade</div></div>
-          <div class="cc-stat"><div class="cc-stat-v" style="font-size:12px;color:var(--text2)">${c.status}</div><div class="cc-stat-l">Status</div></div>
-        </div>
-        <div class="ai-hdr">
-          <div class="ai-badge"><div class="ai-pulse on" id="aiPulse"></div>IA</div>
-          <div class="ai-title">Buscando histórico e gerando análise...</div>
-        </div>
-        <div class="ai-content" id="aiOut"><span class="cursor"></span></div>
-        <div class="actions">
-          ${c.num?`<button class="act gold" onclick="abrirWA('${c.num}')">💬 WhatsApp</button>`:''}
-          <button class="act primary" onclick="copiarScript()">⊙ Copiar script</button>
-          <button class="act" onclick="marcarFeito(${idxAtivo})">✓ Feito</button>
-          <button class="act" onclick="adiar(${idxAtivo})">→ Amanhã</button>
-        </div>
-      </div>
-    </div>`;
-
-  const aiOut=$('aiOut'), aiPulse=$('aiPulse');
-  let full='';
-  const prompt=`Cliente: ${c.nome}
-Status: ${c.status} | Fat. 2025: R$${c.fat||0}
-${c.num?`Número WhatsApp: ${c.num}\nBusque no Nitzap as últimas 5 mensagens (target: ${c.num}, vFrom: ${usuario.whatsapp}).\n`:''}Contexto: ${c.ctx||''}
-
-Gere para ${usuario.nome} agir agora:
-
-**Situação** (2 frases): O que sabemos. Por que é prioridade hoje.
-**Não fazer** (1 frase): O erro específico a evitar com este cliente.
-**Script** (marque com ---SCRIPT---): O que falar em 30 segundos. Natural. Começa pelo nome e pergunta sobre necessidade DELE.
-**Se não responder**: Próximo passo com prazo.
-
-Máximo 200 palavras.`;
-  try{
-    full=await claude(prompt,chunk=>{
-      const html=md2html(full+chunk);
-      aiOut.innerHTML=`<p>${html}</p><span class="cursor"></span>`;
-    });
-    if(full.includes('---SCRIPT---')){
-      const parts=full.split('---SCRIPT---');
-      const before=md2html(parts[0]),rest=parts[1]||'';
-      const end=rest.indexOf('\n\n');
-      const scriptTxt=(end>-1?rest.slice(0,end):rest).trim();
-      const after=end>-1?md2html(rest.slice(end)):'';
-      scriptAtual=scriptTxt;
-      aiOut.innerHTML=`<p>${before}</p><div class="script-box"><div class="script-label">📞 Script — use estas palavras</div><div class="script-text">${scriptTxt}</div></div><p>${after}</p>`;
-    }else{scriptAtual=full;aiOut.innerHTML=`<p>${md2html(full)}</p>`;}
-    if(aiPulse)aiPulse.classList.remove('on');
-  }catch(e){
-    aiOut.innerHTML=`<span style="color:var(--red);font-size:12px;font-family:'JetBrains Mono',monospace">Erro: ${e.message}</span>`;
-  }
-}
-
-// ── GERAR BRIEFING ────────────────────────────────────────────────────────────
-window.gerarBriefing = async () => {
-  if(!usuario) return;
-  const btn=$('btnUpd');btn.disabled=true;$('btnIcon').textContent='↻';
-  $('topbar').className='topbar on';
-  $('briefingDiv').style.display='none';
-  $('loadingScreen').style.display='flex';
-  setStatus('Gerando briefing...',true);setStep(1);
-  $('mDias').textContent=diasUteis();
-
-  const ideVen=usuario.salesforce.ideVen;
-  const mesAtual=new Date().toISOString().slice(0,7)+'-01'; // ex: 2026-06-01
-
-  // PASSO 1 — Faturamento + meta do mês do Salesforce
-  setStep(2);
-  let fatMes=0,cliMes=0,metaMes=300000;
-  try{
-    let buf='';
-    await claude(
-      `Execute no Salesforce estas duas queries e retorne APENAS as linhas indicadas:
-
-Query 1 — Faturamento: SELECT SUM(VlrLiq__c) fat, COUNT_DISTINCT(IdeCli__c) cli FROM Pedido__c WHERE IdeVen__c IN ('${ideVen.join("','")}') AND StsPed__c = 'Faturado' AND DatFat__c >= ${mesAtual}
-
-Query 2 — Meta do mês: SELECT VlrMet__c FROM Meta__c WHERE Name LIKE '%${new Date().toISOString().slice(0,7).replace('-','')}-BRL%' AND Name LIKE '%${usuario.nome.split(' ')[0]}%' ORDER BY DatMet__c DESC LIMIT 1
-
-Retorne EXATAMENTE (só essas linhas):
-FAT:XXXXX
-CLI:X
-META:XXXXX`,
-      c=>{buf+=c;}
-    );
-    const fm=buf.match(/FAT[:\s]+(\d+(?:[.,]\d+)?)/),cm=buf.match(/CLI[:\s]+(\d+)/),mm=buf.match(/META[:\s]+(\d+(?:[.,]\d+)?)/);
-    fatMes=fm?parseFloat(fm[1].replace(',','.')):0;
-    cliMes=cm?parseInt(cm[1]):0;
-    metaMes=mm?parseFloat(mm[1].replace(',','.')):300000;
-  }catch{}
-
-  $('mFat').textContent=fatMes>0?fmt(fatMes):'R$0';
-  $('mMeta').textContent=fmt(metaMes);
-  $('mMetaS').textContent=new Date().toLocaleDateString('pt-BR',{month:'short',year:'2-digit'});
-  $('mCli').textContent=cliMes||'0';
-  const pct=Math.min(100,Math.round(fatMes/metaMes*100));
-  const pf=$('pFill');pf.style.width=pct+'%';
-  pf.style.background=pct<33?'var(--red)':pct<66?'var(--gold)':'var(--green)';
-  $('pLabel').textContent=pct+'% da meta';
-
-  // PASSO 2 — IA gera fila prioritária do dia com dados reais
-  setStep(3);setStep(4);
-  let filaJson=[], resumo='';
-  try{
-    let buf='';
-    await claude(
-      `Você é o assistente de ${usuario.nome} na Sabagram.
-
-Faça no Salesforce:
-1. Busque os 15 clientes com maior faturamento histórico deste vendedor (IdeVen__c IN ('${ideVen.join("','")}')): SELECT IdeCli__c, NomCli__c, SUM(VlrLiq__c) fat FROM Pedido__c WHERE IdeVen__c IN ('${ideVen.join("','")}') AND StsPed__c='Faturado' GROUP BY IdeCli__c, NomCli__c ORDER BY SUM(VlrLiq__c) DESC LIMIT 15
-2. Dos mesmos clientes, veja quais compraram neste mês (${mesAtual} até hoje)
-3. Os que NÃO compraram este mês são inativos — maior prioridade se tinham volume alto
-
-Monte a fila do dia como JSON. Retorne APENAS o JSON válido, sem markdown:
-[
-  {
-    "nome": "Nome do Cliente",
-    "fat": 50000,
-    "status": "inativo 45d",
-    "p": 1,
-    "tag": "call",
-    "num": null,
-    "ctx": "Contexto e motivo de ser prioridade hoje (1 frase)"
-  }
-]
-Tags: "hot" = urgente fechar hoje | "call" = ligar | "wa" = whatsapp | "follow" = follow-up
-Prioridade p: 1=crítico, 2=alto, 3=médio
-Máximo 8 clientes. Ordene por prioridade.`,
-      c=>{buf+=c;}
-    );
-    const clean=buf.replace(/```json|```/g,'').trim();
-    filaJson=JSON.parse(clean);
-  }catch{}
-
-  // Se IA não retornou fila válida, usa fallback mínimo
-  if(!filaJson||filaJson.length===0){
-    filaJson=[{nome:'[Verifique Salesforce]',fat:0,status:'erro ao carregar',p:2,tag:'call',num:null,ctx:'Não foi possível carregar os clientes. Verifique a conexão com o Salesforce.'}];
-  }
-  fila=filaJson.map(c=>({...c,done:false}));
-
-  // Resumo do dia
-  try{
-    let buf='';
-    await claude(
-      `${usuario.nome} faturou ${fmt(fatMes)} de ${fmt(metaMes)} em ${diasUteis()} dias úteis restantes.
-Em 2 frases diretas: estado atual e a coisa mais importante a fazer hoje.`,
-      c=>{buf+=c;},false
-    );
-    resumo=buf.trim();
-  }catch{}
-
-  renderFila();
-
-  // Alertas
-  const alertas=[];
-  const falta=metaMes-fatMes;
-  if(fatMes===0) alertas.push({t:'r',m:'Nenhum pedido faturado ainda neste mês — foco total em fechar hoje.'});
-  else if(pct<50) alertas.push({t:'a',m:`Faltam ${fmt(falta)} em ${diasUteis()} dias úteis = ${fmt(Math.round(falta/Math.max(diasUteis(),1)))} por dia útil.`});
-  else alertas.push({t:'g',m:`✓ ${pct}% da meta atingida. Manter o ritmo!`});
-
-  // Render
-  const hoje=new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'});
-  $('loadingScreen').style.display='none';
-  const bd=$('briefingDiv');bd.style.display='block';
-  bd.innerHTML=`
-    <div class="brief-top">
-      <div>
-        <div class="brief-date">${hoje.toUpperCase()}</div>
-        <div class="brief-title">Bom dia, <span>${usuario.nome.split(' ')[0]}</span>.<br>Aqui está seu plano de hoje.</div>
-        ${resumo?`<div class="brief-resumo">${resumo}</div>`:''}
-      </div>
-      <div class="need-badge"><div class="need-v">${fmt(Math.max(0,falta))}</div><div class="need-l">Falta para meta</div></div>
-    </div>
-    ${alertas.map(a=>`<div class="alert alert-${a.t}">${a.m}</div>`).join('')}
-    <div class="divider"><div class="div-label">Foco agora</div><div class="div-line"></div><div class="div-hint">Clique na fila para trocar</div></div>
-    <div id="cardArea"></div>`;
-
-  await renderCard(fila[0]);
-
-  const ts=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
-  setStatus(`Atualizado às ${ts}`,false);
-  $('topbar').className='topbar done';setTimeout(()=>$('topbar').className='topbar',600);
-  btn.disabled=false;$('btnIcon').textContent='↻';
-  localStorage.setItem('ub_'+usuario.email,Date.now());
+window.showTab=(id,btn)=>{
+  ['desempenho','fila'].forEach(t=>{const el=$('tab-'+t);if(el)el.style.display='none';});
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
+  const sec=$('tab-'+id);if(sec)sec.style.display='block';
+  btn.classList.add('on');
 };
 
-// Auto-refresh 06h e 12h
-setInterval(()=>{
-  if(!usuario)return;
-  const h=new Date().getHours(),m=new Date().getMinutes();
-  const ub=parseInt(localStorage.getItem('ub_'+usuario?.email)||'0');
-  if((h===6||h===12)&&m<5&&Date.now()-ub>3600000)window.gerarBriefing();
-},60000);
+// Checks locais (antes do Make sincronizar)
+const checks={};
+window.toggleCheck=(btn,id)=>{
+  checks[id]=!checks[id];
+  if(checks[id]){
+    btn.classList.add('done');
+    btn.textContent='✓ Feito (sync pendente)';
+  }else{
+    btn.classList.remove('done');
+    btn.textContent='✓ Marcar feito';
+  }
+};
 
-// AÇÕES
-window.abrirWA    = n => window.open(`https://wa.me/${n}`,'_blank');
-window.copiarScript = () => navigator.clipboard.writeText(scriptAtual||$('aiOut')?.innerText||'').then(()=>toast('Script copiado ✓'));
-window.marcarFeito = i => { fila[i].done=true;renderFila();toast('Feito ✓');const p=fila.findIndex((c,j)=>j>i&&!c.done);if(p>-1)window.selCliente(p); };
-window.adiar = i => { fila[i].done=true;renderFila();toast('Para amanhã →');const p=fila.findIndex((c,j)=>j>i&&!c.done);if(p>-1)window.selCliente(p); };
+window.marcar=(btn,nome)=>{
+  // Feedback visual no botão
+  const orig=btn.textContent;
+  btn.textContent='✓';
+  setTimeout(()=>{btn.textContent=orig;},800);
+};
 </script>
 </body>
 </html>
