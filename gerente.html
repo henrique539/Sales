@@ -14,78 +14,87 @@
   --amber:#d97706;--abg:rgba(217,119,6,.07);--abd:rgba(217,119,6,.2);
   --green:#1a7a4a;--gbg:rgba(26,122,74,.07);--gbd:rgba(26,122,74,.2);
   --blue:#1e5fa0;--bbg:rgba(30,95,160,.07);--bbd:rgba(30,95,160,.2);
-  --r:10px;--shadow:0 1px 3px rgba(26,50,84,.08),0 4px 12px rgba(26,50,84,.06);
+  --r:10px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6;height:100vh;overflow:hidden;display:flex;flex-direction:column}
-.hdr{background:var(--navy);height:52px;padding:0 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;box-shadow:0 2px 8px rgba(26,50,84,.25);position:relative;z-index:200}
-.hdr-l{display:flex;align-items:center;gap:12px}
-.logo{font-weight:800;font-size:15px;color:white;letter-spacing:.04em}
-.logo span{color:var(--gold-l)}
+/* HEADER */
+.hdr{background:var(--navy);height:52px;padding:0 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;position:relative;z-index:200}
+.logo{font-weight:800;font-size:15px;color:white;letter-spacing:.04em}.logo span{color:var(--gold-l)}
 .hsep{width:1px;height:16px;background:rgba(255,255,255,.15)}
 .hdr-badge{background:rgba(255,255,255,.12);border:0.5px solid rgba(255,255,255,.2);color:rgba(255,255,255,.75);font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:.06em}
-.hdr-r{display:flex;align-items:center;gap:8px}
 #clock{font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,.35)}
 .hbtn{background:rgba(255,255,255,.1);border:0.5px solid rgba(255,255,255,.18);color:rgba(255,255,255,.85);font-size:11px;font-weight:600;padding:6px 12px;border-radius:7px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;display:flex;align-items:center;gap:4px;transition:all .15s}
-.hbtn:hover{background:rgba(255,255,255,.18)}.hbtn:disabled{opacity:.4;cursor:not-allowed}
 .hbtn-ghost{background:transparent;border:0.5px solid rgba(255,255,255,.2);color:rgba(255,255,255,.5);font-size:11px;font-weight:600;padding:5px 10px;border-radius:7px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif}
-.hbtn-ghost:hover{color:white;border-color:rgba(255,255,255,.4)}
+/* NAV */
 .nav{background:var(--white);border-bottom:0.5px solid var(--border);padding:0 20px;display:flex;align-items:center;gap:6px;height:40px;flex-shrink:0;position:relative;z-index:150}
 .nbtn{display:flex;align-items:center;gap:5px;padding:0 12px;height:28px;border-radius:7px;font-size:12px;font-weight:600;background:var(--s2);border:0.5px solid var(--border);color:var(--text);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .15s}
 .nbtn:hover{background:var(--border)}.nbtn.on{background:var(--navy);color:white;border-color:var(--navy)}
-.narr{font-size:10px;opacity:.6;margin-left:1px}
 .nav-right{margin-left:auto;font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace}
-.dd-wrap{position:relative;z-index:100;flex-shrink:0}
-.dd-panel{background:var(--white);border-bottom:0.5px solid var(--border);padding:14px 20px;display:none}
-.dd-panel.open{display:block}
-.dd-top-title{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;display:flex;align-items:center;gap:10px}
-.ctx-badge{font-size:10px;font-weight:600;padding:2px 8px;border-radius:5px;background:var(--abg);color:var(--amber);border:0.5px solid var(--abd)}
-.fin-mets{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:12px}
-.fm{background:var(--s2);border:0.5px solid var(--border);border-radius:var(--r);padding:10px 12px}
-.fm-v{font-size:18px;font-weight:800;letter-spacing:-.3px;margin-bottom:2px;font-family:'JetBrains Mono',monospace}
-.fm-v.gold{color:var(--gold)}.fm-v.red{color:var(--red)}.fm-v.amber{color:var(--amber)}
-.fm-l{font-size:10px;color:var(--muted)}
-.act-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
-.act-block{background:var(--s2);border:0.5px solid var(--border);border-radius:var(--r);padding:10px 13px}
-.act-hdr{display:flex;align-items:center;gap:7px;margin-bottom:8px}
-.act-icon{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px}
-.act-icon.call{background:#e6f1fb}.act-icon.wa{background:#eaf3de}
-.act-lbl{font-size:12px;font-weight:700;color:var(--text)}
-.act-mets{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.am-v{font-size:15px;font-weight:700;color:var(--text);font-family:'JetBrains Mono',monospace}
-.am-v.danger{color:var(--red)}
-.am-l{font-size:10px;color:var(--muted);margin-top:1px}
-.wa-alert{display:flex;align-items:flex-start;gap:8px;background:#faeeda;border:0.5px solid #f0c070;border-radius:8px;padding:8px 11px;font-size:12px;color:#633806;line-height:1.5}
-.sbar{background:var(--white);border-bottom:0.5px solid var(--border);padding:5px 20px;display:flex;align-items:center;gap:6px;font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace;flex-shrink:0}
+/* CONTEÚDO */
+.content{overflow-y:auto;flex:1;padding:16px 20px 40px}
+/* STATUS BAR */
+.sbar{background:var(--white);border-bottom:0.5px solid var(--border);padding:4px 20px;display:flex;align-items:center;gap:6px;font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace;flex-shrink:0}
 .sdot{width:5px;height:5px;border-radius:50%;background:var(--green);flex-shrink:0}
-.sdot.on{background:var(--amber);animation:blink 1s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
 @keyframes spin{to{transform:rotate(360deg)}}
-.content{overflow-y:auto;flex:1;padding:18px 20px 40px}
-.bu-sec{margin-bottom:20px}
-.bu-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding-bottom:8px;border-bottom:0.5px solid var(--border)}
-.bu-left{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:var(--text)}
-.bu-pill{font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;color:white}
-.bu-mi{background:var(--navy)}.bu-obras{background:#5f3a1a}.bu-me{background:#1a5f3a}
-.bu-stats{font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace}
-.vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
-.vc{background:var(--white);border:0.5px solid var(--border);border-radius:var(--r);padding:12px;cursor:pointer;transition:all .15s;box-shadow:var(--shadow)}
-.vc:hover{border-color:var(--navy);box-shadow:0 2px 12px rgba(26,50,84,.12)}
-.vc.sel{border-color:var(--navy);border-width:1.5px;box-shadow:0 0 0 3px rgba(26,50,84,.08)}
-.vc-top{display:flex;align-items:center;gap:8px;margin-bottom:9px}
-.av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:white;flex-shrink:0}
-.vc-nome{font-size:13px;font-weight:700;color:var(--text);line-height:1.2}
-.vc-sub{font-size:10px;color:var(--muted);display:flex;align-items:center;gap:3px}
-.dot{display:inline-block;width:5px;height:5px;border-radius:50%}
-.dr{background:var(--red)}.da{background:var(--amber)}.dg{background:var(--green)}
-.vc-val{font-size:14px;font-weight:800;color:var(--text);letter-spacing:-.2px;margin-bottom:4px;font-family:'JetBrains Mono',monospace}
-.vprog{height:3px;background:var(--border);border-radius:2px;overflow:hidden;margin-bottom:6px}
-.vpf{height:3px;border-radius:2px}
-.vc-footer{display:flex;align-items:center;justify-content:space-between;gap:4px;flex-wrap:wrap}
-.vf-item{font-size:10px;color:var(--muted);display:flex;align-items:center;gap:3px}
-.wa-badge{font-size:9px;font-weight:700;padding:1px 5px;border-radius:3px}
-.wb-ok{background:#eaf3de;color:#1a5f3a}.wb-warn{background:#faeeda;color:#633806}.wb-na{background:var(--s2);color:var(--muted)}
-.detail{background:var(--white);border:0.5px solid var(--border);border-radius:12px;padding:20px;margin-top:18px;box-shadow:var(--shadow)}
+.spinner{width:13px;height:13px;border:2px solid var(--border);border-top-color:var(--navy);border-radius:50%;animation:spin 1s linear infinite}
+.spin-wrap{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);padding:20px 0}
+
+/* ── TIME GERAL ── */
+.tg-metas{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.tg-meta{border-radius:12px;padding:14px 16px}
+.tg-meta-val{font-size:26px;font-weight:800;letter-spacing:-.5px;margin-bottom:4px;font-family:'JetBrains Mono',monospace}
+.tg-meta-sub{font-size:12px;color:rgba(255,255,255,.45);margin-bottom:8px}
+.tg-bar{height:5px;background:rgba(255,255,255,.12);border-radius:3px;overflow:hidden;margin-bottom:6px}
+.tg-bar-fill{height:5px;border-radius:3px}
+.tg-meta-info{display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,.45)}
+
+.tg-row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.tg-card{background:var(--white);border:0.5px solid var(--border);border-radius:12px;padding:14px 16px}
+.tg-card-title{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;display:flex;align-items:center;gap:5px}
+
+/* Ações */
+.acao-item{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;border-radius:8px;margin-bottom:5px;cursor:pointer}
+.acao-num{font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px;flex-shrink:0;margin-top:1px}
+.acao-titulo{font-size:12px;font-weight:600;margin-bottom:1px}
+.acao-txt{font-size:11px;line-height:1.45}
+
+/* Pulso */
+.pulso-row{display:grid;grid-template-columns:1fr 36px 36px 36px 36px;gap:4px;align-items:center;padding:6px 4px;border-radius:8px;border-left:3px solid;margin-bottom:3px}
+.pulso-av{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:white;flex-shrink:0}
+.pulso-nome{font-size:12px;font-weight:600;color:var(--text)}
+.pulso-tag{display:inline-flex;padding:1px 5px;border-radius:3px;font-size:9px;font-weight:600;margin-top:2px}
+.pulso-val{text-align:center;font-size:12px;font-weight:700}
+
+/* Barras progresso */
+.prog-row{display:grid;grid-template-columns:90px 1fr 90px 38px;gap:8px;align-items:center;margin-bottom:8px}
+.prog-bar{height:6px;background:var(--s2);border-radius:3px;overflow:hidden}
+.prog-fill{height:6px;border-radius:3px}
+
+/* ── CARDS VENDEDORES ── */
+.vd-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.vd-card{background:var(--white);border:0.5px solid var(--border);border-radius:12px;overflow:hidden}
+.vd-hdr{padding:11px 13px;display:flex;align-items:center;justify-content:space-between}
+.vd-av{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:white;flex-shrink:0}
+.vd-nome{font-size:13px;font-weight:700;color:white}
+.vd-sub{font-size:10px;color:rgba(255,255,255,.45)}
+.vd-pct{font-size:18px;font-weight:800;font-family:'JetBrains Mono',monospace}
+.vd-fat{font-size:9px;color:rgba(255,255,255,.4);text-align:right}
+.vd-body{padding:10px 13px}
+.vd-prog{height:3px;background:var(--s2);border-radius:2px;overflow:hidden;margin-bottom:8px}
+.vd-alert{display:flex;align-items:flex-start;gap:6px;padding:7px 9px;border-radius:7px;margin-bottom:7px;font-size:11px;line-height:1.45}
+.vd-mets{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;margin-bottom:8px}
+.vd-met{background:var(--s2);border-radius:6px;padding:5px 8px;text-align:center}
+.vd-met-v{font-size:13px;font-weight:700;color:var(--text)}
+.vd-met-l{font-size:9px;color:var(--muted);margin-top:1px}
+.vd-atitude{border-left:3px solid;padding:7px 10px;border-radius:0 7px 7px 0;background:var(--s2)}
+.vd-atitude-lbl{font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px}
+.vd-atitude-txt{font-size:11px;color:var(--text);line-height:1.5}
+.vd-ver{font-size:11px;font-weight:600;color:var(--blue);display:flex;align-items:center;gap:4px;margin-top:8px;cursor:pointer}
+
+/* ── DETALHE VENDEDOR ── */
+.detail{background:var(--white);border:0.5px solid var(--border);border-radius:12px;padding:20px;margin-top:14px}
 .detail-hdr{display:flex;align-items:center;gap:12px;margin-bottom:16px}
 .av-lg{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:white;flex-shrink:0}
 .detail-title{font-size:20px;font-weight:800;letter-spacing:-.3px}
@@ -104,227 +113,340 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .tabs-nav{display:flex;gap:6px;margin-bottom:14px;border-bottom:1px solid var(--border);padding-bottom:0}
 .tab-btn{padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;border:none;background:none;color:var(--muted);border-bottom:2px solid transparent;font-family:'Plus Jakarta Sans',sans-serif;margin-bottom:-1px;transition:all .15s}
 .tab-btn:hover{color:var(--text)}.tab-btn.on{color:var(--navy);border-bottom-color:var(--navy)}
-.dia-btn{padding:5px 12px;font-size:11px;font-weight:600;cursor:pointer;border:0.5px solid var(--border);background:var(--s2);color:var(--muted);border-radius:6px;font-family:'Plus Jakarta Sans',sans-serif;transition:all .15s}
-.dia-btn:hover{background:var(--border)}.dia-btn.on{background:var(--navy);color:white;border-color:var(--navy)}
-.ia-wrap{border:0.5px solid var(--border);border-radius:var(--r);overflow:hidden}
-.ia-hdr{padding:10px 14px;background:var(--s2);border-bottom:0.5px solid var(--border);display:flex;align-items:center;gap:7px}
-.ia-badge{background:var(--navy);color:white;font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;display:flex;align-items:center;gap:3px}
-.ia-dot{width:4px;height:4px;border-radius:50%;background:var(--gold-l)}.ia-dot.on{animation:blink 1s infinite}
-.ia-lbl{font-size:11px;font-weight:600;color:var(--muted)}
-.ia-body-wrap{padding:16px}
-.ia-body{font-size:13px;line-height:1.85;color:var(--text2)}
-.ia-body p{margin-bottom:8px}.ia-body p:last-child{margin-bottom:0}
-.ia-body strong{color:var(--text);font-weight:700}
-.ia-body h3{font-size:11px;font-weight:800;color:var(--navy);margin:14px 0 5px;text-transform:uppercase;letter-spacing:.05em;border-bottom:0.5px solid var(--border);padding-bottom:4px}
-.spin-wrap{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
-.spinner{width:13px;height:13px;border:2px solid var(--border);border-top-color:var(--navy);border-radius:50%;animation:spin 1s linear infinite}
-.act-timeline{display:flex;flex-direction:column;gap:8px}
-.tl-item{display:flex;align-items:flex-start;gap:10px;padding:9px 11px;background:var(--s2);border:0.5px solid var(--border);border-radius:8px}
-.tl-icon{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
-.tl-call-ok{background:#e6f1fb}.tl-call-no{background:var(--rbg)}.tl-wa-ok{background:#eaf3de}.tl-wa-warn{background:#faeeda}.tl-wa-log{background:var(--s2)}.tl-wa-int{background:var(--border)}
-.tl-info{flex:1}.tl-titulo{font-size:12px;font-weight:700;color:var(--text);margin-bottom:1px}.tl-sub{font-size:11px;color:var(--muted)}.tl-hora{font-size:10px;color:var(--dim);font-family:'JetBrains Mono',monospace;white-space:nowrap;flex-shrink:0}
-.fila-item{border:0.5px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:8px}
+
+/* ── DIAGNÓSTICO EM CARDS ── */
+.diag-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.diag-card{background:var(--white);border:0.5px solid var(--border);border-left:3px solid;border-radius:0 10px 10px 0;padding:11px 13px}
+.diag-hdr{display:flex;align-items:center;gap:7px;margin-bottom:6px}
+.diag-icon{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px}
+.diag-title{font-size:12px;font-weight:700;color:var(--text)}
+.diag-sub{font-size:10px;color:var(--muted);margin-top:1px}
+.diag-tags{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px}
+.diag-tag{display:inline-flex;padding:1px 5px;border-radius:3px;font-size:9px;font-weight:600}
+.diag-txt{font-size:11px;color:var(--text2);line-height:1.6}
+.diag-txt strong{color:var(--text);font-weight:700}
+.diag-num{width:17px;height:17px;border-radius:50%;background:var(--navy);color:white;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.pergunta-box{background:var(--navy);border-radius:8px;padding:11px 13px}
+.pergunta-txt{font-size:12px;color:rgba(255,255,255,.9);line-height:1.65;font-style:italic;margin-bottom:8px}
+.pergunta-why-lbl{font-size:9px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px}
+.pergunta-why{font-size:11px;color:rgba(255,255,255,.55);line-height:1.55}
+
+/* ── ATIVIDADES 2 COLUNAS ── */
+.atv-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.atv-col-title{font-size:11px;font-weight:600;color:var(--muted);margin-bottom:7px;display:flex;align-items:center;gap:4px}
+.atv-item{background:var(--white);border:0.5px solid var(--border);border-left:3px solid;border-radius:0 8px 8px 0;padding:8px 10px;margin-bottom:5px}
+.atv-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:3px}
+.atv-nome{font-size:11px;font-weight:700;color:var(--text)}
+.atv-hora{font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace;white-space:nowrap}
+.atv-badge{display:inline-flex;padding:1px 5px;border-radius:3px;font-size:9px;font-weight:600;margin-top:2px}
+.atv-txt{font-size:11px;color:var(--text2);line-height:1.45;margin-top:3px}
+.atv-txt strong{color:var(--text);font-weight:700}
+
+/* ── FILA ── */
+.fila-item{border:0.5px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:6px}
 .fila-hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 13px;background:var(--s2);border-bottom:0.5px solid var(--border)}
 .fila-nome{font-size:13px;font-weight:700;color:var(--text)}
 .fila-badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px}
 .fb-call{background:#e6f1fb;color:#185fa5}.fb-wa{background:#eaf3de;color:#1a7a4a}
-.fila-body{padding:10px 13px}.fila-motivo{font-size:12px;color:var(--text2);margin-bottom:6px;line-height:1.5}
+.fila-body{padding:10px 13px}
 .fila-script{background:var(--navy);color:rgba(255,255,255,.9);border-radius:6px;padding:9px 12px;font-size:12px;font-style:italic;line-height:1.6}
 .fila-script-tag{font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-l);margin-bottom:4px;font-style:normal}
-.topbar{position:fixed;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--navy),var(--gold));transform:scaleX(0);transform-origin:left;z-index:999;transition:transform .4s}
-.topbar.on{transform:scaleX(.85)}.topbar.done{transform:scaleX(1);opacity:0;transition:opacity .5s}
+
+.bu-sec{margin-bottom:20px}
+.bu-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding-bottom:8px;border-bottom:0.5px solid var(--border)}
+.bu-pill{font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;color:white}
+.bu-mi{background:var(--navy)}.bu-obras{background:#5f3a1a}.bu-me{background:#1a5f3a}
+.vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.vc{background:var(--white);border:0.5px solid var(--border);border-radius:var(--r);padding:12px;cursor:pointer;transition:all .15s}
+.vc:hover{border-color:var(--navy)}.vc.sel{border-color:var(--navy);border-width:1.5px}
+.vc-top{display:flex;align-items:center;gap:8px;margin-bottom:9px}
+.av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:white;flex-shrink:0}
+.vc-nome{font-size:13px;font-weight:700;color:var(--text);line-height:1.2}
+.vc-sub{font-size:10px;color:var(--muted);display:flex;align-items:center;gap:3px}
+.dot{display:inline-block;width:5px;height:5px;border-radius:50%}
+.dr{background:var(--red)}.da{background:var(--amber)}.dg{background:var(--green)}
+.vc-val{font-size:14px;font-weight:800;color:var(--text);letter-spacing:-.2px;margin-bottom:4px;font-family:'JetBrains Mono',monospace}
+.vprog{height:3px;background:var(--border);border-radius:2px;overflow:hidden;margin-bottom:6px}
+.vpf{height:3px;border-radius:2px}
+.vc-footer{display:flex;align-items:center;justify-content:space-between;gap:4px;flex-wrap:wrap}
+.vf-item{font-size:10px;color:var(--muted);display:flex;align-items:center;gap:3px}
+.wa-badge{font-size:9px;font-weight:700;padding:1px 5px;border-radius:3px}
+.wb-ok{background:#eaf3de;color:#1a5f3a}.wb-warn{background:#faeeda;color:#633806}.wb-na{background:var(--s2);color:var(--muted)}
 </style>
 </head>
 <body>
-<div class="topbar" id="topbar"></div>
 <header class="hdr">
-  <div class="hdr-l">
+  <div style="display:flex;align-items:center;gap:12px">
     <div class="logo">SABA<span>GRAM</span></div>
     <div class="hsep"></div>
     <div class="hdr-badge" id="hdrBadge">VISÃO GERENCIAL</div>
   </div>
-  <div class="hdr-r">
+  <div style="display:flex;align-items:center;gap:8px">
     <div id="clock"></div>
-    <button class="hbtn" id="btnUpd" onclick="iniciar()"><span id="btnIcon">↻</span> Atualizar</button>
     <button class="hbtn-ghost" onclick="sair()">Sair</button>
   </div>
 </header>
+
 <div class="nav">
-  <button class="nbtn on" id="nb-geral" onclick="togglePanel('geral',this)">📊 Time geral <span class="narr">▾</span></button>
-  <button class="nbtn" id="nb-mi" onclick="togglePanel('mi',this)">👥 BU MI <span class="narr">▾</span></button>
-  <button class="nbtn" id="nb-obras" onclick="togglePanel('obras',this)">🏗 BU Obras <span class="narr">▾</span></button>
-  <button class="nbtn" id="nb-me" onclick="togglePanel('me',this)">🌎 BU ME (USD) <span class="narr">▾</span></button>
+  <button class="nbtn on" id="nb-geral" onclick="showSection('geral',this)">📊 Time geral</button>
+  <button class="nbtn" id="nb-vendedores" onclick="showSection('vendedores',this)">👥 Vendedores</button>
+  <button class="nbtn" id="nb-mi" onclick="showSection('mi',this)">🏠 BU MI</button>
+  <button class="nbtn" id="nb-obras" onclick="showSection('obras',this)">🏗 BU Obras</button>
+  <button class="nbtn" id="nb-me" onclick="showSection('me',this)">🌎 BU ME</button>
   <div class="nav-right" id="navRight">—</div>
 </div>
-<div class="dd-wrap">
-  <div class="dd-panel open" id="panel-geral">
-    <div class="dd-top-title">
-      Time geral · junho/2026 · <span id="pDias">18</span> dias úteis restantes
-      <span class="ctx-badge" id="ctxMes">🟡 Início de mês — foco em ritmo e atividade</span>
-    </div>
-    <div class="fin-mets">
-      <div class="fm"><div class="fm-v gold" id="pFatBRL">R$61k</div><div class="fm-l">Faturado BRL</div></div>
-      <div class="fm"><div class="fm-v gold" id="pFatUSD">US$0k</div><div class="fm-l">Faturado USD</div></div>
-      <div class="fm"><div class="fm-v red" id="pFaltaBRL">R$1.073k</div><div class="fm-l">Falta meta BRL</div></div>
-      <div class="fm"><div class="fm-v red" id="pFaltaUSD">US$197k</div><div class="fm-l">Falta meta USD</div></div>
-      <div class="fm"><div class="fm-v amber" id="pCriticos">4</div><div class="fm-l">Vendedores críticos</div></div>
-    </div>
-    <div class="act-row">
-      <div class="act-block">
-        <div class="act-hdr"><div class="act-icon call">☎</div><div class="act-lbl">Ligações hoje — time</div></div>
-        <div class="act-mets">
-          <div><div class="am-v" id="pLigTotal">9</div><div class="am-l">Total feitas</div></div>
-          <div><div class="am-v" id="pLigTaxa">55%</div><div class="am-l">Taxa atendimento</div></div>
-          <div><div class="am-v" id="pLigDuracao">1m45s</div><div class="am-l">Duração média</div></div>
-        </div>
-      </div>
-      <div class="act-block">
-        <div class="act-hdr"><div class="act-icon wa">💬</div><div class="act-lbl">WhatsApp hoje — time</div></div>
-        <div class="act-mets">
-          <div><div class="am-v" id="pWaMsgs">22</div><div class="am-l">Chats ativos</div></div>
-          <div><div class="am-v" id="pWaChats">20</div><div class="am-l">Sizenando</div></div>
-          <div><div class="am-v danger" id="pWaAlerta">6 ⚠</div><div class="am-l">Tom pessoal</div></div>
-        </div>
-      </div>
-    </div>
-    <div class="wa-alert">⚠ <span><strong>Sizenando</strong>: "tudo bem por ai minha amiga?", "Bom dia meu amigo Elias", "meu amigo" — 6 chats com tom pessoal hoje. Abordagem centrada no vendedor, não no cliente.</span></div>
-  </div>
-  <div class="dd-panel" id="panel-mi">
-    <div class="dd-top-title">BU MI — Mercado Interno · BRL</div>
-    <div class="fin-mets" style="grid-template-columns:repeat(4,1fr)">
-      <div class="fm"><div class="fm-v gold">R$29k</div><div class="fm-l">Faturado</div></div>
-      <div class="fm"><div class="fm-v">R$964k</div><div class="fm-l">Meta consolidada</div></div>
-      <div class="fm"><div class="fm-v red">R$935k</div><div class="fm-l">Falta</div></div>
-      <div class="fm"><div class="fm-v amber">9</div><div class="fm-l">Ligações hoje</div></div>
-    </div>
-  </div>
-  <div class="dd-panel" id="panel-obras">
-    <div class="dd-top-title">BU Obras — Construção & Projetos · BRL</div>
-    <div class="fin-mets" style="grid-template-columns:repeat(4,1fr)">
-      <div class="fm"><div class="fm-v gold">R$12k</div><div class="fm-l">Faturado</div></div>
-      <div class="fm"><div class="fm-v">R$172k</div><div class="fm-l">Meta</div></div>
-      <div class="fm"><div class="fm-v red">R$159k</div><div class="fm-l">Falta</div></div>
-      <div class="fm"><div class="fm-v amber">0</div><div class="fm-l">Ligações hoje</div></div>
-    </div>
-  </div>
-  <div class="dd-panel" id="panel-me">
-    <div class="dd-top-title">BU ME — Mercado Externo · USD</div>
-    <div class="fin-mets" style="grid-template-columns:repeat(4,1fr)">
-      <div class="fm"><div class="fm-v gold">US$0k</div><div class="fm-l">Faturado USD</div></div>
-      <div class="fm"><div class="fm-v">US$197k</div><div class="fm-l">Meta USD</div></div>
-      <div class="fm"><div class="fm-v red">US$197k</div><div class="fm-l">Falta USD</div></div>
-      <div class="fm"><div class="fm-v amber">0</div><div class="fm-l">Ligações hoje</div></div>
-    </div>
-  </div>
-</div>
-<div class="sbar"><div class="sdot" id="sDot"></div><span id="sTxt">Pronto</span></div>
+
+<div class="sbar"><div class="sdot"></div><span id="sTxt">Pronto · <span id="hdrCtx"></span></span></div>
+
 <div class="content">
-  <div class="bu-sec" id="sec-MI">
-    <div class="bu-hdr">
-      <div class="bu-left"><span class="bu-pill bu-mi">BU MI</span> Mercado Interno</div>
-      <div class="bu-stats">R$29k / R$964k · 3%</div>
+
+  <!-- ══ TIME GERAL ══ -->
+  <div id="sec-geral">
+    <!-- BRL + USD -->
+    <div class="tg-metas">
+      <div class="tg-meta" style="background:#1a3254">
+        <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px">Mercado interno · BRL</div>
+        <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:5px">
+          <div class="tg-meta-val" style="color:#e0aa18">R$62k</div>
+          <div style="font-size:13px;color:rgba(255,255,255,.4)">de R$964k</div>
+          <div style="font-size:14px;font-weight:800;color:#f87171;margin-left:auto">6%</div>
+        </div>
+        <div class="tg-bar"><div class="tg-bar-fill" style="width:6%;background:#e0aa18"></div></div>
+        <div class="tg-meta-info"><span>Falta <span style="color:rgba(255,255,255,.7)">R$902k</span> em 19 dias úteis</span><span style="color:#f87171">R$47k/dia</span></div>
+      </div>
+      <div class="tg-meta" style="background:#0c3a2a">
+        <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px">Mercado externo · USD</div>
+        <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:5px">
+          <div class="tg-meta-val" style="color:#f87171">US$0</div>
+          <div style="font-size:13px;color:rgba(255,255,255,.4)">de US$197k</div>
+          <div style="font-size:14px;font-weight:800;color:#f87171;margin-left:auto">0%</div>
+        </div>
+        <div class="tg-bar"><div class="tg-bar-fill" style="width:0%;background:#4ade80"></div></div>
+        <div class="tg-meta-info"><span>Falta <span style="color:rgba(255,255,255,.7)">US$197k</span> em 19 dias úteis</span><span style="color:#f87171">US$10k/dia</span></div>
+      </div>
     </div>
-    <div class="vgrid" id="gridMI"></div>
-  </div>
-  <div class="bu-sec" id="sec-Obras">
-    <div class="bu-hdr">
-      <div class="bu-left"><span class="bu-pill bu-obras">BU Obras</span> Obras & Construção</div>
-      <div class="bu-stats">R$12k / R$172k · 7%</div>
+
+    <!-- Ações + Pulso -->
+    <div class="tg-row2">
+      <!-- Ações -->
+      <div class="tg-card">
+        <div class="tg-card-title">⚡ Ações para você hoje</div>
+        <div class="acao-item" style="background:#fef3c7;cursor:pointer" onclick="showSection('vendedores',document.getElementById('nb-vendedores'))">
+          <span class="acao-num" style="background:#fde68a;color:#92400e">1</span>
+          <div><div class="acao-titulo" style="color:#78350f">1:1 Sizenando — hoje</div><div class="acao-txt" style="color:#92400e">3% da meta, 50% WA pessoal. Mostrar mensagens lado a lado. Cobrar 5 reativações.</div></div>
+          <span style="color:#d97706;font-size:14px;flex-shrink:0;margin-left:auto">›</span>
+        </div>
+        <div class="acao-item" style="background:#fee2e2">
+          <span class="acao-num" style="background:#fca5a5;color:#7f1d1d">2</span>
+          <div><div class="acao-titulo" style="color:#7f1d1d">BU ME zerada — Cezar e Diana</div><div class="acao-txt" style="color:#991b1b">Nenhum pedido USD em junho. 239 e 119 ofertas sem conversão — gargalo no fechamento.</div></div>
+        </div>
+        <div class="acao-item" style="background:#f0fdf4">
+          <span class="acao-num" style="background:#bbf7d0;color:#14532d">OK</span>
+          <div><div class="acao-titulo" style="color:#14532d">Kelly — no ritmo certo</div><div class="acao-txt" style="color:#166534">Conversão 18%, tom 100% comercial. Desafiar a aumentar para 12 contatos/dia.</div></div>
+        </div>
+        <div class="acao-item" style="background:#f0fdf4">
+          <span class="acao-num" style="background:#bbf7d0;color:#14532d">OK</span>
+          <div><div class="acao-titulo" style="color:#14532d">Renata — melhor % da BU MI</div><div class="acao-txt" style="color:#166534">10% com conversão 85%. Investigar se pode aumentar ticket com produtos premium.</div></div>
+        </div>
+      </div>
+
+      <!-- Pulso -->
+      <div class="tg-card">
+        <div class="tg-card-title">📡 Pulso do time — hoje</div>
+        <div style="display:grid;grid-template-columns:1fr 36px 36px 36px 36px;gap:4px;padding:0 4px 5px;border-bottom:0.5px solid var(--border);margin-bottom:5px">
+          <div style="font-size:10px;color:var(--muted)">Vendedor · faturado</div>
+          <div style="font-size:10px;color:var(--muted);text-align:center">%</div>
+          <div style="font-size:10px;color:var(--muted);text-align:center">Lig</div>
+          <div style="font-size:10px;color:var(--muted);text-align:center">WA</div>
+          <div style="font-size:10px;color:var(--muted);text-align:center">Ofer</div>
+        </div>
+        <div style="font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;padding:0 4px">BU MI</div>
+        <div class="pulso-row" style="background:var(--s2);border-color:#d97706">
+          <div style="display:flex;align-items:center;gap:7px"><div class="pulso-av" style="background:#1a3254">SA</div><div><div class="pulso-nome">Sizenando · <span style="font-family:'JetBrains Mono',monospace;font-size:11px">R$7k</span></div><span class="pulso-tag" style="background:#fef3c7;color:#92400e">⚠ pessoal</span></div></div>
+          <div class="pulso-val" style="color:#dc2626">3%</div><div class="pulso-val">7</div><div class="pulso-val">10</div><div class="pulso-val">3</div>
+        </div>
+        <div class="pulso-row" style="background:var(--s2);border-color:#16a34a">
+          <div style="display:flex;align-items:center;gap:7px"><div class="pulso-av" style="background:#1a5f3a">KJ</div><div><div class="pulso-nome">Kelly · <span style="font-family:'JetBrains Mono',monospace;font-size:11px">R$4k</span></div><span class="pulso-tag" style="background:#dcfce7;color:#166534">✓ comercial</span></div></div>
+          <div class="pulso-val" style="color:#d97706">3%</div><div class="pulso-val">3</div><div class="pulso-val">22</div><div class="pulso-val">2</div>
+        </div>
+        <div class="pulso-row" style="background:var(--s2);border-color:var(--border)">
+          <div style="display:flex;align-items:center;gap:7px"><div class="pulso-av" style="background:#8b1a1a">MM</div><div><div class="pulso-nome">Marcelo · <span style="font-family:'JetBrains Mono',monospace;font-size:11px">R$26k</span></div><span style="font-size:9px;color:var(--muted)">sem WA</span></div></div>
+          <div class="pulso-val" style="color:#d97706">6%</div><div class="pulso-val" style="color:var(--muted)">—</div><div class="pulso-val" style="color:var(--muted)">—</div><div class="pulso-val">9</div>
+        </div>
+        <div class="pulso-row" style="background:var(--s2);border-color:#16a34a">
+          <div style="display:flex;align-items:center;gap:7px"><div class="pulso-av" style="background:#6b1a5f">RS</div><div><div class="pulso-nome">Renata · <span style="font-family:'JetBrains Mono',monospace;font-size:11px">R$10k</span></div><span style="font-size:9px;color:var(--muted)">sem WA</span></div></div>
+          <div class="pulso-val" style="color:#16a34a">10%</div><div class="pulso-val" style="color:var(--muted)">—</div><div class="pulso-val" style="color:var(--muted)">—</div><div class="pulso-val" style="color:var(--muted)">—</div>
+        </div>
+        <div class="pulso-row" style="background:var(--s2);border-color:var(--border);margin-bottom:6px">
+          <div style="display:flex;align-items:center;gap:7px"><div class="pulso-av" style="background:#1a4a2a">WM</div><div><div class="pulso-nome">Wesley · <span style="font-family:'JetBrains Mono',monospace;font-size:11px">R$12k</span></div><span style="font-size:9px;color:var(--muted)">sem WA</span></div></div>
+          <div class="pulso-val" style="color:#d97706">8%</div><div class="pulso-val" style="color:var(--muted)">—</div><div class="pulso-val" style="color:var(--muted)">—</div><div class="pulso-val">7</div>
+        </div>
+        <div style="font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;padding:0 4px">BU ME · foco em ofertas + WA</div>
+        <div class="pulso-row" style="background:var(--s2);border-color:#dc2626">
+          <div style="display:flex;align-items:center;gap:7px"><div class="pulso-av" style="background:#1a3a6b">CF</div><div><div class="pulso-nome">Cezar · <span style="font-family:'JetBrains Mono',monospace;font-size:11px">US$0</span></div><span class="pulso-tag" style="background:#fee2e2;color:#991b1b">zero faturado</span></div></div>
+          <div class="pulso-val" style="color:#dc2626">0%</div><div class="pulso-val" style="color:var(--muted)">—</div><div class="pulso-val" style="color:var(--muted)">—</div><div class="pulso-val">1</div>
+        </div>
+        <div class="pulso-row" style="background:var(--s2);border-color:#dc2626">
+          <div style="display:flex;align-items:center;gap:7px"><div class="pulso-av" style="background:#5f1a4a">DR</div><div><div class="pulso-nome">Diana · <span style="font-family:'JetBrains Mono',monospace;font-size:11px">US$0</span></div><span class="pulso-tag" style="background:#fee2e2;color:#991b1b">zero faturado</span></div></div>
+          <div class="pulso-val" style="color:#dc2626">0%</div><div class="pulso-val" style="color:var(--muted)">—</div><div class="pulso-val" style="color:var(--muted)">—</div><div class="pulso-val" style="color:var(--muted)">—</div>
+        </div>
+      </div>
     </div>
-    <div class="vgrid" id="gridObras"></div>
-  </div>
-  <div class="bu-sec" id="sec-ME">
-    <div class="bu-hdr">
-      <div class="bu-left"><span class="bu-pill bu-me">BU ME</span> Mercado Externo (USD)</div>
-      <div class="bu-stats">US$0k / US$197k · 0%</div>
+
+    <!-- Barras progresso -->
+    <div class="tg-card">
+      <div class="tg-card-title">📊 Progresso vs meta — junho 2026</div>
+      <div class="prog-row"><div style="font-size:12px">Sizenando</div><div class="prog-bar"><div class="prog-fill" style="width:3%;background:#f87171"></div></div><div style="font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace;text-align:right">R$7k / R$233k</div><div style="font-size:11px;font-weight:700;color:#dc2626;text-align:right">3%</div></div>
+      <div class="prog-row"><div style="font-size:12px">Kelly</div><div class="prog-bar"><div class="prog-fill" style="width:3%;background:#f87171"></div></div><div style="font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace;text-align:right">R$4k / R$161k</div><div style="font-size:11px;font-weight:700;color:#dc2626;text-align:right">3%</div></div>
+      <div class="prog-row"><div style="font-size:12px">Marcelo</div><div class="prog-bar"><div class="prog-fill" style="width:6%;background:#fbbf24"></div></div><div style="font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace;text-align:right">R$26k / R$463k</div><div style="font-size:11px;font-weight:700;color:#d97706;text-align:right">6%</div></div>
+      <div class="prog-row"><div style="font-size:12px">Renata</div><div class="prog-bar"><div class="prog-fill" style="width:10%;background:#4ade80"></div></div><div style="font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace;text-align:right">R$10k / R$105k</div><div style="font-size:11px;font-weight:700;color:#16a34a;text-align:right">10%</div></div>
+      <div class="prog-row"><div style="font-size:12px">Wesley</div><div class="prog-bar"><div class="prog-fill" style="width:8%;background:#fbbf24"></div></div><div style="font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace;text-align:right">R$12k / R$172k</div><div style="font-size:11px;font-weight:700;color:#d97706;text-align:right">8%</div></div>
+      <div style="height:0.5px;background:var(--border);margin:8px 0"></div>
+      <div class="prog-row"><div style="font-size:12px">Cezar</div><div class="prog-bar"><div class="prog-fill" style="width:0%;background:#f87171"></div></div><div style="font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace;text-align:right">US$0 / US$172k</div><div style="font-size:11px;font-weight:700;color:#dc2626;text-align:right">0%</div></div>
+      <div class="prog-row" style="margin-bottom:0"><div style="font-size:12px">Diana</div><div class="prog-bar"><div class="prog-fill" style="width:0%;background:#f87171"></div></div><div style="font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace;text-align:right">US$0 / US$25k</div><div style="font-size:11px;font-weight:700;color:#dc2626;text-align:right">0%</div></div>
     </div>
-    <div class="vgrid" id="gridME"></div>
   </div>
-  <div id="detalhe" style="display:none"></div>
+
+  <!-- ══ VENDEDORES ══ -->
+  <div id="sec-vendedores" style="display:none">
+    <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px">Time — últimos 7 dias (27/mai a 03/jun)</div>
+    <div class="vd-grid" id="vdGrid"></div>
+    <div id="detalhe-vd"></div>
+  </div>
+
+  <!-- ══ BU MI ══ -->
+  <div id="sec-mi" style="display:none">
+    <div class="bu-sec"><div class="bu-hdr"><div style="display:flex;align-items:center;gap:8px"><span class="bu-pill bu-mi">BU MI</span> Mercado Interno</div><div style="font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace">R$29k / R$964k · 3%</div></div><div class="vgrid" id="gridMI"></div></div>
+    <div id="detalhe"></div>
+  </div>
+
+  <!-- ══ BU OBRAS ══ -->
+  <div id="sec-obras" style="display:none">
+    <div class="bu-sec"><div class="bu-hdr"><div style="display:flex;align-items:center;gap:8px"><span class="bu-pill bu-obras">BU Obras</span> Obras & Construção</div><div style="font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace">R$12k / R$172k · 7%</div></div><div class="vgrid" id="gridObras"></div></div>
+    <div id="detalhe-obras"></div>
+  </div>
+
+  <!-- ══ BU ME ══ -->
+  <div id="sec-me" style="display:none">
+    <div class="bu-sec"><div class="bu-hdr"><div style="display:flex;align-items:center;gap:8px"><span class="bu-pill bu-me">BU ME</span> Mercado Externo (USD)</div><div style="font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace">US$0k / US$197k · 0%</div></div><div class="vgrid" id="gridME"></div></div>
+    <div id="detalhe-me"></div>
+  </div>
+
 </div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import{getAuth,onAuthStateChanged,signOut}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-const FIREBASE_CONFIG = {
-  apiKey:"AIzaSyC6oWnbIyaZejwtNcL2S0SrHKLlLLxzUfI",
-  authDomain:"sales-team-6aeb6.firebaseapp.com",
-  projectId:"sales-team-6aeb6",
-  storageBucket:"sales-team-6aeb6.firebasestorage.app",
-  messagingSenderId:"421701680094",
-  appId:"1:421701680094:web:1f8bc4ae716dd0d0f3bb4f"
-};
+const FB={apiKey:"AIzaSyC6oWnbIyaZejwtNcL2S0SrHKLlLLxzUfI",authDomain:"sales-team-6aeb6.firebaseapp.com",projectId:"sales-team-6aeb6",storageBucket:"sales-team-6aeb6.firebasestorage.app",messagingSenderId:"421701680094",appId:"1:421701680094:web:1f8bc4ae716dd0d0f3bb4f"};
+const app=initializeApp(FB);
+const auth=getAuth(app);
 
-// DADOS REAIS JÁ BUSCADOS DO SALESFORCE E NITZAP (atualizar diariamente)
-const DADOS = {
-  "sizenando@sabagram.com.br": {
-    fat:7785, clientes:1, meta:233289, ligHoje:6, ligAtend:3, ligDurMedia:"1m45s",
-    waTom:"pessoal",
+const VENDEDORES=[
+  {email:"sizenando@sabagram.com.br",nome:"Sizenando Andrade",avatar:"SA",bu:"MI",moeda:"BRL",cor:"#1a3254",whatsapp:"5528999565519",
+   fat7d:88810,clientes7d:7,lig7d:73,atend7d:24,waChats7d:80,waPessoal7d:21,ofertas7d:18,meta:233289,fat:7785},
+  {email:"kelly@sabagram.com.br",nome:"Kelly Julião",avatar:"KJ",bu:"MI",moeda:"BRL",cor:"#1a5f3a",whatsapp:"5528999688866",
+   fat7d:39938,clientes7d:4,lig7d:26,atend7d:11,waChats7d:76,waPessoal7d:1,ofertas7d:13,meta:161563,fat:4191},
+  {email:"marcelo@sabagram.com.br",nome:"Marcelo Melo",avatar:"MM",bu:"MI",moeda:"BRL",cor:"#8b1a1a",whatsapp:"",
+   fat7d:106844,clientes7d:21,lig7d:0,atend7d:0,waChats7d:0,waPessoal7d:0,ofertas7d:80,meta:463680,fat:26045},
+  {email:"renata@sabagram.com.br",nome:"Renata Santana",avatar:"RS",bu:"MI",moeda:"BRL",cor:"#6b1a5f",whatsapp:"",
+   fat7d:22139,clientes7d:2,lig7d:17,atend7d:8,waChats7d:0,waPessoal7d:0,ofertas7d:15,meta:105777,fat:10849},
+  {email:"wesley@sabagram.com.br",nome:"Wesley Matieli",avatar:"WM",bu:"Obras",moeda:"BRL",cor:"#1a4a2a",whatsapp:"",
+   fat7d:80489,clientes7d:2,lig7d:0,atend7d:0,waChats7d:0,waPessoal7d:0,ofertas7d:7,meta:172431,fat:12994},
+  {email:"cezar@sabagram.com.br",nome:"Cezar Fiorio",avatar:"CF",bu:"ME",moeda:"USD",cor:"#1a3a6b",whatsapp:"",
+   fat7d:77301,clientes7d:3,lig7d:0,atend7d:0,waChats7d:0,waPessoal7d:0,ofertas7d:239,meta:172800,fat:0},
+  {email:"diana@sabagram.com.br",nome:"Diana Rigoni",avatar:"DR",bu:"ME",moeda:"USD",cor:"#5f1a4a",whatsapp:"",
+   fat7d:0,clientes7d:0,lig7d:0,atend7d:0,waChats7d:0,waPessoal7d:0,ofertas7d:119,meta:25000,fat:0},
+];
+
+const DADOS={
+  "sizenando@sabagram.com.br":{fat:7785,clientes:1,meta:233289,ligHoje:7,ligAtend:4,ligDurMedia:"1m50s",waTom:"pessoal",
     waChats:[
+      {hora:"19:01",contato:"Marmoraria Santana",msg:"Ligação atendida",tom:"comercial"},
       {hora:"17:09",contato:"Michele Carvalho",msg:"polido, escovado, flameado, qual seria a textura?",tom:"comercial"},
-      {hora:"16:14",contato:"Kesio Motorista Bahia",msg:"Perfeito",tom:"logistica"},
       {hora:"15:45",contato:"Igo José BA",msg:"Vai sim, e ele há de querer",tom:"comercial"},
       {hora:"14:12",contato:"Karol Marmoraria Mendes Lima",msg:"tudo bem por ai minha amiga? como começou seu mês de junho?",tom:"pessoal"},
       {hora:"14:09",contato:"Leandro Domingos",msg:"meu sonho kkkkk",tom:"pessoal"},
       {hora:"14:04",contato:"Jeferson Cardoso",msg:"Obrigado meu amigo",tom:"pessoal"},
       {hora:"13:52",contato:"Tríade Mármores",msg:"Quartzito emerald Lake",tom:"comercial"},
-      {hora:"13:44",contato:"Forte Contato",msg:"eu consigo falar com o responsável por compras neste número?",tom:"comercial"},
-      {hora:"13:40",contato:"Elias Cassiano (Pedra Forte)",msg:"Bom dia meu amigo Elias, como está esse início de mês por ai?",tom:"pessoal"},
-      {hora:"13:35",contato:"Lucas Imperial Marmoraria Campinas",msg:"tenho monte de coisas boas aqui, alguma da negócio pra gente rsrs",tom:"pessoal"},
+      {hora:"13:44",contato:"Forte Contato",msg:"eu consigo falar com o responsável por compras?",tom:"comercial"},
+      {hora:"13:40",contato:"Elias Cassiano (Pedra Forte)",msg:"Bom dia meu amigo Elias, como está esse início de mês?",tom:"pessoal"},
+      {hora:"13:35",contato:"Lucas Imperial Marmoraria Campinas",msg:"tenho monte de coisas boas aqui rsrs",tom:"pessoal"},
     ],
     ligacoes:[
-      {hora:"16:18",tipo:"Feita",resultado:"Não Atendeu",duracao:"—"},
-      {hora:"16:17",tipo:"Feita",resultado:"Não Atendeu",duracao:"—"},
-      {hora:"16:16",tipo:"Feita",resultado:"Atendeu",duracao:"1m42s"},
-      {hora:"13:00",tipo:"Recebida",resultado:"Atendeu",duracao:"2m28s"},
-      {hora:"12:44",tipo:"Recebida",resultado:"Não Atendeu",duracao:"—"},
-      {hora:"11:03",tipo:"Recebida",resultado:"Atendeu",duracao:"1m25s"},
+      {hora:"19:01",tipo:"Feita",resultado:"Atendeu",duracao:"1m45s",cliente:"Marmoraria Santana",resumo:"Ligação atendida — verificar se houve avanço comercial."},
+      {hora:"16:16",tipo:"Feita",resultado:"Atendeu",duracao:"1m42s",cliente:"Janio Pereira Aguiar",resumo:"Score ⭐⭐⭐⭐, R$70k histórico. Conversa curta — provável follow-up de pedido."},
+      {hora:"13:00",tipo:"Recebida",resultado:"Atendeu",duracao:"2m28s",cliente:"Pelego Mármores e Granitos",resumo:"Cliente ligou — sinal de interesse ativo. Registrar próximo passo no SF."},
+      {hora:"11:03",tipo:"Recebida",resultado:"Atendeu",duracao:"1m25s",cliente:"Peracini & CIA",resumo:"Inbound, R$44k histórico. Verificar necessidade e próximo pedido."},
+      {hora:"16h17–18",tipo:"Feita",resultado:"Não Atendeu",duracao:"—",cliente:"Marmoraria Santana (3x)",resumo:"3 tentativas seguidas sem resposta. Trocar para WA antes de ligar novamente."},
+      {hora:"12:44",tipo:"Recebida",resultado:"Não Atendeu",duracao:"—",cliente:"Pelego Mármores e Granitos",resumo:"Cliente tentou contato e não foi atendido. Retornar prioritariamente."},
     ]
   },
-  "kelly@sabagram.com.br": {
-    fat:4191, clientes:2, meta:161563, ligHoje:3, ligAtend:2, ligDurMedia:"—",
-    waTom:"comercial",
-    waChats:[
-      {hora:"17:14",contato:"Eliane Superficies",msg:"🎤 áudio",tom:"comercial"},
-      {hora:"16:44",contato:"PR Luise - Marmoraria Quatro Pontes",msg:"Maravilha, qualquer coisa você pode está me chamando aqui",tom:"comercial"},
-      {hora:"16:34",contato:"SC Junior - Sttudio Superficies",msg:"🎤 áudio",tom:"comercial"},
-      {hora:"14:21",contato:"SC Marcos - Stonebel Marmoraria",msg:"Maravilha",tom:"comercial"},
-      {hora:"14:17",contato:"Andressa Zambi - Pazigram Stones",msg:"🎤 áudio",tom:"comercial"},
-      {hora:"14:02",contato:"Fatima J Rodrigues RJ",msg:"🎤 áudio",tom:"comercial"},
-      {hora:"13:55",contato:"Gabriel RG",msg:"Bom dia Gabriel, tudo bem? Super oferta de Branco Dallas.",tom:"comercial"},
-      {hora:"12:39",contato:"Cynthia Marmoraria TIJUCAS SC",msg:"Bom dia Cynthia, tudo bem? Novo lote de Calacata (Paraná) disponível",tom:"comercial"},
-      {hora:"12:13",contato:"MargrAffonso Kawan",msg:"Bom dia Kawan, tudo bem? Novo lote de Paraná disponível.",tom:"comercial"},
-    ],
-    ligacoes:[
-      {hora:"—",tipo:"Feita",resultado:"Atendeu",duracao:"—"},
-      {hora:"—",tipo:"Feita",resultado:"Atendeu",duracao:"—"},
-      {hora:"—",tipo:"Feita",resultado:"Não Atendeu",duracao:"—"},
-    ]
-  },
-  "marcelo@sabagram.com.br": {fat:26045, clientes:10, meta:463680, ligHoje:0, ligAtend:0, ligDurMedia:"—", waTom:"n/a", waChats:[], ligacoes:[]},
-  "renata@sabagram.com.br":   {fat:10849, clientes:1,  meta:105777, ligHoje:0, ligAtend:0, ligDurMedia:"—", waTom:"n/a", waChats:[], ligacoes:[]},
-  "wesley@sabagram.com.br":   {fat:12994, clientes:1,  meta:172431, ligHoje:0, ligAtend:0, ligDurMedia:"—", waTom:"n/a", waChats:[], ligacoes:[]},
-  "cezar@sabagram.com.br":    {fat:0,     clientes:0,  meta:172800, ligHoje:0, ligAtend:0, ligDurMedia:"—", waTom:"n/a", waChats:[], ligacoes:[], moeda:"USD"},
-  "diana@sabagram.com.br":    {fat:0,     clientes:0,  meta:25000,  ligHoje:0, ligAtend:0, ligDurMedia:"—", waTom:"n/a", waChats:[], ligacoes:[], moeda:"USD"},
+  "kelly@sabagram.com.br":{fat:4191,clientes:2,meta:161563,ligHoje:3,ligAtend:2,ligDurMedia:"—",waTom:"comercial",waChats:[
+    {hora:"18:51",contato:"SC Marmoraria Uhlmann",msg:"🎤 áudio",tom:"comercial"},
+    {hora:"18:19",contato:"Gabriel RG",msg:"🎤 áudio",tom:"comercial"},
+    {hora:"17:14",contato:"Eliane Superficies",msg:"🎤 áudio",tom:"comercial"},
+    {hora:"16:44",contato:"PR Luise - Marmoraria Quatro Pontes",msg:"Maravilha, qualquer coisa pode me chamar aqui",tom:"comercial"},
+  ],ligacoes:[]},
+  "marcelo@sabagram.com.br":{fat:26045,clientes:10,meta:463680,ligHoje:0,ligAtend:0,ligDurMedia:"—",waTom:"n/a",waChats:[],ligacoes:[]},
+  "renata@sabagram.com.br":{fat:10849,clientes:1,meta:105777,ligHoje:0,ligAtend:0,ligDurMedia:"—",waTom:"n/a",waChats:[],ligacoes:[]},
+  "wesley@sabagram.com.br":{fat:12994,clientes:1,meta:172431,ligHoje:0,ligAtend:0,ligDurMedia:"—",waTom:"n/a",waChats:[],ligacoes:[]},
+  "cezar@sabagram.com.br":{fat:0,clientes:0,meta:172800,ligHoje:0,ligAtend:0,ligDurMedia:"—",waTom:"n/a",waChats:[],ligacoes:[],moeda:"USD"},
+  "diana@sabagram.com.br":{fat:0,clientes:0,meta:25000,ligHoje:0,ligAtend:0,ligDurMedia:"—",waTom:"n/a",waChats:[],ligacoes:[],moeda:"USD"},
 };
 
-const VENDEDORES = [
-  {email:"sizenando@sabagram.com.br",nome:"Sizenando Andrade",avatar:"SA",bu:"MI",   moeda:"BRL",cor:"#1a3254",whatsapp:"5528999565519"},
-  {email:"kelly@sabagram.com.br",    nome:"Kelly Julião",     avatar:"KJ",bu:"MI",   moeda:"BRL",cor:"#1a5f3a",whatsapp:"5528999688866"},
-  {email:"marcelo@sabagram.com.br",  nome:"Marcelo Melo",     avatar:"MM",bu:"MI",   moeda:"BRL",cor:"#8b1a1a",whatsapp:""},
-  {email:"renata@sabagram.com.br",   nome:"Renata Santana",   avatar:"RS",bu:"MI",   moeda:"BRL",cor:"#6b1a5f",whatsapp:""},
-  {email:"wesley@sabagram.com.br",   nome:"Wesley Matieli",   avatar:"WM",bu:"Obras",moeda:"BRL",cor:"#1a4a2a",whatsapp:""},
-  {email:"cezar@sabagram.com.br",    nome:"Cezar Fiorio",     avatar:"CF",bu:"ME",   moeda:"USD",cor:"#1a3a6b",whatsapp:""},
-  {email:"diana@sabagram.com.br",    nome:"Diana Rigoni",     avatar:"DR",bu:"ME",   moeda:"USD",cor:"#5f1a4a",whatsapp:""},
-];
+const CONVERSAO={
+  "sizenando@sabagram.com.br":{contatos_dia:27,explicacao:"73 lig + 80 WA em 7 dias com 33% atendimento e 8% conversão. Precisa de 27 contatos/dia para bater R$233k.",distribuicao:"Seg/Qua/Sex: 14 URGENTES · Ter/Qui: 13 ALTAS e MÉDIAS",frequencia:"URGENTE: 1x/semana (4x/mês) · ALTA: 2x/mês · MÉDIA: 1x/mês"},
+  "kelly@sabagram.com.br":{contatos_dia:8,explicacao:"Conversão 18%, melhor do time. Com 41% atendimento, precisa de apenas 8 contatos/dia.",distribuicao:"Seg/Qua/Sex: 4 URGENTES · Ter/Qui: 4 ALTAS e MÉDIAS",frequencia:"URGENTE: 1x/semana (4x/mês) · ALTA: 2x/mês · MÉDIA: 1x/mês"},
+  "marcelo@sabagram.com.br":{contatos_dia:52,explicacao:"Ticket R$25k mas meta R$463k exige velocidade. Sem dados de ligação, estimado em 52 contatos/dia.",distribuicao:"Seg/Qua/Sex: 26 URGENTES · Ter/Qui: 26 ALTAS e MÉDIAS",frequencia:"URGENTE: 1x/semana (4x/mês) · ALTA: 2x/mês · MÉDIA: 1x/mês"},
+  "renata@sabagram.com.br":{contatos_dia:1,explicacao:"Conversão excepcional 85%! Com 70% de atendimento, precisa de apenas 1 contato/dia.",distribuicao:"Foco em 1 contato estratégico por dia",frequencia:"URGENTE: 1x/semana (4x/mês) · ALTA: 2x/mês · MÉDIA: 1x/mês"},
+  "wesley@sabagram.com.br":{contatos_dia:10,explicacao:"Ticket R$50k — 3 clientes resolvem a meta. Foco em qualidade e relacionamento com construtoras.",distribuicao:"Seg/Qua/Sex: 5 URGENTES · Ter/Qui: 5 ALTAS e MÉDIAS",frequencia:"URGENTE: 1x/semana (4x/mês) · ALTA: 2x/mês · MÉDIA: 1x/mês"},
+  "cezar@sabagram.com.br":{contatos_dia:21,explicacao:"Precisa fechar 7 clientes a US$25k ticket. 239 ofertas sem conversão — gargalo no fechamento.",distribuicao:"Seg/Qua/Sex: 11 URGENTES · Ter/Qui: 10 ALTAS e MÉDIAS",frequencia:"URGENTE: 1x/semana (4x/mês) · ALTA: 2x/mês · MÉDIA: 1x/mês"},
+  "diana@sabagram.com.br":{contatos_dia:4,explicacao:"Precisa de apenas 1 cliente (US$22k ticket). 119 ofertas sem conversão — problema na seleção de clientes.",distribuicao:"2 URGENTES + 2 ALTAS por dia",frequencia:"URGENTE: 1x/semana (4x/mês) · ALTA: 2x/mês · MÉDIA: 1x/mês"},
+};
+
+const VD_CONFIG={
+  "sizenando@sabagram.com.br":{alertaTipo:"warn",alertaTxt:"Volume ok (73 lig) mas 33% atendimento e 21% WA pessoal — esforço alto, resultado médio.",atitudeTxt:"No 1:1: mostrar mensagens pessoais vs comerciais. Cobrar 5 reativações documentadas até sexta. Compartilhar modelo WA da Kelly.",atitudeCor:"#d97706"},
+  "kelly@sabagram.com.br":{alertaTipo:"ok",alertaTxt:"Padrão consistente e comercial. Conversão 18%, WA alto volume com tom correto — melhor do time.",atitudeTxt:"Reconhecer publicamente. Desafio: aumentar de 8 para 12 contatos/dia mantendo qualidade. Compartilhar modelo WA com Sizenando.",atitudeCor:"#16a34a"},
+  "marcelo@sabagram.com.br":{alertaTipo:"info",alertaTxt:"Sem WA monitorado. 80 ofertas em 7d com 21 clientes. Ticket médio caiu de R$25k para R$5k — mix errado.",atitudeTxt:"Ativar WA urgente. Investigar mix: ticket de R$5k com 21 clientes = produto errado. Revisar pipeline e foco em clientes maiores.",atitudeCor:"#d97706"},
+  "renata@sabagram.com.br":{alertaTipo:"ok",alertaTxt:"Conversão excepcional (85%) — 2 clientes em 7d já vale R$22k. Baixo volume, altíssima eficiência.",atitudeTxt:"Manter autonomia. Ativar WA para visibilidade. Investigar se pode aumentar ticket com produtos premium (conversão permite).",atitudeCor:"#16a34a"},
+  "wesley@sabagram.com.br":{alertaTipo:"ok",alertaTxt:"R$80k em 2 clientes — ticket altíssimo (R$40k). Dinâmica de obras: menos contatos, negociações longas.",atitudeTxt:"Ativar monitoramento WA e lig. Revisar pipeline: quais projetos em negociação? Concentração em 2 clientes = risco.",atitudeCor:"#16a34a"},
+  "cezar@sabagram.com.br":{alertaTipo:"warn",alertaTxt:"239 ofertas em 7d mas zero faturado em junho — alto volume sem conversão. Gargalo no fechamento.",atitudeTxt:"Reunião urgente: com 239 ofertas e R$0, problema não é volume. Revisar condições, follow-up pós-oferta e clientes que não responderam.",atitudeCor:"#dc2626"},
+  "diana@sabagram.com.br":{alertaTipo:"red",alertaTxt:"119 ofertas, zero conversão. Meta mínima (US$25k, 1 cliente) mas sem resultado em 7 dias.",atitudeTxt:"Intervenção: analisar para quem as 119 ofertas foram. Acompanhar próximas 10 individualmente. Perfil errado ou oferta não competitiva.",atitudeCor:"#dc2626"},
+};
+
+const FILAS={
+  "sizenando@sabagram.com.br":[
+    {nome:"NILGRAN",fat:"R$37k",dias:278,score:5,status:"1A60",prioridade:"URGENTE",modo:"WhatsApp",ultimoCanal:"WhatsApp",ultimaData:"ago/25",ultimoTom:"comercial",ultimoResumo:"Último WA há 9 meses. 278 dias sem comprar. Risco alto de migração para concorrente.",script:"Bom dia [nome], tudo bem? Faz um tempo que a gente não faz negócio. Qual material você está precisando agora para o próximo mês?"},
+    {nome:"2A DECOR",fat:"R$181k",dias:229,score:5,status:"Inativo",prioridade:"URGENTE",modo:"Ligação",ultimoCanal:"",ultimaData:"",ultimoTom:"",ultimoResumo:"Nenhum contato registrado desde outubro 2025. 229 dias sem interação.",script:"Oi [nome], Sizenando da Sabagram. Sumiu! Já faz uns 8 meses. O que aconteceu? Tem algum material que você está precisando?"},
+    {nome:"POSTO JUPARANA",fat:"R$122k",dias:125,score:5,status:"61A90",prioridade:"URGENTE",modo:"WhatsApp",ultimoCanal:"Ligação",ultimaData:"25/mai",ultimoTom:"comercial",ultimoResumo:"Vendedor propôs venda, cliente relutante. Interesse 6/10. Próximo passo pendente: enviar proposta com preços definidos.",script:"[Nome], bom dia! Preparei aquela proposta que você pediu. Tenho condições especiais para esse mês. Quando posso te enviar os detalhes?"},
+    {nome:"STUDIO MARMORES",fat:"R$37k",dias:117,score:5,status:"91A120",prioridade:"URGENTE",modo:"WhatsApp",ultimoCanal:"",ultimaData:"",ultimoTom:"",ultimoResumo:"117 dias sem comprar. Status 91A120 — prestes a virar inativo.",script:"Oi [nome]! Sizenando aqui. Vi que faz um tempo que a gente não faz negócio. Tá precisando de algum material?"},
+    {nome:"TECHNOGRAN",fat:"R$281k",dias:223,score:3,status:"Inativo",prioridade:"ALTA",modo:"Ligação",ultimoCanal:"",ultimaData:"",ultimoTom:"",ultimoResumo:"Maior cliente por volume (R$281k). Inativo há 223 dias.",script:"Oi [nome], Sizenando da Sabagram. Faz quase 8 meses. O que precisaria mudar para voltarmos a trabalhar juntos?"},
+    {nome:"MARMORARIA TOCANTINS",fat:"R$300k",dias:54,score:5,status:"1A60",prioridade:"ALTA",modo:"WhatsApp",ultimoCanal:"WhatsApp",ultimaData:"hoje",ultimoTom:"pessoal",ultimoResumo:"Perguntou sobre quartzitos. Cliente: 'por enquanto não, manda cotações quando aparecer'. Carregamento previsto próxima semana.",script:"[Nome], tudo bem? Tenho uma oferta nova de quartzito Emerald Lake — você disse que queria receber quando aparecesse. Posso te mandar as fotos?"},
+    {nome:"DEPOSITO PEDRAS CACHOEIRO",fat:"R$73k",dias:68,score:5,status:"1A60",prioridade:"ALTA",modo:"WhatsApp",ultimoCanal:"",ultimaData:"",ultimoTom:"",ultimoResumo:"68 dias sem comprar. Perto de virar 61A90.",script:"[Nome], bom dia! Tá na hora de repor estoque? Qual o seu prazo para o próximo pedido?"},
+    {nome:"TUBARÃO COM. PEDRAS",fat:"R$53k",dias:34,score:5,status:"1A60",prioridade:"ALTA",modo:"WhatsApp",ultimoCanal:"",ultimaData:"",ultimoTom:"",ultimoResumo:"34 dias sem comprar. Acompanhamento mensal.",script:"Oi [nome]! Sizenando aqui. Queria saber se você vai precisar de material esse mês."},
+    {nome:"MARMORARIA TOCANTINS LTDA",fat:"R$149k",dias:12,score:5,status:"1A60",prioridade:"MÉDIA",modo:"WhatsApp",ultimoCanal:"WhatsApp",ultimaData:"hoje",ultimoTom:"comercial",ultimoResumo:"'ficarei no aguardo rsers' — aguardando cotação de quartzito enviada hoje.",script:"[Nome], o material chegou bem? Quando precisar do próximo lote me avisa com antecedência."},
+    {nome:"STILLOS MARMORARIA",fat:"R$37k",dias:478,score:3,status:"Inativo",prioridade:"MÉDIA",modo:"WhatsApp",ultimoCanal:"",ultimaData:"",ultimoTom:"",ultimoResumo:"Inativo há 478 dias. Tentativa de reativação.",script:"Oi [nome], Sizenando da Sabagram. Faz um tempão. Tenho um material novo que lembrei de você. Posso te mandar uma foto?"},
+  ],
+  "cezar@sabagram.com.br":[
+    {nome:"ONE ST VINCENT GROUP",fat:"US$180k",dias:98,score:5,status:"91A120",prioridade:"URGENTE",modo:"Ligação",ultimoCanal:"",ultimaData:"",ultimoTom:"",ultimoResumo:"US$180k histórico, 91A120. Janela crítica antes de perder a conta.",script:"Hi [Name], Cezar from Sabagram. It's been about 3 months — are you planning any containers for the next few months?"},
+    {nome:"ARCHITECTURAL SURFACES",fat:"US$523k",dias:338,score:4,status:"Inativo",prioridade:"URGENTE",modo:"Ligação",ultimoCanal:"",ultimaData:"",ultimoTom:"",ultimoResumo:"US$523k histórico, inativo há 11 meses. Enorme potencial de reativação.",script:"Hi [Name], Cezar from Sabagram. It's been almost a year. Has something changed, or is there something we could do to get back on your vendor list?"},
+    {nome:"EVEREST STONE LLC",fat:"US$28k",dias:96,score:5,status:"61A90",prioridade:"URGENTE",modo:"WhatsApp",ultimoCanal:"",ultimaData:"",ultimoTom:"",ultimoResumo:"61A90 — risco iminente de perder para concorrente.",script:"Hi [Name], Cezar here. We just received new material you might be interested in. What are you currently sourcing?"},
+    {nome:"EAST WEST MARBLE CO",fat:"US$2.3M",dias:56,score:4,status:"1A60",prioridade:"ALTA",modo:"Ligação",ultimoCanal:"",ultimaData:"",ultimoTom:"",ultimoResumo:"MAIOR cliente (US$2.3M), 56 dias sem comprar. Relacionamento estratégico.",script:"Hi [Name], Cezar here. Just checking in on our next order — do you have anything planned for the coming months?"},
+    {nome:"MSI - M S INTERNATIONAL",fat:"US$1.9M",dias:5,score:4,status:"1A60",prioridade:"MÉDIA",modo:"WhatsApp",ultimoCanal:"",ultimaData:"",ultimoTom:"",ultimoResumo:"US$1.9M, comprou há 5 dias. Pós-venda.",script:"Hi [Name], Cezar from Sabagram. How is everything going with the last order?"},
+  ],
+};
 
 const AUTH_MAP={"henrique@sabagram.com.br":{perfil:"admin"},"dhiego@sabagram.com.br":{perfil:"gerente"}};
 VENDEDORES.forEach(v=>{AUTH_MAP[v.email]={perfil:"vendedor"};});
 
-const app=initializeApp(FIREBASE_CONFIG);
-const auth=getAuth(app);
-let ativoEmail=null;
+const app2=app;const auth2=auth;
+const $=id=>document.getElementById(id);
+const fmt=(v,m='BRL')=>m==='USD'?'US$'+Math.floor(v/1000)+'k':'R$'+Math.floor(v/1000)+'k';
+const diasUteis=()=>{const h=new Date(),f=new Date(h.getFullYear(),h.getMonth()+1,0);let c=0,d=new Date(h);d.setDate(d.getDate()+1);while(d<=f){if(d.getDay()!==0&&d.getDay()!==6)c++;d.setDate(d.getDate()+1);}return c;};
+const md2html=t=>t.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/^###\s+(.+)$/gm,'<h3 style="font-size:11px;font-weight:800;color:var(--navy);margin:14px 0 5px;text-transform:uppercase;letter-spacing:.05em;border-bottom:0.5px solid var(--border);padding-bottom:4px">$1</h3>').replace(/^##\s+(.+)$/gm,'<h3 style="font-size:11px;font-weight:800;color:var(--navy);margin:14px 0 5px">$1</h3>').replace(/\n\n+/g,'</p><p>').replace(/\n/g,'<br>');
+const tick=()=>{$('clock').textContent=new Date().toLocaleString('pt-BR',{weekday:'short',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}).toUpperCase();};
+tick();setInterval(tick,30000);
 
 onAuthStateChanged(auth,async user=>{
   if(!user){window.location.href='index.html';return;}
@@ -335,422 +457,368 @@ onAuthStateChanged(auth,async user=>{
 });
 window.sair=async()=>{await signOut(auth);window.location.href='index.html';};
 
-const $=id=>document.getElementById(id);
-const fmt=(v,m='BRL')=>m==='USD'?'US$'+Math.floor(v/1000)+'k':'R$'+Math.floor(v/1000)+'k';
-const setStatus=(t,on=false)=>{$('sTxt').textContent=t;$('sDot').className='sdot'+(on?' on':'');};
-const diasUteis=()=>{const h=new Date(),f=new Date(h.getFullYear(),h.getMonth()+1,0);let c=0,d=new Date(h);d.setDate(d.getDate()+1);while(d<=f){if(d.getDay()!==0&&d.getDay()!==6)c++;d.setDate(d.getDate()+1);}return c;};
-const tick=()=>$('clock').textContent=new Date().toLocaleString('pt-BR',{weekday:'short',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}).toUpperCase();
-tick();setInterval(tick,30000);
-const md2html=t=>t.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/^###\s+(.+)$/gm,'<h3>$1</h3>').replace(/^##\s+(.+)$/gm,'<h3>$1</h3>').replace(/\n\n+/g,'</p><p>').replace(/\n/g,'<br>');
-
-window.togglePanel=(id,btn)=>{
-  const panels=['geral','mi','obras','me'];
-  const isOpen=$('panel-'+id).classList.contains('open');
-  panels.forEach(p=>$('panel-'+p).classList.remove('open'));
-  document.querySelectorAll('.nbtn').forEach(b=>b.classList.remove('on'));
-  if(!isOpen){$('panel-'+id).classList.add('open');btn.classList.add('on');}
-  const buMap={mi:'MI',obras:'Obras',me:'ME'};
-  const buFiltro=buMap[id];
-  ['MI','Obras','ME'].forEach(bu=>{
-    const sec=$('sec-'+bu);
-    if(sec)sec.style.display=(!buFiltro||bu===buFiltro)?'':'none';
+// ── NAVEGAÇÃO ──
+window.showSection=(id,btn)=>{
+  ['geral','vendedores','mi','obras','me'].forEach(s=>{
+    const el=$('sec-'+s);if(el)el.style.display='none';
   });
+  document.querySelectorAll('.nbtn').forEach(b=>b.classList.remove('on'));
+  const sec=$('sec-'+id);if(sec)sec.style.display='block';
+  if(btn)btn.classList.add('on');
+  if(id==='mi')renderBUCards();
+  if(id==='vendedores')renderVdCards();
 };
 
-function getStatus(fat,meta,lig){
-  const p=meta>0?fat/meta*100:0;
-  if(p<5&&lig<3)return{cls:'st-c',txt:'🔴 Crítico',dot:'dr'};
-  if(p<20||lig<5)return{cls:'st-a',txt:'🟡 Alerta',dot:'da'};
-  return{cls:'st-g',txt:'✅ OK',dot:'dg'};
-}
-
-function renderCards(){
+// ── CARDS BU ──
+function getStatus(fat,meta,lig){const p=meta>0?fat/meta*100:0;if(p<5&&lig<3)return{cls:'st-c',txt:'🔴 Crítico',dot:'dr'};if(p<20||lig<5)return{cls:'st-a',txt:'🟡 Alerta',dot:'da'};return{cls:'st-g',txt:'✅ OK',dot:'dg'};}
+function renderBUCards(){
   ['MI','Obras','ME'].forEach(bu=>{
     const lista=VENDEDORES.filter(v=>v.bu===bu);
-    const grid=$('grid'+bu);
-    if(!grid)return;
+    const grid=$('grid'+bu);if(!grid)return;
     grid.innerHTML=lista.map(v=>{
-      const d=DADOS[v.email]||{};
-      const m=d.moeda||v.moeda;
-      const fat=d.fat||0, meta=d.meta||1;
-      const pct=Math.min(100,Math.floor(fat/meta*100));
+      const d=DADOS[v.email]||{};const m=d.moeda||v.moeda;
+      const fat=d.fat||0,meta=d.meta||1;const pct=Math.min(100,Math.floor(fat/meta*100));
       const corP=pct<10?'var(--red)':pct<40?'var(--amber)':'var(--green)';
       const st=getStatus(fat,meta,d.ligHoje||0);
-      const tomPessoal=(d.waTom==='pessoal')||(d.waChats||[]).filter(c=>c.tom==='pessoal').length>=3;
-      const waBadge=!v.whatsapp?'<span class="wa-badge wb-na">não monit.</span>':tomPessoal?'<span class="wa-badge wb-warn">⚠ pessoal</span>':'<span class="wa-badge wb-ok">✓ comercial</span>';
-      return`<div class="vc${ativoEmail===v.email?' sel':''}" onclick="selecionarVendedor('${v.email}')">
-        <div class="vc-top">
-          <div class="av" style="background:${v.cor}">${v.avatar}</div>
-          <div><div class="vc-nome">${v.nome.split(' ')[0]}</div><div class="vc-sub"><span class="dot ${st.dot}"></span>${st.txt}</div></div>
-        </div>
+      const tp=(d.waChats||[]).filter(c=>c.tom==='pessoal').length>=3;
+      const wb=!v.whatsapp?'<span class="wa-badge wb-na">não monit.</span>':tp?'<span class="wa-badge wb-warn">⚠ pessoal</span>':'<span class="wa-badge wb-ok">✓ comercial</span>';
+      return`<div class="vc" onclick="abrirVendedor('${v.email}','${bu}')">
+        <div class="vc-top"><div class="av" style="background:${v.cor}">${v.avatar}</div><div><div class="vc-nome">${v.nome.split(' ')[0]}</div><div class="vc-sub"><span class="dot ${st.dot}"></span>${st.txt}</div></div></div>
         <div class="vc-val">${fmt(fat,m)} <span style="font-size:10px;color:var(--muted)">/ ${fmt(meta,m)}</span></div>
         <div class="vprog"><div class="vpf" style="width:${pct}%;background:${corP}"></div></div>
-        <div class="vc-footer">
-          <div class="vf-item">☎ ${d.ligHoje||0} lig.</div>
-          <div class="vf-item">💬 ${v.whatsapp?(d.waChats||[]).length:' —'} ${waBadge}</div>
-        </div>
+        <div class="vc-footer"><div class="vf-item">☎ ${d.ligHoje||0} lig.</div><div class="vf-item">💬 ${v.whatsapp?(d.waChats||[]).length:' —'} ${wb}</div></div>
       </div>`;
     }).join('');
   });
 }
 
-window.selecionarVendedor=async(email)=>{
-  ativoEmail=email;
-  renderCards();
+// ── CARDS VENDEDORES (resumo 7d) ──
+function renderVdCards(){
+  const g=$('vdGrid');if(!g)return;
+  const dias=diasUteis();
+  g.innerHTML=VENDEDORES.map(v=>{
+    const cfg=VD_CONFIG[v.email]||{};
+    const pct=Math.min(100,Math.floor(v.fat/v.meta*100));
+    const corPct=pct<5?'#f87171':pct<15?'#fbbf24':'#4ade80';
+    const alertBg=cfg.alertaTipo==='ok'?'#f0fdf4':cfg.alertaTipo==='warn'?'#fef3c7':cfg.alertaTipo==='red'?'#fee2e2':'var(--s2)';
+    const alertTxt=cfg.alertaTipo==='ok'?'#14532d':cfg.alertaTipo==='warn'?'#78350f':cfg.alertaTipo==='red'?'#7f1d1d':'var(--text)';
+    const alertIcon=cfg.alertaTipo==='ok'?'✓':cfg.alertaTipo==='warn'?'⚠':'⚠';
+    const m=v.moeda;
+    const atendPct=v.lig7d>0?Math.round(v.atend7d/v.lig7d*100):0;
+    return`<div class="vd-card">
+      <div class="vd-hdr" style="background:${v.cor}">
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="vd-av">${v.avatar}</div>
+          <div><div class="vd-nome">${v.nome.split(' ')[0]}</div><div class="vd-sub">BU ${v.bu} · ${m==='USD'?'US$':'R$'}${Math.floor(v.meta/1000)}k meta</div></div>
+        </div>
+        <div style="text-align:right">
+          <div class="vd-pct" style="color:${corPct}">${pct}%</div>
+          <div class="vd-fat">${fmt(v.fat,m)} faturado</div>
+        </div>
+      </div>
+      <div class="vd-body">
+        <div class="vd-prog"><div style="height:3px;border-radius:2px;width:${pct}%;background:${corPct}"></div></div>
+        <div class="vd-mets">
+          <div class="vd-met"><div class="vd-met-v">${v.lig7d||'—'}</div><div class="vd-met-l">lig 7d</div></div>
+          <div class="vd-met"><div class="vd-met-v" style="${v.waChats7d>0&&v.waPessoal7d/v.waChats7d>.3?'color:var(--amber)':v.waChats7d>0?'color:var(--green)':''}">${v.waChats7d||'—'}</div><div class="vd-met-l">WA 7d</div></div>
+          <div class="vd-met"><div class="vd-met-v">${v.ofertas7d||'—'}</div><div class="vd-met-l">ofertas 7d</div></div>
+        </div>
+        <div class="vd-alert" style="background:${alertBg}">
+          <span style="color:${alertTxt};font-size:12px;flex-shrink:0">${alertIcon}</span>
+          <span style="font-size:11px;color:${alertTxt};line-height:1.45">${cfg.alertaTxt||''}</span>
+        </div>
+        <div class="vd-atitude" style="border-color:${cfg.atitudeCor||'var(--border)'}">
+          <div class="vd-atitude-lbl">Atitude do gerente</div>
+          <div class="vd-atitude-txt">${cfg.atitudeTxt||''}</div>
+        </div>
+        <div class="vd-ver" onclick="abrirVendedor('${v.email}','vd')">Ver diagnóstico completo ›</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── ABRIR VENDEDOR ──
+window.abrirVendedor=async(email,origem)=>{
   const v=VENDEDORES.find(x=>x.email===email);
   const d=DADOS[email]||{};
   if(!v)return;
-  const det=$('detalhe');
+  const detId=origem==='vd'?'detalhe-vd':origem==='Obras'?'detalhe-obras':origem==='ME'?'detalhe-me':'detalhe';
+  const det=$(detId);if(!det)return;
   det.style.display='block';
   det.scrollIntoView({behavior:'smooth',block:'start'});
 
   const m=d.moeda||v.moeda;
-  const fat=d.fat||0, meta=d.meta||1;
+  const fat=d.fat||0,meta=d.meta||1;
   const pct=Math.min(100,Math.floor(fat/meta*100));
   const falta=meta-fat;
   const dias=diasUteis();
   const corP=pct<10?'var(--red)':pct<40?'var(--amber)':'var(--green)';
   const st=getStatus(fat,meta,d.ligHoje||0);
+
+  det.innerHTML=`<div class="detail">
+    <div class="detail-hdr">
+      <div class="av-lg" style="background:${v.cor}">${v.avatar}</div>
+      <div>
+        <div class="detail-title">${v.nome}<span class="st-tag ${st.cls}">${st.txt}</span></div>
+        <div class="detail-sub">BU ${v.bu} · ${m} · Meta ${fmt(meta,m)} · ${dias} dias úteis restantes</div>
+      </div>
+    </div>
+    <div class="det-mets">
+      <div class="dm"><div class="dm-v" style="color:var(--navy)">${fmt(fat,m)}</div><div class="dm-l">Faturado</div></div>
+      <div class="dm"><div class="dm-v" style="color:${corP}">${pct}%</div><div class="dm-l">Atingido</div></div>
+      <div class="dm"><div class="dm-v" style="color:var(--red)">${fmt(falta,m)}</div><div class="dm-l">Falta</div></div>
+      <div class="dm"><div class="dm-v" style="color:${(d.ligHoje||0)>=8?'var(--green)':(d.ligHoje||0)>=4?'var(--amber)':'var(--red)'}">${d.ligHoje||0}</div><div class="dm-l">Lig. hoje</div></div>
+      <div class="dm"><div class="dm-v">${d.clientes||0}</div><div class="dm-l">Clientes/mês</div></div>
+      <div class="dm"><div class="dm-v">${fmt(Math.floor(falta/Math.max(dias,1)),m)}</div><div class="dm-l">Falta/dia</div></div>
+    </div>
+    <div class="det-prog"><div class="det-prog-fill" style="width:${pct}%;background:${corP}"></div></div>
+    <div class="det-prog-lbl">${pct}% da meta</div>
+    <div class="tabs-nav">
+      <button class="tab-btn on" onclick="switchTab('diag-${email.split('@')[0]}',this,'${email}')">🔍 Diagnóstico</button>
+      <button class="tab-btn" onclick="switchTab('hoje-${email.split('@')[0]}',this,'${email}')">📅 Atividades de hoje</button>
+      <button class="tab-btn" onclick="switchTab('fila-${email.split('@')[0]}',this,'${email}')">📋 Fila de contatos</button>
+    </div>
+    <div id="tab-diag-${email.split('@')[0]}"><div class="spin-wrap"><div class="spinner"></div> Gerando diagnóstico...</div></div>
+    <div id="tab-hoje-${email.split('@')[0]}" style="display:none">${renderAtividades(d,v)}</div>
+    <div id="tab-fila-${email.split('@')[0]}" style="display:none"><div class="spin-wrap"><div class="spinner"></div> Gerando fila...</div></div>
+  </div>`;
+
+  gerarDiagnostico(v,d,fat,meta,falta,dias,m,email);
+  gerarFila(v,d,fat,meta,falta,dias,m,email);
+};
+
+// ── DIAGNÓSTICO EM CARDS ──
+async function gerarDiagnostico(v,d,fat,meta,falta,dias,m,email){
+  const slug=email.split('@')[0];
+  const el=$('tab-diag-'+slug);if(!el)return;
   const waChats=d.waChats||[];
-  const waComercial=waChats.filter(c=>c.tom==='comercial').length;
   const waPessoal=waChats.filter(c=>c.tom==='pessoal').length;
-
-  det.innerHTML=`
-    <div class="detail">
-      <div class="detail-hdr">
-        <div class="av-lg" style="background:${v.cor}">${v.avatar}</div>
-        <div>
-          <div class="detail-title">${v.nome}<span class="st-tag ${st.cls}">${st.txt}</span></div>
-          <div class="detail-sub">BU ${v.bu} · ${m} · Meta ${fmt(meta,m)} · ${dias} dias úteis restantes</div>
-        </div>
-      </div>
-      <div class="det-mets">
-        <div class="dm"><div class="dm-v" style="color:var(--navy)">${fmt(fat,m)}</div><div class="dm-l">Faturado</div></div>
-        <div class="dm"><div class="dm-v" style="color:${corP}">${pct}%</div><div class="dm-l">Atingido</div></div>
-        <div class="dm"><div class="dm-v" style="color:var(--red)">${fmt(falta,m)}</div><div class="dm-l">Falta</div></div>
-        <div class="dm"><div class="dm-v" style="color:${(d.ligHoje||0)>=8?'var(--green)':(d.ligHoje||0)>=4?'var(--amber)':'var(--red)'}">${d.ligHoje||0}</div><div class="dm-l">Lig. hoje</div></div>
-        <div class="dm"><div class="dm-v">${d.clientes||0}</div><div class="dm-l">Clientes/mês</div></div>
-        <div class="dm"><div class="dm-v">${fmt(Math.floor(falta/Math.max(dias,1)),m)}</div><div class="dm-l">Falta/dia</div></div>
-      </div>
-      <div class="det-prog"><div class="det-prog-fill" style="width:${pct}%;background:${corP}"></div></div>
-      <div class="det-prog-lbl">${pct}% da meta</div>
-      <div class="tabs-nav">
-        <button class="tab-btn on" onclick="switchTab('diag',this)">🔍 Diagnóstico</button>
-        <button class="tab-btn" onclick="switchTab('hoje',this)">📅 Atividades de hoje</button>
-        <button class="tab-btn" onclick="switchTab('fila',this)">📋 Fila de contatos</button>
-      </div>
-      <div id="tab-diag">
-        <div class="ia-wrap">
-          <div class="ia-hdr"><div class="ia-badge"><div class="ia-dot on" id="iaDot"></div>IA</div><div class="ia-lbl">Diagnóstico + plano de ação</div></div>
-          <div class="ia-body-wrap"><div class="ia-body" id="iaBody"><div class="spin-wrap"><div class="spinner"></div> Analisando...</div></div></div>
-        </div>
-      </div>
-      <div id="tab-hoje" style="display:none">${renderAtividades(d)}</div>
-      <div id="tab-fila" style="display:none"><div class="spin-wrap"><div class="spinner"></div> Gerando fila...</div></div>
-    </div>`;
-
-  // Gerar diagnóstico IA
+  const waComercial=waChats.filter(c=>c.tom==='comercial').length;
+  const ligTexto=(d.ligacoes||[]).map(l=>`${l.hora} | ${l.tipo} | ${l.resultado} | ${l.duracao} | ${l.cliente}`).join('\n')||'Nenhuma';
+  const waTexto=waChats.map(c=>`${c.hora} | ${c.contato} | ${c.tom==='pessoal'?'⚠ PESSOAL':'✓ '+c.tom} | "${c.msg}"`).join('\n')||'Não monitorado';
+  const conv=CONVERSAO[email]||{};
   const diaAtual=new Date().getDate();
-  const ctxMes=diaAtual<=8?'INÍCIO DE MÊS (dia '+diaAtual+') — NÃO critique faturamento baixo. Foque em ritmo.':diaAtual<=18?'MEIO DE MÊS':'FIM DE MÊS';
-  const ligTexto=(d.ligacoes||[]).map(l=>`  ${l.hora} | ${l.tipo} | ${l.resultado} | ${l.duracao}`).join('\n')||'Nenhuma';
-  const waTexto=waChats.map(c=>`  ${c.hora} | ${c.contato} | ${c.tom==='pessoal'?'⚠ PESSOAL':'✓ '+c.tom} | "${c.msg}"`).join('\n')||'Não monitorado';
+  const ctx=diaAtual<=8?'INÍCIO DE MÊS — foco em ritmo':diaAtual<=18?'MEIO DE MÊS — foco em conversão':'FIM DE MÊS — foco em fechamento';
 
   const prompt=`Analise ${v.nome} (BU ${v.bu}) — ${new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'})}.
-CONTEXTO: ${ctxMes}
-FINANCEIRO: ${fmt(fat,m)} de ${fmt(meta,m)} (${pct}%) — falta ${fmt(falta,m)} em ${dias} dias úteis
-LIGAÇÕES HOJE (${d.ligHoje||0} total, ${d.ligAtend||0} atendidas):
+CONTEXTO: ${ctx} (dia ${diaAtual})
+FINANCEIRO: ${fmt(fat,m)} de ${fmt(meta,m)} (${Math.round(fat/meta*100)}%) — falta ${fmt(falta,m)} em ${dias} dias úteis — precisa ${conv.contatos_dia||'?'} contatos/dia
+LIGAÇÕES HOJE (${d.ligHoje||0} total, ${d.ligAtend||0} atendidas, duração média ${d.ligDurMedia||'—'}):
 ${ligTexto}
 WHATSAPP HOJE (${waChats.length} chats — ${waPessoal} pessoal, ${waComercial} comercial):
 ${waTexto}
 
-Gere para o gerente (máx 320 palavras):
-### 📞 Qualidade das ligações
-### 💬 Comportamento no WhatsApp
-### 🔍 Diagnóstico
-### 🎯 Ações para Dhiego esta semana
-### 💬 Pergunta para o 1:1`;
+Gere análise em JSON com EXATAMENTE esta estrutura:
+{
+  "ligacoes": {"titulo":"Qualidade das ligações","sub":"X lig · Y atendidas · duração média Z","tags":["tag1","tag2"],"tagCores":["warn","ok"],"texto":"análise detalhada 3-4 frases com nomes reais dos clientes"},
+  "whatsapp": {"titulo":"Comportamento no WhatsApp","sub":"X chats · Y pessoal","tags":["tag1","tag2"],"tagCores":["red","ok"],"texto":"análise detalhada 3-4 frases citando mensagens reais"},
+  "diagnostico": {"titulo":"Diagnóstico","pontos":["ponto 1 com causa","ponto 2 com causa","ponto 3 com causa"],"texto":"resumo 2 frases"},
+  "acoes": {"titulo":"Ações para ${v.nome.split(' ')[0]} — esta semana","itens":["ação específica 1","ação específica 2","ação específica 3"]},
+  "pergunta": {"txt":"pergunta exata para o 1:1 entre aspas, baseada nos dados reais","porque":"explicação em 3-4 frases de por que essa pergunta revela o problema central e força comprometimento"}
+}
+Retorne APENAS o JSON, sem markdown.`;
 
   try{
     const r=await fetch('/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:1000,
-        system:'Consultor de performance comercial. Sabagram, granitos/mármores. Português, direto, baseado nos dados fornecidos.',
+      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:1200,
+        system:'Consultor de performance comercial Sabagram (granitos/mármores). Retorne APENAS JSON válido.',
         messages:[{role:'user',content:prompt}]})});
     const data=await r.json();
-    const txt=data.content?.map(b=>b.text||'').join('')||'';
-    const el=$('iaBody');if(el)el.innerHTML=`<p>${md2html(txt)}</p>`;
-    const dot=$('iaDot');if(dot)dot.classList.remove('on');
+    const buf=data.content?.map(b=>b.text||'').join('')||'';
+    const clean=buf.replace(/```json|```/g,'').trim();
+    const j=JSON.parse(clean);
+
+    const tagCor=(c)=>c==='ok'?'background:#dcfce7;color:#166534':c==='warn'?'background:#fef3c7;color:#92400e':c==='red'?'background:#fee2e2;color:#991b1b':'background:var(--s2);color:var(--muted)';
+    const borderCor=(tipo)=>tipo==='ligacoes'?'#d97706':tipo==='whatsapp'?'#dc2626':tipo==='diagnostico'?'#185fa5':'#16a34a';
+    const iconCor=(tipo)=>tipo==='ligacoes'?'☎':tipo==='whatsapp'?'💬':tipo==='diagnostico'?'🔍':'🎯';
+    const bgIcon=(tipo)=>tipo==='ligacoes'?'background:#fef3c7':tipo==='whatsapp'?'background:#fee2e2':tipo==='diagnostico'?'background:#e6f1fb':'background:#dcfce7';
+
+    let html=`<div class="diag-grid">`;
+    // Card ligações
+    html+=`<div class="diag-card" style="border-color:${borderCor('ligacoes')}">
+      <div class="diag-hdr"><div class="diag-icon" style="${bgIcon('ligacoes')}">${iconCor('ligacoes')}</div><div><div class="diag-title">${j.ligacoes.titulo}</div><div class="diag-sub">${j.ligacoes.sub}</div></div></div>
+      <div class="diag-tags">${(j.ligacoes.tags||[]).map((t,i)=>`<span class="diag-tag" style="${tagCor((j.ligacoes.tagCores||[])[i])}">${t}</span>`).join('')}</div>
+      <div class="diag-txt">${j.ligacoes.texto}</div>
+    </div>`;
+    // Card WA
+    html+=`<div class="diag-card" style="border-color:${borderCor('whatsapp')}">
+      <div class="diag-hdr"><div class="diag-icon" style="${bgIcon('whatsapp')}">${iconCor('whatsapp')}</div><div><div class="diag-title">${j.whatsapp.titulo}</div><div class="diag-sub">${j.whatsapp.sub}</div></div></div>
+      <div class="diag-tags">${(j.whatsapp.tags||[]).map((t,i)=>`<span class="diag-tag" style="${tagCor((j.whatsapp.tagCores||[])[i])}">${t}</span>`).join('')}</div>
+      <div class="diag-txt">${j.whatsapp.texto}</div>
+    </div>`;
+    // Card diagnóstico
+    html+=`<div class="diag-card" style="border-color:${borderCor('diagnostico')}">
+      <div class="diag-hdr"><div class="diag-icon" style="${bgIcon('diagnostico')}">${iconCor('diagnostico')}</div><div class="diag-title">${j.diagnostico.titulo}</div></div>
+      <div class="diag-txt" style="margin-bottom:7px">${j.diagnostico.texto}</div>
+      ${(j.diagnostico.pontos||[]).map((p,i)=>`<div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:4px"><span class="diag-num" style="flex-shrink:0">${i+1}</span><span class="diag-txt">${p}</span></div>`).join('')}
+    </div>`;
+    // Card ações
+    html+=`<div class="diag-card" style="border-color:${borderCor('acoes')}">
+      <div class="diag-hdr"><div class="diag-icon" style="${bgIcon('acoes')}">${iconCor('acoes')}</div><div class="diag-title">${j.acoes.titulo}</div></div>
+      ${(j.acoes.itens||[]).map((item,i)=>`<div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:5px"><span class="diag-num">${i+1}</span><span class="diag-txt">${item}</span></div>`).join('')}
+    </div>`;
+    html+=`</div>`;
+    // Card 1:1 full width
+    html+=`<div class="diag-card" style="border-color:var(--navy);border-radius:10px">
+      <div class="diag-hdr"><div class="diag-icon" style="background:var(--s2)">💬</div><div class="diag-title">Pergunta para o 1:1</div></div>
+      <div class="pergunta-box">
+        <div class="pergunta-txt">${j.pergunta.txt}</div>
+        <div class="pergunta-why-lbl">Por que essa pergunta</div>
+        <div class="pergunta-why">${j.pergunta.porque}</div>
+      </div>
+    </div>`;
+    el.innerHTML=html;
   }catch(e){
-    const el=$('iaBody');if(el)el.innerHTML=`<span style="color:var(--red);font-size:12px">Erro: ${e.message}</span>`;
+    el.innerHTML=`<span style="color:var(--red);font-size:12px">Erro: ${e.message}</span>`;
   }
-
-  // Gerar fila
-  gerarFila(v,d,fat,meta,falta,dias,m);
-};
-
-function renderAtividades(d){
-  const ligs=d.ligacoes||[];
-  const was=d.waChats||[];
-  let html='<div class="act-timeline">';
-  if(ligs.length){
-    const at=ligs.filter(l=>l.resultado==='Atendeu').length;
-    html+=`<div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">☎ Ligações — ${ligs.length} total · ${at} atendidas</div>`;
-    ligs.forEach(l=>{
-      const ok=l.resultado==='Atendeu';
-      html+=`<div class="tl-item"><div class="tl-icon ${ok?'tl-call-ok':'tl-call-no'}">${ok?'✓':'✗'}</div><div class="tl-info"><div class="tl-titulo">${l.tipo} — ${l.resultado}</div><div class="tl-sub">${ok?'Duração: '+l.duracao:'Não atendida'}</div></div><div class="tl-hora">${l.hora}</div></div>`;
-    });
-  }
-  if(was.length){
-    const p=was.filter(c=>c.tom==='pessoal').length;
-    html+=`<div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin:12px 0 6px">💬 WhatsApp — ${was.length} chats${p>0?' · ⚠ '+p+' tom pessoal':''}</div>`;
-    was.forEach(c=>{
-      const cls=c.tom==='pessoal'?'tl-wa-warn':c.tom==='logistica'?'tl-wa-log':c.tom==='interno'?'tl-wa-int':'tl-wa-ok';
-      const icon=c.tom==='pessoal'?'⚠':c.tom==='logistica'?'🚚':c.tom==='interno'?'💼':'✓';
-      const cor=c.tom==='pessoal'?'color:var(--amber)':c.tom==='logistica'?'color:var(--muted)':'color:var(--green)';
-      html+=`<div class="tl-item"><div class="tl-icon ${cls}">${icon}</div><div class="tl-info"><div class="tl-titulo">${c.contato}</div><div class="tl-sub" style="${cor}">${c.tom} · "${c.msg}"</div></div><div class="tl-hora">${c.hora}</div></div>`;
-    });
-  }
-  if(!ligs.length&&!was.length)html+='<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px">Nenhuma atividade registrada hoje.</div>';
-  return html+'</div>';
 }
 
-// CONVERSÃO REAL POR VENDEDOR (calculado sobre últimos 3 meses)
-const CONVERSAO = {
-  "sizenando@sabagram.com.br": {taxa_atend:0.43, taxa_conv:0.082, ticket:13216, contatos_dia:27,
-    explicacao:"Nos últimos 3 meses você fechou em média 8 clientes/mês a R$13k ticket. Com 43% de atendimento e 8% de conversão, precisa de 27 contatos/dia para bater a meta.",
-    distribuicao:"Seg/Qua/Sex: 14 URGENTES · Ter/Qui: 13 ALTAS e MÉDIAS",
-    frequencia:"URGENTE: 1x/semana (4x/mês) · ALTA: 2x/mês · MÉDIA: 1x/mês"},
-  "kelly@sabagram.com.br":     {taxa_atend:0.41, taxa_conv:0.179, ticket:16636, contatos_dia:8,
-    explicacao:"Nos últimos 3 meses você fechou em média 10 clientes/mês a R$17k ticket. Com 41% de atendimento e 18% de conversão, precisa de 8 contatos/dia — sua conversão é boa!",
-    distribuicao:"Seg/Qua/Sex: 4 URGENTES · Ter/Qui: 4 ALTAS e MÉDIAS",
-    frequencia:"URGENTE: 1x/semana (4x/mês) · ALTA: 2x/mês · MÉDIA: 1x/mês"},
-  "marcelo@sabagram.com.br":   {taxa_atend:0.50, taxa_conv:0.080, ticket:25268, contatos_dia:52,
-    explicacao:"Seu ticket médio é alto (R$25k) mas a meta também é grande. Sem dados de ligação, estimamos 52 contatos/dia — mas cada cliente fechado vale muito.",
-    distribuicao:"Seg/Qua/Sex: 26 URGENTES · Ter/Qui: 26 ALTAS e MÉDIAS",
-    frequencia:"URGENTE: 1x/semana (4x/mês) · ALTA: 2x/mês · MÉDIA: 1x/mês"},
-  "renata@sabagram.com.br":    {taxa_atend:0.70, taxa_conv:0.846, ticket:10868, contatos_dia:1,
-    explicacao:"Sua taxa de conversão é excepcional (85%)! Com 70% de atendimento, precisa de apenas 1 contato/dia — foco total em qualidade.",
-    distribuicao:"Foco em 1 contato estratégico por dia",
-    frequencia:"URGENTE: 1x/semana (4x/mês) · ALTA: 2x/mês · MÉDIA: 1x/mês"},
-  "wesley@sabagram.com.br":    {taxa_atend:0.50, taxa_conv:0.080, ticket:50558, contatos_dia:10,
-    explicacao:"Seu ticket médio é alto (R$50k) pois trabalha com obras grandes. Precisa de apenas 3 clientes novos — foco em qualidade e relacionamento com construtoras.",
-    distribuicao:"Seg/Qua/Sex: 5 URGENTES · Ter/Qui: 5 ALTAS e MÉDIAS",
-    frequencia:"URGENTE: 1x/semana (4x/mês) · ALTA: 2x/mês · MÉDIA: 1x/mês"},
-  "cezar@sabagram.com.br":     {taxa_atend:0.50, taxa_conv:0.080, ticket:24699, contatos_dia:21,
-    explicacao:"Precisa fechar 7 clientes a US$25k ticket médio. Sem dados de ligação, estimamos 21 contatos/dia — cada contato no mercado externo requer mais preparação.",
-    distribuicao:"Seg/Qua/Sex: 11 URGENTES · Ter/Qui: 10 ALTAS e MÉDIAS",
-    frequencia:"URGENTE: 1x/semana (4x/mês) · ALTA: 2x/mês · MÉDIA: 1x/mês"},
-  "diana@sabagram.com.br":     {taxa_atend:0.50, taxa_conv:0.080, ticket:22446, contatos_dia:4,
-    explicacao:"Precisa fechar apenas 1 cliente para bater a meta. 4 contatos/dia focados são suficientes — qualidade sobre quantidade.",
-    distribuicao:"2 URGENTES + 2 ALTAS por dia",
-    frequencia:"URGENTE: 1x/semana (4x/mês) · ALTA: 2x/mês · MÉDIA: 1x/mês"},
-};
+// ── ATIVIDADES 2 COLUNAS ──
+function renderAtividades(d,v){
+  const ligs=d.ligacoes||[];
+  const was=d.waChats||[];
+  const ligAtend=ligs.filter(l=>l.resultado==='Atendeu').length;
+  const waPessoal=was.filter(c=>c.tom==='pessoal').length;
 
-const FILAS = {
-  "sizenando@sabagram.com.br": [
-    {nome:"NILGRAN",                    fat:"R$37k",  dias:278, score:5, status:"1A60",    prioridade:"URGENTE", modo:"WhatsApp", ultimoCanal:"WhatsApp", ultimaData:"ago/25", ultimoTom:"comercial", ultimoResumo:"Último WA há 9 meses — sem registro do conteúdo. 278 dias sem comprar. Risco alto de migração para concorrente.",
-     motivo:"Score ⭐⭐⭐⭐⭐ — 278 dias sem comprar. Risco alto de perda para concorrente.",
-     assunto:"Verificar necessidade atual — pode estar comprando de outro fornecedor",
-     script:"Bom dia [nome], tudo bem? Faz um tempo que a gente não faz negócio. Qual material você está precisando agora para o próximo mês?"},
-    {nome:"2A DECOR",                   fat:"R$181k", dias:229, score:5, status:"Inativo",  prioridade:"URGENTE", modo:"Ligação", ultimoCanal:"", ultimaData:"", ultimoTom:"", ultimoResumo:"Nenhum contato registrado desde outubro 2025. 229 dias sem interação. Pode estar comprando de concorrente.",
-     motivo:"Score ⭐⭐⭐⭐⭐ — R$181k histórico, inativo há 229 dias. Um dos maiores clientes parado.",
-     assunto:"Reativação — entender o que aconteceu e apresentar novos lotes",
-     script:"Oi [nome], Sizenando da Sabagram. Sumiu! Já faz uns 8 meses que a gente não faz negócio. O que aconteceu? Tem algum material que você está precisando?"},
-    {nome:"POSTO JUPARANA",             fat:"R$122k", dias:125, score:5, status:"61A90",    prioridade:"URGENTE", modo:"WhatsApp", ultimoCanal:"Ligação", ultimaData:"25/mai", ultimoTom:"comercial", ultimoResumo:"Vendedor propôs venda, cliente relutante. Interesse 6/10. Próximo passo pendente: enviar proposta com preços definidos.",
-     motivo:"Score ⭐⭐⭐⭐⭐ — R$122k histórico, 61A90. Janela crítica antes de virar inativo.",
-     assunto:"Oferta específica — estoque disponível e necessidade de pedido",
-     script:"[Nome], bom dia! Passou um tempinho desde o último pedido. Tenho uns lotes novos que chegaram agora. Qual material está em falta na sua loja?"},
-    {nome:"STUDIO MARMORES E GRANITOS", fat:"R$37k",  dias:117, score:5, status:"91A120",  prioridade:"URGENTE", modo:"WhatsApp", ultimoCanal:"", ultimaData:"", ultimoTom:"", ultimoResumo:"117 dias sem comprar. Status 91A120 — prestes a virar inativo. Sem contato recente registrado.",
-     motivo:"Score ⭐⭐⭐⭐⭐ — status 91A120, quase inativo. 117 dias sem comprar.",
-     assunto:"Reativação urgente",
-     script:"Oi [nome]! Sizenando aqui. Vi que faz um tempo que a gente não faz negócio. Tá precisando de algum material? Tenho algumas novidades."},
-    {nome:"TECHNOGRAN",                 fat:"R$281k", dias:223, score:3, status:"Inativo",  prioridade:"ALTA",   modo:"Ligação", ultimoCanal:"", ultimaData:"", ultimoTom:"", ultimoResumo:"Maior cliente por volume (R$281k). Inativo há 223 dias. Nenhum contato registrado.",
-     motivo:"Maior cliente por volume (R$281k) — inativo há 223 dias. Score 3 mas potencial enorme.",
-     assunto:"Reativação — descobrir por que parou",
-     script:"Oi [nome], aqui é o Sizenando da Sabagram. Faz quase 8 meses que não fazemos negócio. O que precisaria mudar para voltarmos a trabalhar juntos?"},
-    {nome:"DEPOSITO DE PEDRAS CACHOEIRO",fat:"R$73k", dias:68,  score:5, status:"1A60",    prioridade:"ALTA",   modo:"WhatsApp", ultimoCanal:"", ultimaData:"", ultimoTom:"", ultimoResumo:"68 dias sem comprar. Perto de virar 61A90.",
-     motivo:"Score ⭐⭐⭐⭐⭐ — 68 dias sem comprar. Perto de virar 61A90.",
-     assunto:"Pedido de reposição",
-     script:"[Nome], bom dia! Tá na hora de repor estoque? Qual o seu prazo para o próximo pedido?"},
-    {nome:"MARMORARIA TOCANTINS",       fat:"R$300k", dias:54,  score:5, status:"1A60",    prioridade:"ALTA",   modo:"WhatsApp", ultimoCanal:"WhatsApp", ultimaData:"hoje", ultimoTom:"pessoal", ultimoResumo:"Perguntou sobre quartzitos. Cliente respondeu: 'por enquanto não, manda cotações quando aparecer'. Carregamento previsto para próxima semana.",
-     motivo:"Maior cliente ativo (R$300k) — 54 dias sem comprar. Manter relacionamento.",
-     assunto:"Follow-up + oferta de novos lotes",
-     script:"[Nome], tudo bem? Queria saber como estão as coisas e te mostrar uns lotes novos. Quando você tem 5 minutos?"},
-    {nome:"TUBARÃO COM. PEDRAS",        fat:"R$53k",  dias:34,  score:5, status:"1A60",    prioridade:"ALTA",   modo:"WhatsApp", ultimoCanal:"", ultimaData:"", ultimoTom:"", ultimoResumo:"34 dias sem comprar. Acompanhamento mensal necessário.",
-     motivo:"Score ⭐⭐⭐⭐⭐ — 34 dias sem comprar. Acompanhamento mensal.",
-     assunto:"Próximo pedido",
-     script:"Oi [nome]! Sizenando aqui. Queria saber se você vai precisar de material esse mês. Tenho algumas opções disponíveis agora."},
-    {nome:"MARMORARIA TOCANTINS LTDA",  fat:"R$149k", dias:12,  score:5, status:"1A60",    prioridade:"MÉDIA",  modo:"WhatsApp", ultimoCanal:"WhatsApp", ultimaData:"hoje", ultimoTom:"comercial", ultimoResumo:"'ficarei no aguardo rsers' — aguardando cotação de quartzito enviada hoje.",
-     motivo:"Score ⭐⭐⭐⭐⭐ — comprou recentemente (12 dias). Pós-venda.",
-     assunto:"Pós-venda — chegou o material? Próxima necessidade?",
-     script:"[Nome], o material chegou bem? Tudo certo? Quando precisar do próximo lote me avisa com antecedência."},
-    {nome:"STILLOS MARMORARIA",         fat:"R$37k",  dias:478, score:3, status:"Inativo", prioridade:"MÉDIA",  modo:"WhatsApp", ultimoCanal:"", ultimaData:"", ultimoTom:"", ultimoResumo:"Inativo há 478 dias. Tentativa de reativação com oferta específica.",
-     motivo:"Score 3⭐ — inativo há 478 dias. Vale tentar reativar.",
-     assunto:"Reativação com oferta específica",
-     script:"Oi [nome], Sizenando da Sabagram. Faz um tempão que a gente não fala. Tenho um material novo que lembrei de você. Posso te mandar uma foto?"},
-  ],
-  "cezar@sabagram.com.br": [
-    {nome:"ONE ST VINCENT GROUP INC",   fat:"US$180k", dias:98,  score:5, status:"91A120", prioridade:"URGENTE", modo:"Ligação",
-     motivo:"Score ⭐⭐⭐⭐⭐ — US$180k histórico, 91A120. Janela crítica antes de perder a conta.",
-     assunto:"Próximo container — necessidade para Q3",
-     script:"Hi [Name], this is Cezar from Sabagram. It's been about 3 months since your last order — just checking in to see what you have coming up. Are you planning any containers for the next few months?"},
-    {nome:"ARCHITECTURAL SURFACES GROUP",fat:"US$523k",dias:338, score:4, status:"Inativo",prioridade:"URGENTE", modo:"Ligação",
-     motivo:"Score ⭐⭐⭐⭐ — US$523k histórico, inativo há 11 meses. Enorme potencial.",
-     assunto:"Reativação — entender o que mudou",
-     script:"Hi [Name], Cezar from Sabagram. It's been almost a year since we last worked together. Has something changed, or is there something we could do to get back on your vendor list?"},
-    {nome:"EVEREST STONE LLC",          fat:"US$28k",  dias:96,  score:5, status:"61A90",  prioridade:"URGENTE", modo:"WhatsApp",
-     motivo:"Score ⭐⭐⭐⭐⭐ — 61A90, risco iminente de perder para concorrente.",
-     assunto:"Novos lotes disponíveis",
-     script:"Hi [Name], Cezar here from Sabagram. Haven't heard from you in a while — we just received new material that you might be interested in. What are you currently sourcing?"},
-    {nome:"UMI - UNITED MATERIALS INC", fat:"US$179k", dias:1013,score:4, status:"Inativo",prioridade:"URGENTE", modo:"Ligação",
-     motivo:"Score ⭐⭐⭐⭐ — US$179k histórico, inativo há 3 anos. Tentativa de reativação.",
-     assunto:"Reativação com portfólio atual",
-     script:"Hi [Name], Cezar from Sabagram. I know it's been a long time, but I wanted to personally reach out. Are you still in the market for Brazilian granite and marble?"},
-    {nome:"EAST WEST MARBLE CO",        fat:"US$2.3M", dias:56,  score:4, status:"1A60",   prioridade:"ALTA",   modo:"Ligação",
-     motivo:"Score ⭐⭐⭐⭐ — MAIOR cliente (US$2.3M), 56 dias sem comprar. Relacionamento estratégico.",
-     assunto:"Próximo container",
-     script:"Hi [Name], Cezar here. Just checking in on our next order — do you have anything planned for the coming months? I have some new inventory I'd love to show you."},
-    {nome:"MARMOLETTI INT USA LLC",     fat:"US$68k",  dias:127, score:4, status:"91A120", prioridade:"ALTA",   modo:"WhatsApp",
-     motivo:"Score ⭐⭐⭐⭐ — US$68k, 91A120. Quase inativo.",
-     assunto:"Próxima necessidade + novos materiais",
-     script:"Hi [Name], Cezar from Sabagram! It's been a few months — just reaching out to see if you need anything. What materials are you focusing on this quarter?"},
-    {nome:"MJ GRANITE LLC",             fat:"US$117k", dias:223, score:4, status:"Inativo",prioridade:"ALTA",   modo:"WhatsApp",
-     motivo:"Score ⭐⭐⭐⭐ — US$117k, inativo desde outubro 2025.",
-     assunto:"Novos lotes + pricing competitivo",
-     script:"Hi [Name], Cezar here from Sabagram. Haven't heard from you since last fall — are you looking for material for the summer season? We have some really competitive pricing right now."},
-    {nome:"SUNSHINE GRANITE AND MARBLE",fat:"US$18k",  dias:44,  score:5, status:"1A60",   prioridade:"ALTA",   modo:"WhatsApp",
-     motivo:"Score ⭐⭐⭐⭐⭐ — 44 dias sem comprar. Acompanhamento mensal.",
-     assunto:"Reposição de estoque",
-     script:"Hi [Name]! Cezar from Sabagram. Just checking in — are you running low on any materials? We have great availability right now."},
-    {nome:"EARTH STONE E TILE",         fat:"US$160k", dias:56,  score:4, status:"1A60",   prioridade:"MÉDIA",  modo:"WhatsApp",
-     motivo:"Score ⭐⭐⭐⭐ — US$160k, 56 dias sem comprar.",
-     assunto:"Próximo pedido",
-     script:"Hi [Name], Cezar from Sabagram. How are things going? Just checking if you have any upcoming orders we should be preparing for."},
-    {nome:"MSI - M S INTERNATIONAL",    fat:"US$1.9M", dias:5,   score:4, status:"1A60",   prioridade:"MÉDIA",  modo:"WhatsApp",
-     motivo:"Score ⭐⭐⭐⭐ — US$1.9M, comprou há 5 dias. Pós-venda.",
-     assunto:"Pós-venda + próximo container",
-     script:"Hi [Name], Cezar from Sabagram. How is everything going with the last order? Anything we should know about for the next one?"},
-  ],
-};
+  const corLig=r=>r==='Atendeu'?'#16a34a':'#dc2626';
+  const bgLig=r=>r==='Atendeu'?'#dcfce7;color:#166534':'#fee2e2;color:#991b1b';
+  const corWA=t=>t==='pessoal'?'#d97706':t==='comercial'?'#16a34a':'#185fa5';
+  const bgWA=t=>t==='pessoal'?'#fef3c7;color:#92400e':t==='comercial'?'#dcfce7;color:#166534':'var(--s2);color:var(--muted)';
+  const lblWA=t=>t==='pessoal'?'⚠ pessoal':t==='comercial'?'✓ comercial':'logística';
 
-function renderFilaHTML(fila, fat, meta, falta, dias, m, email) {
-  const conv = CONVERSAO[email] || {};
-  const contatosDia = conv.contatos_dia || Math.max(1, Math.ceil(falta / Math.max(dias,1) / (conv.ticket||15000)));
-  const explicacao = conv.explicacao || '';
-  const distribuicao = conv.distribuicao || '';
-  const frequencia = conv.frequencia || 'URGENTE: 1x/semana (4x/mês) · ALTA: 2x/mês · MÉDIA: 1x/mês';
+  let html=`<div class="atv-grid">`;
+  // Coluna ligações
+  html+=`<div><div class="atv-col-title">☎ Ligações · ${ligs.length} total · ${ligAtend} atendidas</div>`;
+  if(!ligs.length)html+=`<div style="color:var(--muted);font-size:12px;padding:10px 0">Nenhuma ligação registrada hoje.</div>`;
+  ligs.forEach(l=>{
+    html+=`<div class="atv-item" style="border-color:${corLig(l.resultado)}">
+      <div class="atv-top">
+        <div>
+          <div class="atv-nome">${l.cliente||l.tipo}</div>
+          <span class="atv-badge" style="background:${bgLig(l.resultado)}">${l.tipo} · ${l.resultado}${l.duracao&&l.duracao!=='—'?' · '+l.duracao:''}</span>
+        </div>
+        <div class="atv-hora">${l.hora}</div>
+      </div>
+      <div class="atv-txt">${l.resumo||''}</div>
+    </div>`;
+  });
+  html+=`</div>`;
+  // Coluna WA
+  html+=`<div><div class="atv-col-title">💬 WhatsApp · ${was.length} chats${waPessoal>0?' · ⚠ '+waPessoal+' pessoal':''}</div>`;
+  if(!was.length)html+=`<div style="color:var(--muted);font-size:12px;padding:10px 0">${v&&v.whatsapp?'Nenhum chat ativo hoje.':'WA não monitorado para este vendedor.'}</div>`;
+  was.forEach(c=>{
+    html+=`<div class="atv-item" style="border-color:${corWA(c.tom)}">
+      <div class="atv-top">
+        <div>
+          <div class="atv-nome">${c.contato}</div>
+          <span class="atv-badge" style="background:${bgWA(c.tom)}">${lblWA(c.tom)}</span>
+        </div>
+        <div class="atv-hora">${c.hora}</div>
+      </div>
+      <div class="atv-txt">"${c.msg}"</div>
+    </div>`;
+  });
+  html+=`</div></div>`;
+  return html;
+}
 
-  // Cabeçalho colunas
-  const colHdr = `<div style="display:grid;grid-template-columns:1.7fr 1.9fr 2.3fr 0.85fr;gap:0;margin-bottom:4px;padding:0 2px">
+// ── FILA ──
+function renderFilaHTML(fila,fat,meta,falta,dias,m,email){
+  const conv=CONVERSAO[email]||{};
+  const contatosDia=conv.contatos_dia||Math.max(1,Math.ceil(falta/Math.max(dias,1)/(conv.ticket||15000)));
+  const canalBg=c=>c==='WhatsApp'?'#eaf3de':c==='Ligação'?'#e6f1fb':'var(--s2)';
+  const canalCor=c=>c==='WhatsApp'?'#1a5f3a':c==='Ligação'?'#0c447c':'var(--muted)';
+  const canalIcon=c=>c==='WhatsApp'?'💬':'📞';
+  const resumoLbl=c=>c==='WhatsApp'?'Resumo do dia':c==='Ligação'?'Resumo IA':'Motivo';
+  const tomCor=t=>t==='pessoal'?'color:#fbbf24':t==='comercial'?'color:#4ade80':'color:#94a3b8';
+  const tomLbl=t=>t==='pessoal'?'⚠ pessoal':t==='comercial'?'✓ comercial':'';
+  const pc=p=>p==='URGENTE'?'color:#f87171':p==='ALTA'?'color:#fbbf24':'color:#60a5fa';
+  const pbg=p=>p==='URGENTE'?'rgba(248,113,113,.18)':p==='ALTA'?'rgba(251,191,36,.18)':'rgba(96,165,250,.18)';
+  const stars=s=>s?'⭐'.repeat(Math.min(parseInt(s)||3,5)):'';
+
+  const colHdr=`<div style="display:grid;grid-template-columns:1.7fr 1.9fr 2.3fr 0.85fr;gap:0;margin-bottom:4px;padding:0 2px">
     <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;padding:0 10px">Cliente</div>
     <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;padding:0 10px">Último contato</div>
     <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;padding:0 10px">Script sugerido</div>
     <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;text-align:center">Ação</div>
   </div>`;
 
-  const html = colHdr + fila.map((c,i) => {
-    const pc = c.prioridade==='URGENTE'?'color:#f87171':c.prioridade==='ALTA'?'color:#fbbf24':'color:#60a5fa';
-    const pbg = c.prioridade==='URGENTE'?'rgba(248,113,113,.18)':c.prioridade==='ALTA'?'rgba(251,191,36,.18)':'rgba(96,165,250,.18)';
-    const stars = c.score?'⭐'.repeat(Math.min(parseInt(c.score)||3,5)):'';
-    const isWA = (c.modo||'WhatsApp')==='WhatsApp';
-    const ultimoCanal = c.ultimoCanal||'';
-    const ultimaData = c.ultimaData||'';
-    const ultimoResumo = c.ultimoResumo||c.motivo||'';
-    const ultimoTom = c.ultimoTom||'';
-    const tomCor = ultimoTom==='pessoal'?'color:#fbbf24':ultimoTom==='comercial'?'color:#4ade80':'color:#94a3b8';
-    const tomLabel = ultimoTom==='pessoal'?'⚠ pessoal':ultimoTom==='comercial'?'✓ comercial':'';
-    const canalBg = ultimoCanal==='WhatsApp'?'#eaf3de':'#e6f1fb';
-    const canalCor = ultimoCanal==='WhatsApp'?'#1a5f3a':'#0c447c';
-    const canalIcon = ultimoCanal==='WhatsApp'?'💬':'📞';
-    const resumoLabel = ultimoCanal==='WhatsApp'?'Resumo do dia':ultimoCanal==='Ligação'?'Resumo IA':'Motivo';
-
-    return `<div style="display:grid;grid-template-columns:1.7fr 1.9fr 2.3fr 0.85fr;border:0.5px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:6px">
+  const rows=fila.map((c,i)=>{
+    const uc=c.ultimoCanal||'';const ud=c.ultimaData||'';const ur=c.ultimoResumo||c.motivo||'';const ut=c.ultimoTom||'';
+    const mc=(c.modo||'WhatsApp')==='WhatsApp';
+    return`<div style="display:grid;grid-template-columns:1.7fr 1.9fr 2.3fr 0.85fr;border:0.5px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:6px">
       <div style="background:#1a3254;padding:10px 12px;border-right:0.5px solid rgba(255,255,255,.1)">
-        <div style="display:inline-flex;padding:1px 7px;border-radius:4px;font-size:10px;font-weight:700;margin-bottom:5px;background:${pbg};${pc}">${c.prioridade}</div>
+        <div style="display:inline-flex;padding:1px 7px;border-radius:4px;font-size:10px;font-weight:700;margin-bottom:5px;background:${pbg(c.prioridade)};${pc(c.prioridade)}">${c.prioridade}</div>
         <div style="font-size:12px;font-weight:700;color:white;line-height:1.3;margin-bottom:3px">${i+1}. ${c.nome}</div>
-        <div style="font-size:11px;color:#e0aa18;margin-bottom:3px">${stars}</div>
-        <div style="font-size:10px;color:rgba(255,255,255,.5);line-height:1.4">${c.fat||c.fatHistorico||''} · ${c.dias||c.diasInativo||0} dias · ${c.status||''}</div>
+        <div style="font-size:11px;color:#e0aa18;margin-bottom:3px">${stars(c.score)}</div>
+        <div style="font-size:10px;color:rgba(255,255,255,.5);line-height:1.4">${c.fat||''} · ${c.dias||0} dias · ${c.status||''}</div>
       </div>
       <div style="padding:10px 12px;border-right:0.5px solid var(--border);background:var(--white)">
-        ${ultimoCanal?`<div style="display:flex;align-items:center;gap:5px;margin-bottom:5px;flex-wrap:wrap">
-          <span style="display:inline-flex;align-items:center;gap:3px;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:600;background:${canalBg};color:${canalCor}">${canalIcon} ${ultimoCanal} · ${ultimaData}</span>
-          ${tomLabel?`<span style="font-size:10px;font-weight:600;${tomCor}">${tomLabel}</span>`:''}
+        ${uc?`<div style="display:flex;align-items:center;gap:5px;margin-bottom:5px;flex-wrap:wrap">
+          <span style="display:inline-flex;align-items:center;gap:3px;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:600;background:${canalBg(uc)};color:${canalCor(uc)}">${canalIcon(uc)} ${uc} · ${ud}</span>
+          ${ut?`<span style="font-size:10px;font-weight:600;${tomCor(ut)}">${tomLbl(ut)}</span>`:''}
         </div>`:`<div style="font-size:10px;color:var(--muted);margin-bottom:5px">Sem contato recente</div>`}
-        <div style="font-size:9px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px">${resumoLabel}</div>
-        <div style="font-size:11px;color:var(--text2);line-height:1.5">${ultimoResumo}</div>
+        <div style="font-size:9px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px">${resumoLbl(uc)}</div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.5">${ur}</div>
       </div>
       <div style="padding:10px 12px;border-right:0.5px solid var(--border);background:var(--white)">
         <div style="font-size:9px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px">Script</div>
         <div style="font-size:11px;color:var(--text2);line-height:1.55;font-style:italic">${c.script||''}</div>
       </div>
       <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:10px 8px;background:var(--white)">
-        <button style="display:inline-flex;align-items:center;gap:4px;padding:6px 10px;border-radius:7px;font-size:11px;font-weight:600;border:0.5px solid;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;white-space:nowrap;background:${isWA?'#eaf3de':'#e6f1fb'};color:${isWA?'#1a5f3a':'#0c447c'};border-color:${isWA?'#c0dd97':'#b5d4f4'}">
-          ${isWA?'💬 WhatsApp':'📞 Ligar'}
+        <button style="display:inline-flex;align-items:center;gap:4px;padding:6px 10px;border-radius:7px;font-size:11px;font-weight:600;border:0.5px solid;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;white-space:nowrap;background:${mc?'#eaf3de':'#e6f1fb'};color:${mc?'#1a5f3a':'#0c447c'};border-color:${mc?'#c0dd97':'#b5d4f4'}">
+          ${mc?'💬 WA':'📞 Ligar'}
         </button>
       </div>
     </div>`;
   }).join('');
 
-  return `
-    <div style="background:var(--navy);border-radius:8px;padding:12px 14px;margin-bottom:10px">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:${explicacao?'8px':'0'}">
-        <div>
-          <div style="font-size:9px;font-weight:700;color:rgba(255,255,255,.45);letter-spacing:.08em;text-transform:uppercase;margin-bottom:3px">Meta do dia — fim do mês com folga</div>
-          <div style="font-size:13px;color:white">Precisa de <strong style="color:var(--gold-l)">${contatosDia} contatos/dia</strong> · Priorize os <strong style="color:var(--gold-l)">URGENTES</strong> primeiro</div>
-        </div>
-        <div style="text-align:right"><div style="font-size:20px;font-weight:800;color:var(--gold-l)">${fila.length}</div><div style="font-size:9px;color:rgba(255,255,255,.4)">clientes na fila</div></div>
+  return`<div style="background:var(--navy);border-radius:8px;padding:12px 14px;margin-bottom:10px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:${conv.explicacao?'8px':'0'}">
+      <div>
+        <div style="font-size:9px;font-weight:700;color:rgba(255,255,255,.45);letter-spacing:.08em;text-transform:uppercase;margin-bottom:3px">Meta do dia — fim do mês com folga</div>
+        <div style="font-size:13px;color:white">Precisa de <strong style="color:var(--gold-l)">${contatosDia} contatos/dia</strong> · Priorize os <strong style="color:var(--gold-l)">URGENTES</strong> primeiro</div>
       </div>
-      ${explicacao ? `<div style="border-top:0.5px solid rgba(255,255,255,.1);padding-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
-        <div>
-          <div style="font-size:9px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.07em;margin-bottom:2px">Por que esse número?</div>
-          <div style="font-size:11px;color:rgba(255,255,255,.7);line-height:1.5">${explicacao}</div>
-        </div>
-        <div>
-          ${distribuicao?`<div style="font-size:9px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.07em;margin-bottom:2px">Distribuição semanal</div>
-          <div style="font-size:11px;color:rgba(255,255,255,.7);margin-bottom:6px">${distribuicao}</div>`:''}
-          <div style="font-size:9px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.07em;margin-bottom:2px">Frequência por cliente</div>
-          <div style="font-size:11px;color:rgba(255,255,255,.7)">${frequencia}</div>
-        </div>
-      </div>` : ''}
+      <div style="text-align:right"><div style="font-size:20px;font-weight:800;color:var(--gold-l)">${fila.length}</div><div style="font-size:9px;color:rgba(255,255,255,.4)">clientes na fila</div></div>
     </div>
-    ${html}`;
+    ${conv.explicacao?`<div style="border-top:0.5px solid rgba(255,255,255,.1);padding-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div><div style="font-size:9px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.07em;margin-bottom:2px">Por que esse número?</div><div style="font-size:11px;color:rgba(255,255,255,.7);line-height:1.5">${conv.explicacao}</div></div>
+      <div><div style="font-size:9px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.07em;margin-bottom:2px">Distribuição semanal</div><div style="font-size:11px;color:rgba(255,255,255,.7);margin-bottom:4px">${conv.distribuicao||''}</div>
+      <div style="font-size:9px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.07em;margin-bottom:2px">Frequência por cliente</div><div style="font-size:11px;color:rgba(255,255,255,.7)">${conv.frequencia||''}</div></div>
+    </div>`:''}
+  </div>
+  ${colHdr}${rows}`;
 }
 
-async function gerarFila(v,d,fat,meta,falta,dias,m){
-  const el=$('tab-fila');
-  if(!el)return;
-
-  const filaReal = FILAS[v.email];
-  if(filaReal && filaReal.length>0){
-    el.innerHTML = renderFilaHTML(filaReal, fat, meta, falta, dias, m, v.email);
-    return;
-  }
-
-  // Vendedores sem fila configurada
+async function gerarFila(v,d,fat,meta,falta,dias,m,email){
+  const slug=email.split('@')[0];
+  const el=$('tab-fila-'+slug);if(!el)return;
+  const filaReal=FILAS[email];
+  if(filaReal&&filaReal.length>0){el.innerHTML=renderFilaHTML(filaReal,fat,meta,falta,dias,m,email);return;}
   el.innerHTML=`<div style="background:var(--s2);border:0.5px solid var(--border);border-radius:8px;padding:16px;text-align:center;color:var(--muted)">
     <div style="font-size:16px;margin-bottom:6px">📋</div>
     <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px">Fila não configurada para ${v.nome}</div>
-    <div style="font-size:12px;line-height:1.6">Os clientes prioritários precisam ser buscados do Salesforce com score real.<br>Acesse este chat para gerar a fila atualizada.</div>
+    <div style="font-size:12px;line-height:1.6">Os clientes prioritários serão carregados automaticamente<br>quando o Make estiver configurado.</div>
   </div>`;
 }
 
-window.switchTab=(id,btn)=>{
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('on'));
-  ['diag','hoje','fila'].forEach(t=>{const p=$('tab-'+t);if(p)p.style.display='none';});
+window.switchTab=(id,btn,email)=>{
+  const slug=email.split('@')[0];
+  const parent=btn.closest('.detail');
+  if(parent){parent.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('on'));}
+  ['diag','hoje','fila'].forEach(t=>{const p=$('tab-'+t+'-'+slug);if(p)p.style.display='none';});
   btn.classList.add('on');
   const p=$('tab-'+id);if(p)p.style.display='block';
 };
 
-window.iniciar=()=>{
-  const diaAtual=new Date().getDate();
+function iniciar(){
   const dias=diasUteis();
-  $('pDias').textContent=dias;
-  const ctx=diaAtual<=8?'🟡 Início de mês — foco em ritmo e atividade':diaAtual<=18?'🔵 Meio de mês — foco em conversão':'🔴 Fim de mês — foco em fechamento';
-  $('ctxMes').textContent=ctx;
-  const ts=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
-  $('navRight').textContent='Atualizado às '+ts;
-  setStatus('Pronto',false);
-  renderCards();
-};
+  const diaAtual=new Date().getDate();
+  const ctx=diaAtual<=8?'🟡 Início de mês':diaAtual<=18?'🔵 Meio de mês':'🔴 Fim de mês';
+  $('hdrCtx').textContent=ctx+' · '+dias+' dias úteis restantes';
+  $('navRight').textContent='Atualizado às '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  renderBUCards();
+}
 </script>
 </body>
 </html>
