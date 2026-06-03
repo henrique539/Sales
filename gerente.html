@@ -362,16 +362,16 @@ const VENDEDORES=[
 const DADOS={
   "sizenando@sabagram.com.br":{fat:7785,clientes:1,meta:233289,ligHoje:7,ligAtend:4,ligDurMedia:"1m50s",waTom:"pessoal",
     waChats:[
-      {hora:"19:01",contato:"Marmoraria Santana",msg:"Ligação atendida",tom:"comercial"},
-      {hora:"17:09",contato:"Michele Carvalho",msg:"polido, escovado, flameado, qual seria a textura?",tom:"comercial"},
-      {hora:"15:45",contato:"Igo José BA",msg:"Vai sim, e ele há de querer",tom:"comercial"},
-      {hora:"14:12",contato:"Karol Marmoraria Mendes Lima",msg:"tudo bem por ai minha amiga? como começou seu mês de junho?",tom:"pessoal"},
-      {hora:"14:09",contato:"Leandro Domingos",msg:"meu sonho kkkkk",tom:"pessoal"},
-      {hora:"14:04",contato:"Jeferson Cardoso",msg:"Obrigado meu amigo",tom:"pessoal"},
-      {hora:"13:52",contato:"Tríade Mármores",msg:"Quartzito emerald Lake",tom:"comercial"},
-      {hora:"13:44",contato:"Forte Contato",msg:"eu consigo falar com o responsável por compras?",tom:"comercial"},
-      {hora:"13:40",contato:"Elias Cassiano (Pedra Forte)",msg:"Bom dia meu amigo Elias, como está esse início de mês?",tom:"pessoal"},
-      {hora:"13:35",contato:"Lucas Imperial Marmoraria Campinas",msg:"tenho monte de coisas boas aqui rsrs",tom:"pessoal"},
+      {hora:"19:01",contato:"Silvio Santos",empresa:"MARMORARIA SANTANA",msg:"Ligação atendida",tom:"comercial"},
+      {hora:"17:09",contato:"Michele Carvalho",empresa:"Sem vínculo SF",msg:"polido, escovado, flameado, qual seria a textura?",tom:"comercial"},
+      {hora:"15:45",contato:"Igo José",empresa:"STELLA MAGAZINE",msg:"Vai sim, e ele há de querer",tom:"comercial"},
+      {hora:"14:12",contato:"Karol Mendes",empresa:"MARMORARIA MENDES LIMA",msg:"tudo bem por ai minha amiga? como começou seu mês de junho?",tom:"pessoal"},
+      {hora:"14:09",contato:"Leandro Borges",empresa:"LEANDRO BORGES SILVA",msg:"meu sonho kkkkk",tom:"pessoal"},
+      {hora:"14:04",contato:"Jeferson Cardoso",empresa:"JEFERSON MACEDO CARDOSO",msg:"Obrigado meu amigo",tom:"pessoal"},
+      {hora:"13:52",contato:"Cleber Triade",empresa:"TRIADE MARMORES LTDA",msg:"Quartzito emerald Lake",tom:"comercial"},
+      {hora:"13:44",contato:"Forte Contato",empresa:"Prospect (sem vínculo SF)",msg:"eu consigo falar com o responsável por compras?",tom:"comercial"},
+      {hora:"13:40",contato:"Elias Cassiano",empresa:"PEDRA FORTE (sem vínculo SF)",msg:"Bom dia meu amigo Elias, como está esse início de mês?",tom:"pessoal"},
+      {hora:"13:35",contato:"Adriana",empresa:"LEOPOLDO MARMORARIA",msg:"tenho monte de coisas boas aqui rsrs",tom:"pessoal"},
     ],
     ligacoes:[
       {hora:"19:01",tipo:"Feita",resultado:"Atendeu",duracao:"1m45s",cliente:"Marmoraria Santana",resumo:"Ligação atendida — verificar se houve avanço comercial."},
@@ -704,6 +704,7 @@ function renderAtividades(d,v){
       <div class="atv-top">
         <div>
           <div class="atv-nome">${c.contato}</div>
+          ${c.empresa?`<div style="font-size:10px;font-weight:600;color:var(--navy);margin-top:1px;text-transform:uppercase;letter-spacing:.03em">${c.empresa}</div>`:''} 
           <span class="atv-badge" style="background:${bgWA(c.tom)}">${lblWA(c.tom)}</span>
         </div>
         <div class="atv-hora">${c.hora}</div>
