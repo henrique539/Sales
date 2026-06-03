@@ -608,20 +608,13 @@ ${ligTexto}
 WHATSAPP HOJE (${waChats.length} chats — ${waPessoal} pessoal, ${waComercial} comercial):
 ${waTexto}
 
-Gere análise em JSON com EXATAMENTE esta estrutura:
-{
-  "ligacoes": {"titulo":"Qualidade das ligações","sub":"X lig · Y atendidas · duração média Z","tags":["tag1","tag2"],"tagCores":["warn","ok"],"texto":"análise detalhada 3-4 frases com nomes reais dos clientes"},
-  "whatsapp": {"titulo":"Comportamento no WhatsApp","sub":"X chats · Y pessoal","tags":["tag1","tag2"],"tagCores":["red","ok"],"texto":"análise detalhada 3-4 frases citando mensagens reais"},
-  "diagnostico": {"titulo":"Diagnóstico","pontos":["ponto 1 com causa","ponto 2 com causa","ponto 3 com causa"],"texto":"resumo 2 frases"},
-  "acoes": {"titulo":"Ações para ${v.nome.split(' ')[0]} — esta semana","itens":["ação específica 1","ação específica 2","ação específica 3"]},
-  "pergunta": {"txt":"pergunta exata para o 1:1 entre aspas, baseada nos dados reais","porque":"explicação em 3-4 frases de por que essa pergunta revela o problema central e força comprometimento"}
-}
-Retorne APENAS o JSON, sem markdown.`;
+Retorne APENAS este JSON sem markdown (cada texto: máximo 2 frases curtas):
+{"ligacoes":{"sub":"X lig · Y atend","tags":["tag1","tag2"],"tagCores":["warn","ok"],"texto":"2 frases com cliente real"},"whatsapp":{"sub":"X chats · Y pessoal","tags":["tag1","tag2"],"tagCores":["red","ok"],"texto":"2 frases com mensagem real"},"diagnostico":{"pontos":["causa 1","causa 2","causa 3"],"texto":"1 frase resumo"},"acoes":{"itens":["ação 1","ação 2","ação 3"]},"pergunta":{"txt":"pergunta para 1:1","porque":"2 frases explicando por que essa pergunta"}}
 
   try{
     const r=await fetch('/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:1200,
-        system:'Consultor de performance comercial Sabagram (granitos/mármores). Retorne APENAS JSON válido.',
+      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:2000,
+        system:'Consultor Sabagram. RETORNE APENAS JSON VÁLIDO sem texto extra. Textos curtos.',
         messages:[{role:'user',content:prompt}]})});
     const data=await r.json();
     const buf=data.content?.map(b=>b.text||'').join('')||'';
@@ -636,25 +629,25 @@ Retorne APENAS o JSON, sem markdown.`;
     let html=`<div class="diag-grid">`;
     // Card ligações
     html+=`<div class="diag-card" style="border-color:${borderCor('ligacoes')}">
-      <div class="diag-hdr"><div class="diag-icon" style="${bgIcon('ligacoes')}">${iconCor('ligacoes')}</div><div><div class="diag-title">${j.ligacoes.titulo}</div><div class="diag-sub">${j.ligacoes.sub}</div></div></div>
+      <div class="diag-hdr"><div class="diag-icon" style="${bgIcon('ligacoes')}">${iconCor('ligacoes')}</div><div><div class="diag-title">Qualidade das ligações</div><div class="diag-sub">${j.ligacoes.sub}</div></div></div>
       <div class="diag-tags">${(j.ligacoes.tags||[]).map((t,i)=>`<span class="diag-tag" style="${tagCor((j.ligacoes.tagCores||[])[i])}">${t}</span>`).join('')}</div>
       <div class="diag-txt">${j.ligacoes.texto}</div>
     </div>`;
     // Card WA
     html+=`<div class="diag-card" style="border-color:${borderCor('whatsapp')}">
-      <div class="diag-hdr"><div class="diag-icon" style="${bgIcon('whatsapp')}">${iconCor('whatsapp')}</div><div><div class="diag-title">${j.whatsapp.titulo}</div><div class="diag-sub">${j.whatsapp.sub}</div></div></div>
+      <div class="diag-hdr"><div class="diag-icon" style="${bgIcon('whatsapp')}">${iconCor('whatsapp')}</div><div><div class="diag-title">Comportamento no WhatsApp</div><div class="diag-sub">${j.whatsapp.sub}</div></div></div>
       <div class="diag-tags">${(j.whatsapp.tags||[]).map((t,i)=>`<span class="diag-tag" style="${tagCor((j.whatsapp.tagCores||[])[i])}">${t}</span>`).join('')}</div>
       <div class="diag-txt">${j.whatsapp.texto}</div>
     </div>`;
     // Card diagnóstico
     html+=`<div class="diag-card" style="border-color:${borderCor('diagnostico')}">
-      <div class="diag-hdr"><div class="diag-icon" style="${bgIcon('diagnostico')}">${iconCor('diagnostico')}</div><div class="diag-title">${j.diagnostico.titulo}</div></div>
+      <div class="diag-hdr"><div class="diag-icon" style="${bgIcon('diagnostico')}">${iconCor('diagnostico')}</div><div class="diag-title">Diagnóstico</div></div>
       <div class="diag-txt" style="margin-bottom:7px">${j.diagnostico.texto}</div>
       ${(j.diagnostico.pontos||[]).map((p,i)=>`<div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:4px"><span class="diag-num" style="flex-shrink:0">${i+1}</span><span class="diag-txt">${p}</span></div>`).join('')}
     </div>`;
     // Card ações
     html+=`<div class="diag-card" style="border-color:${borderCor('acoes')}">
-      <div class="diag-hdr"><div class="diag-icon" style="${bgIcon('acoes')}">${iconCor('acoes')}</div><div class="diag-title">${j.acoes.titulo}</div></div>
+      <div class="diag-hdr"><div class="diag-icon" style="${bgIcon('acoes')}">${iconCor('acoes')}</div><div class="diag-title">Ações — esta semana</div></div>
       ${(j.acoes.itens||[]).map((item,i)=>`<div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:5px"><span class="diag-num">${i+1}</span><span class="diag-txt">${item}</span></div>`).join('')}
     </div>`;
     html+=`</div>`;
