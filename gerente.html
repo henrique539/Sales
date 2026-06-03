@@ -145,6 +145,37 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .spin-wrap{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
 .spinner{width:13px;height:13px;border:2px solid var(--border);border-top-color:var(--navy);border-radius:50%;animation:spin 1s linear infinite}
 
+.dia-btn{padding:5px 12px;font-size:11px;font-weight:600;cursor:pointer;border:0.5px solid var(--border);background:var(--s2);color:var(--muted);border-radius:6px;font-family:'Plus Jakarta Sans',sans-serif;transition:all .15s}
+.dia-btn:hover{background:var(--border)}
+.dia-btn.on{background:var(--navy);color:white;border-color:var(--navy)}
+.tabs-nav{display:flex;gap:6px;margin-bottom:14px;border-bottom:1px solid var(--border);padding-bottom:0}
+.tab-btn{padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;border:none;background:none;color:var(--muted);border-bottom:2px solid transparent;font-family:'Plus Jakarta Sans',sans-serif;margin-bottom:-1px;transition:all .15s}
+.tab-btn:hover{color:var(--text)}
+.tab-btn.on{color:var(--navy);border-bottom-color:var(--navy)}
+.tab-pnl{}
+.act-timeline{display:flex;flex-direction:column;gap:8px}
+.tl-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:var(--s2);border:0.5px solid var(--border);border-radius:8px}
+.tl-icon{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.tl-call-ok{background:#e6f1fb}
+.tl-call-no{background:var(--rbg)}
+.tl-wa-ok{background:#eaf3de}
+.tl-wa-warn{background:#faeeda}
+.tl-wa-log{background:var(--s2)}
+.tl-info{flex:1}
+.tl-titulo{font-size:12px;font-weight:700;color:var(--text);margin-bottom:2px}
+.tl-sub{font-size:11px;color:var(--muted)}
+.tl-hora{font-size:10px;color:var(--dim);font-family:'JetBrains Mono',monospace;white-space:nowrap;flex-shrink:0}
+.fila-item{border:0.5px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:8px}
+.fila-hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 13px;background:var(--s2);border-bottom:0.5px solid var(--border)}
+.fila-nome{font-size:13px;font-weight:700;color:var(--text)}
+.fila-badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px}
+.fb-call{background:#e6f1fb;color:#185fa5}
+.fb-wa{background:#eaf3de;color:#1a7a4a}
+.fb-visita{background:var(--abg);color:var(--amber)}
+.fila-body{padding:10px 13px}
+.fila-motivo{font-size:12px;color:var(--text2);margin-bottom:6px}
+.fila-script{background:var(--navy);color:rgba(255,255,255,.9);border-radius:6px;padding:9px 12px;font-size:12px;font-style:italic;line-height:1.6}
+.fila-script-tag{font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-l);margin-bottom:4px;font-style:normal}
 .topbar{position:fixed;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--navy),var(--gold));transform:scaleX(0);transform-origin:left;z-index:999;transition:transform .4s}
 .topbar.on{transform:scaleX(.85)}.topbar.done{transform:scaleX(1);opacity:0;transition:opacity .5s}
 </style>
@@ -192,6 +223,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
   <!-- GERAL -->
   <div class="dd-panel open" id="panel-geral">
     <div class="dd-top-title">Time geral · junho/2026 · <span id="pDias">—</span> dias úteis restantes</div>
+    <div style="display:inline-flex;align-items:center;gap:6px;background:var(--abg);border:0.5px solid var(--abd);border-radius:6px;padding:4px 10px;font-size:11px;font-weight:600;color:var(--amber);margin-bottom:10px" id="ctxMes">—</div>
     <div class="fin-mets">
       <div class="fm"><div class="fm-v gold" id="pFatBRL">—</div><div class="fm-l">Faturado BRL</div></div>
       <div class="fm"><div class="fm-v gold" id="pFatUSD">—</div><div class="fm-l">Faturado USD</div></div>
@@ -320,7 +352,7 @@ const VENDEDORES = [
   { email:"renata@sabagram.com.br",    nome:"Renata Santana",    avatar:"RS", bu:"MI",    moeda:"BRL", cor:"#6b1a5f", ideVen:["001TW00000Buxa9YAB","001TW00000BusqcYAB","001TW00000C09VzYAJ"], userId:"005TW000000ANTBYA4", meta:105777, whatsapp:"" },
   { email:"wesley@sabagram.com.br",    nome:"Wesley Matieli",    avatar:"WM", bu:"Obras", moeda:"BRL", cor:"#1a4a2a", ideVen:["0014S00000Br0ySQAR"],                       userId:"005TW000000C7AbYAK", meta:172431, whatsapp:"" },
   { email:"cezar@sabagram.com.br",     nome:"Cezar Fiorio",      avatar:"CF", bu:"ME",    moeda:"USD", cor:"#1a3a6b", ideVen:["001TW00000C114rYAB"],                       userId:"005TW000000APunYAG", meta:172800, whatsapp:"" },
-  { email:"diana@sabagram.com.br",     nome:"Diana Rigoni",      avatar:"DR", bu:"ME",    moeda:"USD", cor:"#5f1a4a", ideVen:["001TW00000AooaAYAR"],                       userId:"0054S000002TkpZQAS", meta:25000,  whatsapp:"" },
+  { email:"diana@sabagram.com.br",     nome:"Diana Rigoni",      avatar:"DR", bu:"ME",    moeda:"USD", cor:"#5f1a4a", ideVen:["001TW00000FwW6zYAF"],                       userId:"0054S000002TkpZQAS", meta:25000,  whatsapp:"" },
 ];
 
 const AUTH_MAP = {"henrique@sabagram.com.br":{perfil:"admin"},"dhiego@sabagram.com.br":{perfil:"gerente"}};
@@ -340,8 +372,8 @@ onAuthStateChanged(auth,async user=>{
 window.sair=async()=>{await signOut(auth);window.location.href='index.html';};
 
 const $=id=>document.getElementById(id);
-const fmt=(v,m='BRL')=>m==='USD'?'US$'+Math.round(v/1000)+'k':'R$'+Math.round(v/1000)+'k';
-const fmt2=(v,m='BRL')=>m==='USD'?'US$'+Math.round(v):'R$'+Math.round(v/1000)+'k';
+const fmt=(v,m='BRL')=>m==='USD'?'US$'+Math.floor(v/1000)+'k':'R$'+Math.floor(v/1000)+'k';
+const fmt2=(v,m='BRL')=>m==='USD'?'US$'+Math.floor(v):'R$'+Math.floor(v/1000)+'k';
 const setStatus=(t,on=false)=>{$('sTxt').textContent=t;$('sDot').className='sdot'+(on?' on':'');};
 const diasUteis=()=>{const h=new Date(),f=new Date(h.getFullYear(),h.getMonth()+1,0);let c=0,d=new Date(h);d.setDate(d.getDate()+1);while(d<=f){if(d.getDay()!==0&&d.getDay()!==6)c++;d.setDate(d.getDate()+1);}return c;};
 const tick=()=>$('clock').textContent=new Date().toLocaleString('pt-BR',{weekday:'short',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}).toUpperCase();
@@ -484,6 +516,9 @@ function renderCards(bu){
 
 window.selecionarVendedor=async(email)=>{
   ativoEmail=email;
+  window._vcAtivo=v;
+  window._hojeCarregado=false;
+  window._filaCarregada=false;
   ['MI','Obras','ME'].forEach(b=>renderCards(b));
   const v=VENDEDORES.find(x=>x.email===email);
   if(!v)return;
@@ -521,14 +556,40 @@ window.selecionarVendedor=async(email)=>{
       </div>
       <div class="det-prog"><div class="det-prog-fill" style="width:${pct}%;background:${corP}"></div></div>
       <div class="det-prog-lbl">${pct}% da meta</div>
-      <div class="ia-wrap">
-        <div class="ia-hdr">
-          <div class="ia-badge"><div class="ia-dot on" id="iaDot"></div>IA</div>
-          <div class="ia-lbl">Ligações · WhatsApp · Diagnóstico · Plano de ação</div>
+      <!-- ABAS -->
+      <div class="tabs-nav">
+        <button class="tab-btn on" onclick="switchTab('diagnostico',this)">🔍 Diagnóstico</button>
+        <button class="tab-btn" onclick="switchTab('hoje',this)">📅 Atividades de hoje</button>
+        <button class="tab-btn" onclick="switchTab('fila',this)">📋 Fila de contatos</button>
+      </div>
+
+      <!-- ABA DIAGNÓSTICO -->
+      <div class="tab-pnl" id="tab-diagnostico">
+        <div class="ia-wrap">
+          <div class="ia-hdr">
+            <div class="ia-badge"><div class="ia-dot on" id="iaDot"></div>IA</div>
+            <div class="ia-lbl">Ligações · WhatsApp · Diagnóstico · Plano de ação</div>
+          </div>
+          <div class="ia-body-wrap">
+            <div class="ia-body" id="iaBody"><div class="spin-wrap"><div class="spinner"></div> Analisando...</div></div>
+          </div>
         </div>
-        <div class="ia-body-wrap">
-          <div class="ia-body" id="iaBody"><div class="spin-wrap"><div class="spinner"></div> Analisando ligações, WhatsApp e Salesforce...</div></div>
+      </div>
+
+      <!-- ABA HOJE -->
+      <div class="tab-pnl" id="tab-hoje" style="display:none">
+        <!-- Sub-abas ontem/hoje -->
+        <div style="display:flex;gap:6px;margin-bottom:14px">
+          <button class="dia-btn on" id="btn-hoje" onclick="switchDia('hoje',this)">📅 Hoje</button>
+          <button class="dia-btn" id="btn-ontem" onclick="switchDia('ontem',this)">🕐 Ontem</button>
         </div>
+        <div id="pnl-hoje"><div class="spin-wrap"><div class="spinner"></div> Buscando atividades de hoje...</div></div>
+        <div id="pnl-ontem" style="display:none"><div class="spin-wrap"><div class="spinner"></div> Buscando atividades de ontem...</div></div>
+      </div>
+
+      <!-- ABA FILA -->
+      <div class="tab-pnl" id="tab-fila" style="display:none">
+        <div class="ia-body" id="filaBody"><div class="spin-wrap"><div class="spinner"></div> Gerando fila de contatos...</div></div>
       </div>
     </div>`;
 
@@ -549,19 +610,27 @@ WHATSAPP:${v.whatsapp?`
 - Última mensagem enviada: "${wa?.ultimaMsg||'—'}"
 - Analise o padrão: é comercial ou de amizade? Cita a necessidade do cliente ou do vendedor?`:'\n- Não monitorado para este vendedor.'}
 
+CONTEXTO DO MÊS:
+- Estamos no dia ${new Date().getDate()} de ${diasUteis()+new Date().getDate()-1} dias úteis do mês
+- Início de mês (1-8): foco em RITMO e ATIVIDADE, não em faturamento absoluto
+- Meio de mês (9-18): foco em conversão e pipeline
+- Fim de mês (19+): foco em fechamento urgente
+- Ajuste o diagnóstico conforme o momento — não critique faturamento baixo no início do mês se a atividade estiver boa
+
 Gere para o gerente (máx 380 palavras):
 
 ### 📞 Qualidade das ligações
-Volume, taxa de atendimento, duração. Padrão identificado. O que está certo e errado.
+Volume, taxa de atendimento, duração. Padrão identificado. O que está certo e errado. Compare com o esperado para este momento do mês.
 
-### 💬 Comportamento no WhatsApp${v.whatsapp?`
-Tom das mensagens: cite exemplos reais. É centrado no cliente ou no vendedor? "Ajuda o amigo" ou oferta de valor?`:'\nNão monitorado.'}
+### 💬 Comportamento no WhatsApp${v.whatsapp?\`
+Tom das mensagens: cite exemplos reais. É centrado no cliente ou no vendedor? "Ajuda o amigo" ou oferta de valor?\`:'
+Não monitorado.'}
 
-### 🔍 Diagnóstico
-O que está acontecendo. 2-3 frases diretas.
+### 🔍 Diagnóstico para este momento do mês
+O que está acontecendo considerando que é dia ${new Date().getDate()}. Se for início de mês, foque em ritmo de atividade, não em faturamento absoluto. 2-3 frases diretas.
 
 ### 🎯 Ações para Dhiego esta semana
-3 ações concretas e específicas.
+3 ações concretas e específicas baseadas no momento do mês.
 
 ### 💬 Pergunta para o 1:1
 1 pergunta que revela a causa raiz.`;
@@ -584,6 +653,10 @@ window.carregarTodos=async()=>{
   dadosCache={};waCache={};
   const dias=diasUteis();
   $('pDias').textContent=dias;
+  // Contexto do momento do mês
+  const diaAtual=new Date().getDate();
+  const ctxMes=diaAtual<=8?'🟡 Início de mês — foco em ritmo e atividade':diaAtual<=18?'🔵 Meio de mês — foco em conversão':'🔴 Fim de mês — foco em fechamento urgente';
+  $('ctxMes').textContent=ctxMes;
 
   // Buscar tudo em paralelo
   await Promise.all([
@@ -606,10 +679,10 @@ window.carregarTodos=async()=>{
   });
 
   // Painel geral
-  $('pFatBRL').textContent='R$'+Math.round(fatBRL/1000)+'k';
-  $('pFatUSD').textContent='US$'+Math.round(fatUSD/1000)+'k';
-  $('pFaltaBRL').textContent='R$'+Math.round((metaBRL-fatBRL)/1000)+'k';
-  $('pFaltaUSD').textContent='US$'+Math.round((metaUSD-fatUSD)/1000)+'k';
+  $('pFatBRL').textContent='R$'+Math.floor(fatBRL/1000)+'k';
+  $('pFatUSD').textContent='US$'+Math.floor(fatUSD/1000)+'k';
+  $('pFaltaBRL').textContent='R$'+Math.floor((metaBRL-fatBRL)/1000)+'k';
+  $('pFaltaUSD').textContent='US$'+Math.floor((metaUSD-fatUSD)/1000)+'k';
   $('pCriticos').textContent=criticos;
   $('pLigTotal').textContent=ligTotal;
   $('pLigTaxa').textContent=ligTotal>0?Math.round(ligAtendTotal/ligTotal*100)+'%':'0%';
@@ -628,33 +701,33 @@ window.carregarTodos=async()=>{
   const fatMI=mi.reduce((s,v)=>s+dadosCache[v.email].fat,0);
   const metaMI=mi.reduce((s,v)=>s+v.meta,0);
   const ligMI=mi.reduce((s,v)=>s+dadosCache[v.email].ligHoje,0);
-  $('miFat').textContent='R$'+Math.round(fatMI/1000)+'k';
-  $('miMeta').textContent='R$'+Math.round(metaMI/1000)+'k';
-  $('miFalta').textContent='R$'+Math.round((metaMI-fatMI)/1000)+'k';
+  $('miFat').textContent='R$'+Math.floor(fatMI/1000)+'k';
+  $('miMeta').textContent='R$'+Math.floor(metaMI/1000)+'k';
+  $('miFalta').textContent='R$'+Math.floor((metaMI-fatMI)/1000)+'k';
   $('miLig').textContent=ligMI;
-  $('statsMI').textContent='R$'+Math.round(fatMI/1000)+'k / R$'+Math.round(metaMI/1000)+'k · '+Math.round(fatMI/metaMI*100)+'%';
+  $('statsMI').textContent='R$'+Math.floor(fatMI/1000)+'k / R$'+Math.floor(metaMI/1000)+'k · '+Math.round(fatMI/metaMI*100)+'%';
 
   // Painel BU Obras
   const ob=VENDEDORES.filter(v=>v.bu==='Obras');
   const fatOb=ob.reduce((s,v)=>s+dadosCache[v.email].fat,0);
   const metaOb=ob.reduce((s,v)=>s+v.meta,0);
   const ligOb=ob.reduce((s,v)=>s+dadosCache[v.email].ligHoje,0);
-  $('obrasFat').textContent='R$'+Math.round(fatOb/1000)+'k';
-  $('obrasMeta').textContent='R$'+Math.round(metaOb/1000)+'k';
-  $('obrasFalta').textContent='R$'+Math.round((metaOb-fatOb)/1000)+'k';
+  $('obrasFat').textContent='R$'+Math.floor(fatOb/1000)+'k';
+  $('obrasMeta').textContent='R$'+Math.floor(metaOb/1000)+'k';
+  $('obrasFalta').textContent='R$'+Math.floor((metaOb-fatOb)/1000)+'k';
   $('obrasLig').textContent=ligOb;
-  $('statsObras').textContent='R$'+Math.round(fatOb/1000)+'k / R$'+Math.round(metaOb/1000)+'k · '+Math.round(fatOb/metaOb*100)+'%';
+  $('statsObras').textContent='R$'+Math.floor(fatOb/1000)+'k / R$'+Math.floor(metaOb/1000)+'k · '+Math.round(fatOb/metaOb*100)+'%';
 
   // Painel BU ME
   const me=VENDEDORES.filter(v=>v.bu==='ME');
   const fatME=me.reduce((s,v)=>s+dadosCache[v.email].fat,0);
   const metaME=me.reduce((s,v)=>s+v.meta,0);
   const ligME=me.reduce((s,v)=>s+dadosCache[v.email].ligHoje,0);
-  $('meFat').textContent='US$'+Math.round(fatME/1000)+'k';
-  $('meMeta').textContent='US$'+Math.round(metaME/1000)+'k';
-  $('meFalta').textContent='US$'+Math.round((metaME-fatME)/1000)+'k';
+  $('meFat').textContent='US$'+Math.floor(fatME/1000)+'k';
+  $('meMeta').textContent='US$'+Math.floor(metaME/1000)+'k';
+  $('meFalta').textContent='US$'+Math.floor((metaME-fatME)/1000)+'k';
   $('meLig').textContent=ligME;
-  $('statsME').textContent='US$'+Math.round(fatME/1000)+'k / US$'+Math.round(metaME/1000)+'k · '+Math.round(fatME/metaME*100)+'%';
+  $('statsME').textContent='US$'+Math.floor(fatME/1000)+'k / US$'+Math.floor(metaME/1000)+'k · '+Math.round(fatME/metaME*100)+'%';
 
   // Cards — mostrar todos ao atualizar
   ['MI','Obras','ME'].forEach(b=>renderCards(b));
@@ -668,6 +741,205 @@ window.carregarTodos=async()=>{
   setTimeout(()=>$('topbar').className='topbar',600);
   btn.disabled=false;$('btnIcon').textContent='↻';
 };
+
+window.switchTab=(id,btn)=>{
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.tab-pnl').forEach(p=>p.style.display='none');
+  btn.classList.add('on');
+  const pnl=document.getElementById('tab-'+id);
+  if(pnl) pnl.style.display='block';
+  // Carregar aba se ainda não carregada
+  if(id==='hoje'&&window._vcAtivo&&!window._hojeCarregado){
+    window._hojeCarregado=true;
+    carregarHoje(window._vcAtivo);
+  }
+  if(id==='hoje'&&window._vcAtivo&&window._hojeCarregado){
+    // já carregado, só resetar sub-aba para hoje
+    document.querySelectorAll('.dia-btn').forEach(b=>b.classList.remove('on'));
+    document.getElementById('btn-hoje')?.classList.add('on');
+    document.getElementById('pnl-hoje').style.display='block';
+    document.getElementById('pnl-ontem').style.display='none';
+  }
+  if(id==='fila'&&window._vcAtivo&&!window._filaCarregada){
+    window._filaCarregada=true;
+    carregarFila(window._vcAtivo);
+  }
+};
+
+window.switchDia=(dia,btn)=>{
+  document.querySelectorAll('.dia-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('pnl-hoje').style.display=dia==='hoje'?'block':'none';
+  document.getElementById('pnl-ontem').style.display=dia==='ontem'?'block':'none';
+  if(dia==='ontem'&&window._vcAtivo&&!window._ontemCarregado){
+    window._ontemCarregado=true;
+    carregarDia(window._vcAtivo,'ontem');
+  }
+};
+
+function renderTimeline(ligacoes, waChats, label){
+  let html='<div class="act-timeline">';
+  if(ligacoes.length===0&&waChats.length===0){
+    html+=`<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px">Nenhuma atividade registrada ${label}.</div>`;
+  }
+  if(ligacoes.length>0){
+    const atendidas=ligacoes.filter(l=>l.resultado==='Atendeu').length;
+    html+=`<div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">☎ Ligações — ${ligacoes.length} total · ${atendidas} atendidas · ${ligacoes.length-atendidas} não atendidas</div>`;
+    ligacoes.forEach(l=>{
+      const ok=l.resultado==='Atendeu';
+      html+=`<div class="tl-item">
+        <div class="tl-icon ${ok?'tl-call-ok':'tl-call-no'}">${ok?'✓':'✗'}</div>
+        <div class="tl-info">
+          <div class="tl-titulo">${l.tipo} — ${l.resultado}</div>
+          <div class="tl-sub">${ok&&l.duracao?'Duração: '+l.duracao:'Não atendida'}</div>
+        </div>
+        <div class="tl-hora">${l.hora}</div>
+      </div>`;
+    });
+  }
+  if(waChats.length>0){
+    const pessoais=waChats.filter(w=>w.tom==='pessoal').length;
+    html+=`<div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin:12px 0 6px">💬 WhatsApp — ${waChats.length} chats${pessoais>0?' · ⚠ '+pessoais+' com tom pessoal':''}</div>`;
+    waChats.forEach(w=>{
+      const cls=w.tom==='pessoal'?'tl-wa-warn':w.tom==='logistica'?'tl-wa-log':'tl-wa-ok';
+      const icon=w.tom==='pessoal'?'⚠':w.tom==='logistica'?'🚚':'✓';
+      const cor=w.tom==='pessoal'?'color:var(--amber)':w.tom==='logistica'?'color:var(--muted)':'color:var(--green)';
+      html+=`<div class="tl-item">
+        <div class="tl-icon ${cls}">${icon}</div>
+        <div class="tl-info">
+          <div class="tl-titulo">${w.contato}</div>
+          <div class="tl-sub" style="${cor}">${w.tom} · "${w.mensagem}"</div>
+        </div>
+        <div class="tl-hora">${w.hora}</div>
+      </div>`;
+    });
+  }
+  html+='</div>';
+  return html;
+}
+
+async function carregarDia(v, dia){
+  const elId=dia==='hoje'?'pnl-hoje':'pnl-ontem';
+  const el=document.getElementById(elId);
+  if(!el)return;
+
+  const hoje=new Date().toISOString().slice(0,10);
+  const ontem=new Date(Date.now()-86400000).toISOString().slice(0,10);
+  const dataSF=dia==='hoje'?'TODAY':`${ontem}`;
+  const dataWAInicio=dia==='hoje'?`${hoje}T00:00:00Z`:`${ontem}T00:00:00Z`;
+  const dataWAFim=dia==='hoje'?`${hoje}T23:59:59Z`:`${ontem}T23:59:59Z`;
+  const label=dia==='hoje'?'hoje':'ontem';
+
+  let ligacoes=[], waChats=[];
+  try{
+    const r=await fetch('/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:800,
+        mcp_servers:[
+          {type:'url',url:'https://api.salesforce.com/platform/mcp/v1/platform/sobject-all',name:'salesforce'},
+          ...(v.whatsapp?[{type:'url',url:'https://sabagram-mcp.nitzap.com/mcp/master',name:'nitzap'}]:[])
+        ],
+        system:'Retorne apenas JSON válido, sem explicações.',
+        messages:[{role:'user',content:`Dados de ${label.toUpperCase()} para ${v.nome}:
+
+Salesforce — ligações de ${dia==='hoje'?'TODAY':ontem}:
+SELECT Subject, CallDisposition, CallDurationInSeconds, CreatedDate FROM Task WHERE OwnerId='${v.userId}' AND ActivityDate=${dataSF} AND Type='Call' ORDER BY CreatedDate DESC LIMIT 30
+
+${v.whatsapp?`Nitzap — chats ativos de ${label} (mywhatsid: ${v.whatsapp}@s.whatsapp.net, isgroup:false, dt_lastmessage >= '${dataWAInicio}' AND dt_lastmessage <= '${dataWAFim}', ORDER BY dt_lastmessage DESC LIMIT 15)`:''}
+
+Retorne JSON (horários no fuso Brasil UTC-3):
+{
+  "ligacoes":[{"hora":"HH:MM","tipo":"Feita/Recebida","resultado":"Atendeu/Não Atendeu","duracao":"Xm Xs ou —"}],
+  "whatsapp":[{"hora":"HH:MM","contato":"nome do contato","mensagem":"última msg max 55 chars","tom":"comercial/pessoal/logistica/interno","isent":true}]
+}`}]})});
+    const d=await r.json();
+    const buf=d.content?.map(b=>b.text||'').join('')||'';
+    const clean=buf.replace(/```json|```/g,'').trim();
+    const json=JSON.parse(clean);
+    ligacoes=json.ligacoes||[];
+    waChats=json.whatsapp||[];
+  }catch(e){}
+
+  el.innerHTML=renderTimeline(ligacoes, waChats, label);
+}
+
+async function carregarHoje(v){
+  window._ontemCarregado=false;
+  // Resetar sub-abas
+  document.querySelectorAll('.dia-btn').forEach(b=>b.classList.remove('on'));
+  document.getElementById('btn-hoje')?.classList.add('on');
+  document.getElementById('pnl-hoje').style.display='block';
+  document.getElementById('pnl-ontem').style.display='none';
+  await carregarDia(v,'hoje');
+}
+
+async function carregarFila(v){
+  const el=document.getElementById('filaBody');
+  if(!el)return;
+
+  try{
+    const r=await fetch('/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:1200,
+        mcp_servers:[{type:'url',url:'https://api.salesforce.com/platform/mcp/v1/platform/sobject-all',name:'salesforce'}],
+        system:`Você é consultor comercial. Crie uma fila de contatos prioritários para ${v.nome}. Data: ${new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}. Seja específico e prático.`,
+        messages:[{role:'user',content:`Para ${v.nome} (IdeVen: ${v.ideVen.join(',')}):
+
+1. Busque no Salesforce os 10 clientes com maior histórico de compras que NÃO compraram em junho/2026:
+SELECT IdeCli__c, SUM(VlrLiq__c) fat, MAX(DatFat__c) ultima FROM Pedido__c WHERE IdeVen__c IN ('${v.ideVen.join("','")}') AND StsPed__c='Faturado' AND DatFat__c >= 2025-01-01 AND IdeCli__c NOT IN (SELECT IdeCli__c FROM Pedido__c WHERE IdeVen__c IN ('${v.ideVen.join("','")}') AND StsPed__c='Faturado' AND DatFat__c >= 2026-06-01) GROUP BY IdeCli__c ORDER BY SUM(VlrLiq__c) DESC LIMIT 10
+
+2. Para cada cliente, busque o nome: SELECT Id, Name FROM Account WHERE Id IN (IDs encontrados)
+
+Gere um JSON com a fila priorizada (máximo 6 clientes):
+[
+  {
+    "nome": "Nome do Cliente",
+    "fatHistorico": "R$XXk",
+    "diasInativo": 45,
+    "modo": "WhatsApp",
+    "prioridade": "URGENTE",
+    "motivo": "Maior cliente inativo há X dias — comprou R$XXk no último pedido",
+    "assunto": "O que abordar — produto específico ou pergunta sobre projeto",
+    "script": "Exato o que falar: começa pelo nome do cliente e uma pergunta sobre a necessidade DELE"
+  }
+]
+Modos possíveis: "WhatsApp", "Ligação", "WhatsApp + Ligação"
+Prioridades: "URGENTE", "ALTA", "MÉDIA"
+Retorne APENAS o JSON válido.`}]})});
+    const d=await r.json();
+    const buf=d.content?.map(b=>b.text||'').join('')||'';
+    const clean=buf.replace(/```json|```/g,'').trim();
+    const fila=JSON.parse(clean);
+
+    let html='';
+    fila.forEach(c=>{
+      const modoCls=c.modo.includes('WhatsApp')?'fb-wa':c.modo==='Ligação'?'fb-call':'fb-visita';
+      const priorCor=c.prioridade==='URGENTE'?'color:var(--red)':c.prioridade==='ALTA'?'color:var(--amber)':'color:var(--blue)';
+      html+=`<div class="fila-item">
+        <div class="fila-hdr">
+          <div>
+            <div class="fila-nome">${c.nome}</div>
+            <div style="font-size:10px;color:var(--muted);margin-top:1px">${c.fatHistorico} histórico · ${c.diasInativo} dias sem comprar</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <span style="font-size:10px;font-weight:700;${priorCor}">${c.prioridade}</span>
+            <span class="fila-badge ${modoCls}">${c.modo}</span>
+          </div>
+        </div>
+        <div class="fila-body">
+          <div class="fila-motivo">📌 ${c.motivo}</div>
+          <div class="fila-motivo">🎯 <strong>Assunto:</strong> ${c.assunto}</div>
+          <div class="fila-script">
+            <div class="fila-script-tag">Script — use estas palavras</div>
+            ${c.script}
+          </div>
+        </div>
+      </div>`;
+    });
+
+    el.innerHTML=html||'<div style="color:var(--muted);font-size:13px;padding:10px">Nenhum cliente prioritário encontrado.</div>';
+  }catch(e){
+    el.innerHTML=`<span style="color:var(--red);font-size:12px">Erro: ${e.message}</span>`;
+  }
+}
 
 setInterval(()=>{
   const h=new Date().getHours(),m=new Date().getMinutes();
