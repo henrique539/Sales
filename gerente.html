@@ -351,12 +351,28 @@ const md2html=t=>t.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/^###
 // Toggle painel
 window.togglePanel=(id,btn)=>{
   const panels=['geral','mi','obras','me'];
-  const btns=['nb-geral','nb-mi','nb-obras','nb-me'];
   const isOpen=$('panel-'+id).classList.contains('open');
   panels.forEach(p=>$('panel-'+p).classList.remove('open'));
-  btns.forEach(b=>$('nb-'+b.replace('nb-',''))?.classList.remove('on'));
   document.querySelectorAll('.nbtn').forEach(b=>b.classList.remove('on'));
-  if(!isOpen){$('panel-'+id).classList.add('open');btn.classList.add('on');}
+  if(!isOpen){
+    $('panel-'+id).classList.add('open');
+    btn.classList.add('on');
+  }
+  // Filtrar cards por BU
+  const buMap={mi:'MI',obras:'Obras',me:'ME'};
+  const buFiltro=buMap[id];
+  ['gridMI','gridObras','gridME'].forEach(gid=>{
+    const el=$(gid);
+    if(!el)return;
+    const sec=el.closest('.bu-sec');
+    if(!sec)return;
+    if(!buFiltro||id==='geral'){
+      sec.style.display='';
+    } else {
+      const buDoBU=gid==='gridMI'?'MI':gid==='gridObras'?'Obras':'ME';
+      sec.style.display=buDoBU===buFiltro?'':'none';
+    }
+  });
 };
 
 function getStatus(fat,meta,lig){
@@ -640,8 +656,9 @@ window.carregarTodos=async()=>{
   $('meLig').textContent=ligME;
   $('statsME').textContent='US$'+Math.round(fatME/1000)+'k / US$'+Math.round(metaME/1000)+'k · '+Math.round(fatME/metaME*100)+'%';
 
-  // Cards
+  // Cards — mostrar todos ao atualizar
   ['MI','Obras','ME'].forEach(b=>renderCards(b));
+  ['gridMI','gridObras','gridME'].forEach(gid=>{ const sec=document.getElementById(gid)?.closest('.bu-sec'); if(sec) sec.style.display=''; });
   if(ativoEmail)window.selecionarVendedor(ativoEmail);
 
   const ts=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
