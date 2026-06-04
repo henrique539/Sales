@@ -365,3 +365,4 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: e.message });
   }
 }
+// updated qui  4 jun 2026 20:18:03 -03
