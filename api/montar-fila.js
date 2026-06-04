@@ -5,20 +5,31 @@ const MAKE_SECRET = 'sabagram-make-2026';
 const ANTHROPIC_API = 'https://api.anthropic.com/v1/messages';
 
 const VENDEDORES = {
-  '185': { nome: 'Sizenando Andrade', email: 'nando@sabagram.com.br',    userId: '005TW0000002BnNYAU', metaMensal: 233000, bu: 'BU MI', limite: 20 },
-  '192': { nome: 'Kelly Julião',      email: 'kelly@sabagram.com.br',    userId: '005TW0000003rpNYAQ', metaMensal: 161000, bu: 'BU MI', limite: 15 },
-  '11':  { nome: 'Marcelo Melo',      email: 'marcelo@sabagram.com.br',  userId: '0054S000002TkpGQAS', metaMensal: 463000, bu: 'BU MI', limite: 20 },
-  '203': { nome: 'Renata Santana',    email: 'santana@sabagram.com.br',  userId: '005TW000000ANTBYA4', metaMensal: 105000, bu: 'BU MI', limite: 10 },
-  '204': { nome: 'Cezar Fiorio',      email: 'cezar@sabagram.com.br',   userId: '005TW000000APunYAG', metaMensal: 172000, bu: 'BU ME', limite: 15 },
-  '212': { nome: 'Diana Rigoni',      email: 'diana@sabagram.com.br',    userId: '0054S000002TkpZQAS', metaMensal: 25000,  bu: 'BU ME', limite: 10 },
+  '185': { nome: 'Sizenando Andrade', email: 'nando@sabagram.com.br',   userId: '005TW0000002BnNYAU', metaMensal: 233000, bu: 'BU MI', limite: 20 },
+  '192': { nome: 'Kelly Julião',      email: 'kelly@sabagram.com.br',   userId: '005TW0000003rpNYAQ', metaMensal: 161000, bu: 'BU MI', limite: 15 },
+  '11':  { nome: 'Marcelo Melo',      email: 'marcelo@sabagram.com.br', userId: '0054S000002TkpGQAS', metaMensal: 463000, bu: 'BU MI', limite: 20 },
+  '203': { nome: 'Renata Santana',    email: 'santana@sabagram.com.br', userId: '005TW000000ANTBYA4', metaMensal: 105000, bu: 'BU MI', limite: 10 },
+  '204': { nome: 'Cezar Fiorio',      email: 'cezar@sabagram.com.br',  userId: '005TW000000APunYAG', metaMensal: 172000, bu: 'BU ME', limite: 15 },
+  '212': { nome: 'Diana Rigoni',      email: 'diana@sabagram.com.br',   userId: '0054S000002TkpZQAS', metaMensal: 25000,  bu: 'BU ME', limite: 10 },
   // Wesley (171) excluído — BU Obras trabalha com projetos
 };
 
-// Feriados Nacionais BR 2026
-const FERIADOS_BR = ['01-01','02-16','02-17','04-03','04-21','05-01','06-04','09-07','10-12','11-02','11-15','12-25'];
-
-// Feriados Nacionais US 2026
-const FERIADOS_US = ['01-01','01-19','02-16','05-25','07-04','09-07','11-11','11-26','12-25'];
+// ─── Feriados via API (dinâmico, funciona todo ano) ───────────────────────────
+async function getFeriados(ano) {
+  try {
+    const [resBR, resUS] = await Promise.all([
+      fetch(`https://brasilapi.com.br/api/feriados/v1/${ano}`),
+      fetch(`https://date.nager.at/api/v3/PublicHolidays/${ano}/US`),
+    ]);
+    const [dataBR, dataUS] = await Promise.all([resBR.json(), resUS.json()]);
+    const br = Array.isArray(dataBR) ? dataBR.map(f => f.date.slice(5)) : [];
+    const us = Array.isArray(dataUS) ? dataUS.map(f => f.date.slice(5)) : [];
+    return { br, us };
+  } catch(e) {
+    console.error('Erro ao buscar feriados:', e.message);
+    return { br: [], us: [] };
+  }
+}
 
 // ─── Auth Admin Firebase ──────────────────────────────────────────────────────
 async function getAdminToken() {
@@ -78,20 +89,27 @@ async function lerContexto(tipo, data, token) {
   const url = `${FIRESTORE_URL}/contexto/${tipo}_${data}`;
   const r = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
   const d = await r.json();
-  if (d.error || !d.fields) return [];
-  return fsToVal(d.fields.registros) || [];
+  if (d.error || !d.fields) {
+    console.log(`lerContexto ${tipo}_${data}: nao encontrado ou erro`, JSON.stringify(d.error||'sem fields'));
+    return [];
+  }
+  const result = fsToVal(d.fields.registros) || [];
+  console.log(`lerContexto ${tipo}_${data}: ${result.length} registros`);
+  return result;
 }
 
 async function gravarFila(emailKey, data, doc, token) {
   const url = `${FIRESTORE_URL}/fila/${emailKey}_${data}`;
-  await fetch(url, {
+  const r = await fetch(url, {
     method: 'PATCH',
     headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({ fields: objToFs(doc) })
   });
+  const d = await r.json();
+  if (d.error) console.error(`gravarFila ${emailKey}:`, d.error);
 }
 
-// ─── Lógica de prioridade ─────────────────────────────────────────────────────
+// ─── Prioridade ───────────────────────────────────────────────────────────────
 function calcPrioridade(c, pedidos90d) {
   const dias = parseFloat(c.QtdDip__c) || 0;
   const score = parseInt(c.ScoAco__c) || 0;
@@ -105,26 +123,17 @@ function calcPrioridade(c, pedidos90d) {
   return 'NORMAL';
 }
 
-function isFeriado(data, bu) {
-  const mmdd = data.slice(5); // MM-DD
-  if (bu === 'BU ME') return FERIADOS_US.includes(mmdd);
-  return FERIADOS_BR.includes(mmdd);
-}
-
 function deveContatarHoje(prioridade, diaSemana) {
-  // 0=Dom, 1=Seg, 2=Ter, 3=Qua, 4=Qui, 5=Sex, 6=Sab
   if (diaSemana === 0 || diaSemana === 6) return false;
-  if (prioridade === 'URGENTE') return true; // todo dia util
-  if (prioridade === 'ALTA' && diaSemana !== 5) return true; // Seg-Qui
-  if (prioridade === 'ALTA' && diaSemana === 5) return true; // Sexta com tom leve
+  if (prioridade === 'URGENTE') return true;
+  if (prioridade === 'ALTA' && diaSemana !== 5) return true;
+  if (prioridade === 'ALTA' && diaSemana === 5) return true; // sexta tom leve
   if (prioridade === 'MÉDIA' && diaSemana === 1) return true; // só segunda
   return false;
 }
 
-function isSexta(diaSemana) { return diaSemana === 5; }
-
-// ─── Gerar scripts via IA ─────────────────────────────────────────────────────
-async function gerarScriptsLote(clientes, ligacoesPorCliente, nitzapPorTelefone, vendedorNome) {
+// ─── Scripts via IA ──────────────────────────────────────────────────────────
+async function gerarScriptsLote(clientes, ligacoesPorCliente, nitzapPorCliente, vendedorNome, sexta) {
   const scripts = {};
   if (!clientes.length) return scripts;
 
@@ -133,26 +142,29 @@ async function gerarScriptsLote(clientes, ligacoesPorCliente, nitzapPorTelefone,
     const lig = ligacoesPorCliente[c.Id];
     const resumoLig = lig?.Description ? lig.Description.substring(0, 200) : null;
     const dataLig = c.DatUli__c ? new Date(c.DatUli__c).toLocaleDateString('pt-BR', {month:'short',year:'2-digit'}) : 'nunca';
-    const nitzap = nitzapPorTelefone[c.Id];
-    const ultimoWA = nitzap ? `WA: "${(nitzap.text_last_message||'').substring(0,80)}"` : 'sem WA recente';
-
-    return `${i+1}. ID:${c.Id} | ${c.Name} | ${dias} dias sem comprar | score ${c.ScoAco__c||'?'} | ${c.StsCli__c||'?'} | ult.lig: ${dataLig} (${c.ResUli__c||'sem registro'})${resumoLig?` | resumo: ${resumoLig}`:''}${ultimoWA?` | ${ultimoWA}`:''}`;
+    const nitzap = nitzapPorCliente[c.Id];
+    const ultimoWA = nitzap ? `WA recente: "${(nitzap.text_last_message||'').substring(0,80)}"` : 'sem WA recente';
+    const canalHist = (c.ResUli__c === 'Atendeu') ? 'historico: atende ligacao' : 'historico: nao atende bem';
+    return `${i+1}. ID:${c.Id} | ${c.Name} | ${dias} dias sem comprar | score ${c.ScoAco__c||'?'} | ${c.StsCli__c||'?'} | ult.lig: ${dataLig} (${c.ResUli__c||'sem registro'}) | ${canalHist}${resumoLig?` | resumo: ${resumoLig}`:''}${ultimoWA?` | ${ultimoWA}`:''}`;
   }).join('\n');
 
+  const tomsexta = sexta ? 'Hoje é SEXTA-FEIRA — use tom de relacionamento, não venda fria. Prefira WA a ligação fria.' : '';
+
   const prompt = `Você é assistente de vendas sênior da Sabagram Granitos e Mármores.
-O vendedor ${vendedorNome} vai contatar esses clientes hoje.
+O vendedor ${vendedorNome} vai contatar esses clientes hoje. ${tomsexta}
 
 Para cada cliente gere:
 1. CONTEXTO: 1-2 frases sobre a situação comercial atual
-2. SCRIPT: mensagem WhatsApp natural e personalizada, max 2 frases, português brasileiro informal
-3. CANAL: "WA" ou "Ligação" baseado no histórico
-4. PROXIMO_PASSO: o que fazer se não atender (1 frase curta)
+2. SCRIPT: mensagem personalizada para o canal sugerido (max 2 frases, português informal)
+3. CANAL: "WA" ou "Ligação" — se atende ligação use Ligação, se sexta prefira WA
+4. MELHOR_HORARIO: sugestão de horário baseado no histórico (ex: "manhã 9h-11h", "tarde 14h-16h")
+5. PROXIMO_PASSO: o que fazer se não atender (1 frase)
 
 Clientes:
 ${linhas}
 
 Responda SOMENTE JSON válido sem markdown:
-{"scripts":[{"id":"ID","contexto":"...","script":"...","canal":"WA","proximoPasso":"..."}]}`;
+{"scripts":[{"id":"ID","contexto":"...","script":"...","canal":"WA","melhorHorario":"...","proximoPasso":"..."}]}`;
 
   try {
     const r = await fetch(ANTHROPIC_API, {
@@ -164,7 +176,7 @@ Responda SOMENTE JSON válido sem markdown:
     const text = data.content?.find(b => b.type === 'text')?.text || '{}';
     const parsed = JSON.parse(text.replace(/```json|```/g,'').trim());
     (parsed.scripts || []).forEach(s => {
-      scripts[s.id] = { contexto: s.contexto, script: s.script, canal: s.canal||'WA', proximoPasso: s.proximoPasso };
+      scripts[s.id] = { contexto: s.contexto, script: s.script, canal: s.canal||'WA', melhorHorario: s.melhorHorario, proximoPasso: s.proximoPasso };
     });
   } catch(e) { console.error('Script lote erro:', e.message); }
   return scripts;
@@ -187,19 +199,20 @@ export default async function handler(req, res) {
 
     const hoje = new Date(data + 'T12:00:00Z');
     const diaSemana = hoje.getDay();
-    const sexta = isSexta(diaSemana);
+    const sexta = diaSemana === 5;
+    const ano = data.slice(0, 4);
+    const mmdd = data.slice(5);
 
-    // Verificar feriado por BU — pula vendedores do respectivo BU
-    const feriadoBR = FERIADOS_BR.includes(data.slice(5));
-    const feriadoUS = FERIADOS_US.includes(data.slice(5));
-    if (feriadoBR && feriadoUS) {
-      return res.json({ ok: true, data, motivo: 'Feriado nacional BR e US — sem fila hoje', resultados: {} });
-    }
+    // Buscar feriados dinamicamente
+    const { br: feriadosBR, us: feriadosUS } = await getFeriados(ano);
+    const feriadoBR = feriadosBR.includes(mmdd);
+    const feriadoUS = feriadosUS.includes(mmdd);
+    console.log(`Data: ${data} | DiaSemana: ${diaSemana} | FeriadoBR: ${feriadoBR} | FeriadoUS: ${feriadoUS}`);
 
     const adminToken = await getAdminToken();
 
     // Ler os 4 contextos do Firestore
-    console.log('Lendo contextos do Firestore...');
+    console.log('Lendo contextos do Firestore para data:', data);
     const [clientes, pedidos, ligacoes, nitzap] = await Promise.all([
       lerContexto('clientes', data, adminToken),
       lerContexto('pedidos', data, adminToken),
@@ -209,22 +222,26 @@ export default async function handler(req, res) {
 
     console.log(`Contextos: ${clientes.length} clientes, ${pedidos.length} pedidos, ${ligacoes.length} ligacoes, ${nitzap.length} nitzap`);
 
+    if (!clientes.length) {
+      return res.json({ ok: false, data, erro: 'Nenhum cliente no Firestore — verifique se os cenarios 1-4 rodaram', resultados: {}, totalClientes: 0 });
+    }
+
     // Indexar pedidos por cliente
     const pedidosPorCliente = {};
     pedidos.forEach(p => {
       if (!p) return;
-      const cliId = p.IdeCli__c || p['Cliente'];
+      const cliId = p.IdeCli__c;
       if (!cliId) return;
       if (!pedidosPorCliente[cliId]) pedidosPorCliente[cliId] = 0;
       pedidosPorCliente[cliId] += (p.total || 1);
     });
 
-    // Indexar última ligação atendida por cliente (WhatId = AccountId)
+    // Indexar última ligação atendida por cliente
     const ligacoesPorCliente = {};
     ligacoes.forEach(l => {
       if (!l) return;
-      const whatId = l.WhatId || l['ID do relativo a'];
-      const subject = l.Subject || l['Assunto'] || '';
+      const whatId = l.WhatId;
+      const subject = l.Subject || '';
       if (!whatId || ligacoesPorCliente[whatId]) return;
       if (subject.includes('Atendida') && !subject.includes('Não Atendida')) {
         ligacoesPorCliente[whatId] = l;
@@ -257,18 +274,10 @@ export default async function handler(req, res) {
         if (!deveContatarHoje(prioridade, diaSemana)) continue;
 
         if (!filasPorVendedor[cod]) filasPorVendedor[cod] = [];
-        filasPorVendedor[cod].push({
-          ...cliente,
-          _prioridade: prioridade,
-          _vendedorCod: cod,
-          _vendedorNome: vInfo.nome,
-          _vendedorEmail: vInfo.email,
-          _pedidos90d: pedidos90d,
-        });
+        filasPorVendedor[cod].push({ ...cliente, _prioridade: prioridade, _vendedorCod: cod, _vendedorNome: vInfo.nome, _vendedorEmail: vInfo.email, _pedidos90d: pedidos90d });
       }
     }
 
-    // Ordenar e gerar scripts por vendedor
     const resultados = {};
 
     for (const [cod, fila] of Object.entries(filasPorVendedor)) {
@@ -277,10 +286,12 @@ export default async function handler(req, res) {
       // Pular BU em feriado
       if (feriadoBR && vInfo.bu !== 'BU ME') {
         console.log(`Feriado BR — pulando ${vInfo.nome}`);
+        resultados[vInfo.nome] = 'Feriado BR';
         continue;
       }
       if (feriadoUS && vInfo.bu === 'BU ME') {
         console.log(`Feriado US — pulando ${vInfo.nome}`);
+        resultados[vInfo.nome] = 'Feriado US';
         continue;
       }
 
@@ -290,75 +301,54 @@ export default async function handler(req, res) {
         (parseFloat(b.QtdDip__c)||0) - (parseFloat(a.QtdDip__c)||0)
       );
 
-      // Aplicar cap de fila por prioridade
+      // Cap de fila por prioridade
       const limite = vInfo.limite || 20;
       const urgentes = fila.filter(c => c._prioridade === 'URGENTE');
       const altas = fila.filter(c => c._prioridade === 'ALTA');
-      const medias = fila.filter(c => c._prioridade === 'MÉDIA');
-      const restante = limite - urgentes.length;
-      const altasCap = altas.slice(0, Math.max(0, restante));
-      const mediasCap = sexta ? [] : medias.slice(0, Math.max(0, restante - altasCap.length));
-      const filaCapada = [...urgentes, ...altasCap, ...mediasCap];
-      fila.length = 0;
-      fila.push(...filaCapada);
+      const medias = sexta ? [] : fila.filter(c => c._prioridade === 'MÉDIA');
+      const restante = Math.max(0, limite - urgentes.length);
+      const altasCap = altas.slice(0, restante);
+      const mediasCap = medias.slice(0, Math.max(0, restante - altasCap.length));
+      const filaFinal = [...urgentes, ...altasCap, ...mediasCap];
 
-      // Gerar scripts para TODOS em lotes de 15
+      // Gerar scripts em lotes de 15
       const scripts = {};
-      for (let i = 0; i < fila.length; i += 15) {
-        const lote = fila.slice(i, i + 15);
-        const scriptsLote = await gerarScriptsLote(lote, ligacoesPorCliente, nitzapPorCliente, vInfo.nome);
+      for (let i = 0; i < filaFinal.length; i += 15) {
+        const lote = filaFinal.slice(i, i + 15);
+        const scriptsLote = await gerarScriptsLote(lote, ligacoesPorCliente, nitzapPorCliente, vInfo.nome, sexta);
         Object.assign(scripts, scriptsLote);
       }
 
-      // Montar fila final
-      const filaFinal = fila.map(c => ({
-        Id: c.Id,
-        Name: c.Name,
-        ScoAco__c: c.ScoAco__c || null,
-        StsCli__c: c.StsCli__c || null,
-        QtdDip__c: c.QtdDip__c || null,
-        DatUli__c: c.DatUli__c || null,
-        ResUli__c: c.ResUli__c || null,
-        LisVen__c: c.LisVen__c || null,
-        nitzap20__DateTime_Last_Sent_Whatsapp__c: c.nitzap20__DateTime_Last_Sent_Whatsapp__c || null,
-        prioridade: c._prioridade,
-        pedidos90d: c._pedidos90d,
-        contatado: false,
-        respondeu: false,
-        contexto: scripts[c.Id]?.contexto || null,
-        script: scripts[c.Id]?.script || null,
-        canal: scripts[c.Id]?.canal || 'WA',
-        proximoPasso: scripts[c.Id]?.proximoPasso || null,
+      // Montar documento final
+      const filaDoc = filaFinal.map(c => ({
+        Id: c.Id, Name: c.Name, ScoAco__c: c.ScoAco__c||null, StsCli__c: c.StsCli__c||null,
+        QtdDip__c: c.QtdDip__c||null, DatUli__c: c.DatUli__c||null, ResUli__c: c.ResUli__c||null,
+        LisVen__c: c.LisVen__c||null, nitzap20__DateTime_Last_Sent_Whatsapp__c: c.nitzap20__DateTime_Last_Sent_Whatsapp__c||null,
+        prioridade: c._prioridade, pedidos90d: c._pedidos90d, contatado: false, respondeu: false,
+        contexto: scripts[c.Id]?.contexto||null, script: scripts[c.Id]?.script||null,
+        canal: scripts[c.Id]?.canal||'WA', melhorHorario: scripts[c.Id]?.melhorHorario||null,
+        proximoPasso: scripts[c.Id]?.proximoPasso||null,
       }));
 
-      // Gravar no Firestore por vendedor
       const emailKey = vInfo.email.replace(/[@.]/g, '_');
       await gravarFila(emailKey, data, {
-        email: vInfo.email,
-        data,
-        vendedor: vInfo.nome,
-        fila: filaFinal,
-        total: filaFinal.length,
-        urgentes: filaFinal.filter(c => c.prioridade === 'URGENTE').length,
+        email: vInfo.email, data, vendedor: vInfo.nome, fila: filaDoc,
+        total: filaDoc.length, urgentes: filaDoc.filter(c => c.prioridade==='URGENTE').length,
         atualizadoEm: new Date().toISOString(),
       }, adminToken);
 
-      resultados[vInfo.nome] = filaFinal.length;
+      resultados[vInfo.nome] = filaDoc.length;
     }
 
-    // Gravar também "todos" para compatibilidade com o gerente
+    // Gravar "todos" para compatibilidade
     const filaTotal = Object.values(filasPorVendedor).flat().map(c => ({
       Id: c.Id, Name: c.Name, ScoAco__c: c.ScoAco__c, StsCli__c: c.StsCli__c,
       QtdDip__c: c.QtdDip__c, DatUli__c: c.DatUli__c, ResUli__c: c.ResUli__c,
-      LisVen__c: c.LisVen__c, prioridade: c._prioridade,
-      contatado: false, respondeu: false,
+      LisVen__c: c.LisVen__c, prioridade: c._prioridade, contatado: false, respondeu: false,
     }));
 
     await gravarFila('todos', data, {
-      email: 'todos',
-      data,
-      fila: filaTotal,
-      total: filaTotal.length,
+      email: 'todos', data, fila: filaTotal, total: filaTotal.length,
       atualizadoEm: new Date().toISOString(),
     }, adminToken);
 
