@@ -332,15 +332,16 @@ const VENDEDORES={
   "diana@sabagram.com.br":{nome:"Diana Rigoni",avatar:"DR",cor:"#5f1a4a",fatJun:"US$0",fatMai:"US$0",bu:"BU ME",meta:"US$25k",metaVal:25000,ticket:22000,contatos_dia:4},
 };
 
-// IdeVen__c por email
-const IDEVENMAP={
-  "sizenando@sabagram.com.br":["001TW000003LbquYAC","001TW000003LcYSYA0"],
-  "kelly@sabagram.com.br":["001TW000005ag14YAA"],
-  "marcelo@sabagram.com.br":["0014S00000BK1xDQAT"],
-  "renata@sabagram.com.br":["001TW00000BusqcYAB","001TW00000Buxa9YAB","001TW00000C09VzYAJ"],
-  "cezar@sabagram.com.br":["001TW00000C114rYAB"],
-  "diana@sabagram.com.br":[],
-  "wesley@sabagram.com.br":[],
+// Número do vendedor no LisVen__c por email
+const LISVENMAP={
+  "nando@sabagram.com.br":"185",
+  "sizenando@sabagram.com.br":"185",
+  "kelly@sabagram.com.br":"192",
+  "marcelo@sabagram.com.br":"11",
+  "renata@sabagram.com.br":"200",
+  "cezar@sabagram.com.br":"204",
+  "diana@sabagram.com.br":"212",
+  "wesley@sabagram.com.br":"171",
 };
 
 const app=initializeApp(FB);
@@ -504,7 +505,7 @@ async function carregarFila(email){
   const container=$('fila-container');
   const hoje=new Date().toISOString().slice(0,10);
   const vInfo=VENDEDORES[email];
-  const idsVendedor=IDEVENMAP[email]||[];
+  const lisVen=LISVENMAP[email]||'';
 
   try{
     const user=auth.currentUser;
@@ -514,10 +515,10 @@ async function carregarFila(email){
     const data=await resp.json();
     const filaCompleta=data.fila||[];
 
-    // Filtrar por vendedor
-    const minha=idsVendedor.length
-      ? filaCompleta.filter(c=>idsVendedor.includes(c.IdeVen__c))
-      : filaCompleta; // admin/sem mapa vê tudo
+    // Filtrar por vendedor via LisVen__c
+    const minha=lisVen
+      ? filaCompleta.filter(c=>(c.LisVen__c||'').includes(';'+lisVen+';'))
+      : filaCompleta;
 
     if(!minha.length){
       container.innerHTML=`<div style="text-align:center;padding:40px;color:var(--muted);font-size:13px">
