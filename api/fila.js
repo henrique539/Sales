@@ -153,16 +153,18 @@ export default async function handler(req, res) {
 
     // ── GET — Portal lê a fila ────────────────────────────────────────────────
     if (req.method === 'GET') {
-      // Autenticação via token Firebase do usuário logado
-      const idToken = (req.headers.authorization || '').replace('Bearer ', '');
-      if (!idToken) return res.status(401).json({ error: 'Sem token' });
-
-      const verifyRes = await fetch(
-        `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyC6oWnbIyaZejwtNcL2S0SrHKLlLLxzUfI`,
-        { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ idToken }) }
-      );
-      const verifyData = await verifyRes.json();
-      if (!verifyData.users?.[0]) return res.status(401).json({ error: 'Token inválido' });
+      // Autenticação: aceita x-make-secret (Make) ou token Firebase (portal)
+      const makeSecret = req.headers['x-make-secret'];
+      if (makeSecret !== MAKE_SECRET) {
+        const idToken = (req.headers.authorization || '').replace('Bearer ', '');
+        if (!idToken) return res.status(401).json({ error: 'Sem token' });
+        const verifyRes = await fetch(
+          `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyC6oWnbIyaZejwtNcL2S0SrHKLlLLxzUfI`,
+          { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ idToken }) }
+        );
+        const verifyData = await verifyRes.json();
+        if (!verifyData.users?.[0]) return res.status(401).json({ error: 'Token inválido' });
+      }
 
       const { email, data } = req.query;
       if (!email || !data) return res.status(400).json({ error: 'email e data são obrigatórios' });
