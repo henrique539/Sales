@@ -404,28 +404,20 @@ function statusTag(c){
   return                               {txt:'⏳ Pendente', bg:'#fee2e2',cor:'#991b1b'};
 }
 
-async function gerarScriptsIA(clientes){
+async function gerarScriptsIA(clientes, vendedor){
   const scripts={};
   if(!clientes.length) return scripts;
   try{
-    const prompt=`Você é assistente de vendas da Sabagram Granitos e Mármores.
-Para cada cliente, gere CONTEXTO (1-2 frases) e SCRIPT de WhatsApp natural em português.
-
-${clientes.map((c,i)=>`${i+1}. ID:${c.Id} | ${c.Name} | ${parseFloat(c.QtdDip__c)||0} dias sem comprar | status ${c.StsCli__c||'—'} | score ${c.ScoAco__c||'—'}`).join('\n')}
-
-Responda SOMENTE JSON válido:
-{"clientes":[{"id":"...","contexto":"...","script":"..."}]}`;
-
-    const r=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1500,
-        messages:[{role:'user',content:prompt}]})
+    const user=auth.currentUser;
+    const token=user?await user.getIdToken():'';
+    const r=await fetch('/api/scripts',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+      body:JSON.stringify({clientes:clientes.slice(0,10),vendedor})
     });
     const data=await r.json();
-    const txt=data.content?.find(b=>b.type==='text')?.text||'{}';
-    const parsed=JSON.parse(txt.replace(/```json|```/g,'').trim());
-    (parsed.clientes||[]).forEach(c=>{scripts[c.id]={contexto:c.contexto,script:c.script};});
-  }catch(e){console.error('IA erro:',e);}
+    return data.scripts||{};
+  }catch(e){console.error('scripts erro:',e);}
   return scripts;
 }
 
@@ -538,7 +530,7 @@ async function carregarFila(email){
 
     // Gerar scripts com IA para os top 10
     const top=minha.slice(0,10);
-    const scripts=await gerarScriptsIA(top);
+    const scripts=await gerarScriptsIA(top, vInfo?.nome||email);
 
     // Re-renderizar com scripts
     container.innerHTML=renderFila(minha,vInfo,scripts);
