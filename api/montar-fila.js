@@ -283,17 +283,23 @@ export default async function handler(req, res) {
     for (const [cod, fila] of Object.entries(filasPorVendedor)) {
       const vInfo = VENDEDORES[cod];
 
-      // Pular BU em feriado
-      if (feriadoBR && vInfo.bu !== 'BU ME') {
-        console.log(`Feriado BR — pulando ${vInfo.nome}`);
-        resultados[vInfo.nome] = 'Feriado BR';
+      // Filtrar clientes por feriado baseado no BillingCountry
+      const filaFiltrada = fila.filter(c => {
+        const isUS = c.BillingCountry && c.BillingCountry !== 'Brazil';
+        if (feriadoUS && isUS) return false;
+        if (feriadoBR && !isUS) return false;
+        return true;
+      });
+
+      if (!filaFiltrada.length) {
+        console.log(`Feriado — todos clientes de ${vInfo.nome} estao em feriado hoje`);
+        resultados[vInfo.nome] = 'Feriado';
         continue;
       }
-      if (feriadoUS && vInfo.bu === 'BU ME') {
-        console.log(`Feriado US — pulando ${vInfo.nome}`);
-        resultados[vInfo.nome] = 'Feriado US';
-        continue;
-      }
+
+      // Substitui fila pela filtrada
+      fila.length = 0;
+      fila.push(...filaFiltrada);
 
       // Ordenar: URGENTE primeiro, depois por dias sem comprar
       fila.sort((a, b) =>
@@ -359,4 +365,3 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: e.message });
   }
 }
-
