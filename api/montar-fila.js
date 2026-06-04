@@ -11,10 +11,8 @@ const VENDEDORES = {
   '203': { nome: 'Renata Santana',    email: 'santana@sabagram.com.br', userId: '005TW000000ANTBYA4', metaMensal: 105000, bu: 'BU MI', limite: 10 },
   '204': { nome: 'Cezar Fiorio',      email: 'cezar@sabagram.com.br',  userId: '005TW000000APunYAG', metaMensal: 172000, bu: 'BU ME', limite: 15 },
   '212': { nome: 'Diana Rigoni',      email: 'diana@sabagram.com.br',   userId: '0054S000002TkpZQAS', metaMensal: 25000,  bu: 'BU ME', limite: 10 },
-  // Wesley (171) excluído — BU Obras trabalha com projetos
 };
 
-// ─── Feriados via API (dinâmico, funciona todo ano) ───────────────────────────
 async function getFeriados(ano) {
   try {
     const [resBR, resUS] = await Promise.all([
@@ -26,12 +24,11 @@ async function getFeriados(ano) {
     const us = Array.isArray(dataUS) ? dataUS.map(f => f.date.slice(5)) : [];
     return { br, us };
   } catch(e) {
-    console.error('Erro ao buscar feriados:', e.message);
+    console.error('Erro feriados:', e.message);
     return { br: [], us: [] };
   }
 }
 
-// ─── Auth Admin Firebase ──────────────────────────────────────────────────────
 async function getAdminToken() {
   const sa = {
     client_email: 'firebase-adminsdk-fbsvc@sales-team-6aeb6.iam.gserviceaccount.com',
@@ -54,7 +51,6 @@ async function getAdminToken() {
   return td.access_token;
 }
 
-// ─── Firestore helpers ────────────────────────────────────────────────────────
 function fsVal(v) {
   if (v === null || v === undefined) return { nullValue: null };
   if (typeof v === 'string')  return { stringValue: v };
@@ -90,10 +86,15 @@ async function lerContexto(tipo, data, token) {
   const r = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
   const d = await r.json();
   if (d.error || !d.fields) {
-    console.log(`lerContexto ${tipo}_${data}: nao encontrado ou erro`, JSON.stringify(d.error||'sem fields'));
+    console.log(`lerContexto ${tipo}_${data}: erro`, JSON.stringify(d.error||'sem fields'));
     return [];
   }
-  const result = fsToVal(d.fields.registros) || [];
+  const raw = fsToVal(d.fields.registros) || [];
+  // Registros podem estar como strings JSON — fazer parse
+  const result = raw.map(r => {
+    if (typeof r === 'string') { try { return JSON.parse(r); } catch(e) { return null; } }
+    return r;
+  }).filter(Boolean);
   console.log(`lerContexto ${tipo}_${data}: ${result.length} registros`);
   return result;
 }
@@ -109,7 +110,6 @@ async function gravarFila(emailKey, data, doc, token) {
   if (d.error) console.error(`gravarFila ${emailKey}:`, d.error);
 }
 
-// ─── Prioridade ───────────────────────────────────────────────────────────────
 function calcPrioridade(c, pedidos90d) {
   const dias = parseFloat(c.QtdDip__c) || 0;
   const score = parseInt(c.ScoAco__c) || 0;
@@ -127,45 +127,25 @@ function deveContatarHoje(prioridade, diaSemana) {
   if (diaSemana === 0 || diaSemana === 6) return false;
   if (prioridade === 'URGENTE') return true;
   if (prioridade === 'ALTA' && diaSemana !== 5) return true;
-  if (prioridade === 'ALTA' && diaSemana === 5) return true; // sexta tom leve
-  if (prioridade === 'MÉDIA' && diaSemana === 1) return true; // só segunda
+  if (prioridade === 'ALTA' && diaSemana === 5) return true;
+  if (prioridade === 'MÉDIA' && diaSemana === 1) return true;
   return false;
 }
 
-// ─── Scripts via IA ──────────────────────────────────────────────────────────
 async function gerarScriptsLote(clientes, ligacoesPorCliente, nitzapPorCliente, vendedorNome, sexta) {
   const scripts = {};
   if (!clientes.length) return scripts;
-
   const linhas = clientes.map((c, i) => {
     const dias = parseFloat(c.QtdDip__c) || 0;
     const lig = ligacoesPorCliente[c.Id];
     const resumoLig = lig?.Description ? lig.Description.substring(0, 200) : null;
     const dataLig = c.DatUli__c ? new Date(c.DatUli__c).toLocaleDateString('pt-BR', {month:'short',year:'2-digit'}) : 'nunca';
     const nitzap = nitzapPorCliente[c.Id];
-    const ultimoWA = nitzap ? `WA recente: "${(nitzap.text_last_message||'').substring(0,80)}"` : 'sem WA recente';
-    const canalHist = (c.ResUli__c === 'Atendeu') ? 'historico: atende ligacao' : 'historico: nao atende bem';
-    return `${i+1}. ID:${c.Id} | ${c.Name} | ${dias} dias sem comprar | score ${c.ScoAco__c||'?'} | ${c.StsCli__c||'?'} | ult.lig: ${dataLig} (${c.ResUli__c||'sem registro'}) | ${canalHist}${resumoLig?` | resumo: ${resumoLig}`:''}${ultimoWA?` | ${ultimoWA}`:''}`;
+    const ultimoWA = nitzap ? `WA: "${(nitzap.text_last_message||'').substring(0,80)}"` : 'sem WA';
+    return `${i+1}. ID:${c.Id} | ${c.Name} | ${dias}d sem comprar | score ${c.ScoAco__c||'?'} | ${c.StsCli__c||'?'} | ult.lig: ${dataLig} (${c.ResUli__c||'-'})${resumoLig?` | ${resumoLig}`:''}${ultimoWA?` | ${ultimoWA}`:''}`;
   }).join('\n');
-
-  const tomsexta = sexta ? 'Hoje é SEXTA-FEIRA — use tom de relacionamento, não venda fria. Prefira WA a ligação fria.' : '';
-
-  const prompt = `Você é assistente de vendas sênior da Sabagram Granitos e Mármores.
-O vendedor ${vendedorNome} vai contatar esses clientes hoje. ${tomsexta}
-
-Para cada cliente gere:
-1. CONTEXTO: 1-2 frases sobre a situação comercial atual
-2. SCRIPT: mensagem personalizada para o canal sugerido (max 2 frases, português informal)
-3. CANAL: "WA" ou "Ligação" — se atende ligação use Ligação, se sexta prefira WA
-4. MELHOR_HORARIO: sugestão de horário baseado no histórico (ex: "manhã 9h-11h", "tarde 14h-16h")
-5. PROXIMO_PASSO: o que fazer se não atender (1 frase)
-
-Clientes:
-${linhas}
-
-Responda SOMENTE JSON válido sem markdown:
-{"scripts":[{"id":"ID","contexto":"...","script":"...","canal":"WA","melhorHorario":"...","proximoPasso":"..."}]}`;
-
+  const tomsexta = sexta ? 'Hoje é SEXTA — use tom de relacionamento, não venda fria. Prefira WA.' : '';
+  const prompt = `Você é assistente de vendas sênior da Sabagram Granitos e Mármores. O vendedor ${vendedorNome} vai contatar esses clientes hoje. ${tomsexta}\n\nPara cada cliente gere:\n1. CONTEXTO: 1-2 frases sobre a situação\n2. SCRIPT: mensagem personalizada max 2 frases, português informal\n3. CANAL: "WA" ou "Ligação"\n4. MELHOR_HORARIO: sugestão baseada no histórico\n5. PROXIMO_PASSO: o que fazer se não atender\n\nClientes:\n${linhas}\n\nResponda SOMENTE JSON válido sem markdown:\n{"scripts":[{"id":"ID","contexto":"...","script":"...","canal":"WA","melhorHorario":"...","proximoPasso":"..."}]}`;
   try {
     const r = await fetch(ANTHROPIC_API, {
       method: 'POST',
@@ -175,23 +155,18 @@ Responda SOMENTE JSON válido sem markdown:
     const data = await r.json();
     const text = data.content?.find(b => b.type === 'text')?.text || '{}';
     const parsed = JSON.parse(text.replace(/```json|```/g,'').trim());
-    (parsed.scripts || []).forEach(s => {
-      scripts[s.id] = { contexto: s.contexto, script: s.script, canal: s.canal||'WA', melhorHorario: s.melhorHorario, proximoPasso: s.proximoPasso };
-    });
+    (parsed.scripts || []).forEach(s => { scripts[s.id] = { contexto: s.contexto, script: s.script, canal: s.canal||'WA', melhorHorario: s.melhorHorario, proximoPasso: s.proximoPasso }; });
   } catch(e) { console.error('Script lote erro:', e.message); }
   return scripts;
 }
 
-// ─── Handler principal ────────────────────────────────────────────────────────
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST,OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type,x-make-secret,Authorization');
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Método não permitido' });
-
-  const secret = req.headers['x-make-secret'];
-  if (secret !== MAKE_SECRET) return res.status(401).json({ error: 'Não autorizado' });
+  if (req.headers['x-make-secret'] !== MAKE_SECRET) return res.status(401).json({ error: 'Não autorizado' });
 
   try {
     const { data } = req.body;
@@ -200,90 +175,53 @@ export default async function handler(req, res) {
     const hoje = new Date(data + 'T12:00:00Z');
     const diaSemana = hoje.getDay();
     const sexta = diaSemana === 5;
-    const ano = data.slice(0, 4);
-    const mmdd = data.slice(5);
-
-    // Buscar feriados dinamicamente
-    const { br: feriadosBR, us: feriadosUS } = await getFeriados(ano);
-    const feriadoBR = feriadosBR.includes(mmdd);
-    const feriadoUS = feriadosUS.includes(mmdd);
-    console.log(`Data: ${data} | DiaSemana: ${diaSemana} | FeriadoBR: ${feriadoBR} | FeriadoUS: ${feriadoUS}`);
+    const { br: feriadosBR, us: feriadosUS } = await getFeriados(data.slice(0, 4));
+    const feriadoBR = feriadosBR.includes(data.slice(5));
+    const feriadoUS = feriadosUS.includes(data.slice(5));
+    console.log(`Data: ${data} | Dia: ${diaSemana} | FeriadoBR: ${feriadoBR} | FeriadoUS: ${feriadoUS}`);
 
     const adminToken = await getAdminToken();
-
-    // Ler os 4 contextos do Firestore
-    console.log('Lendo contextos do Firestore para data:', data);
     const [clientes, pedidos, ligacoes, nitzap] = await Promise.all([
       lerContexto('clientes', data, adminToken),
       lerContexto('pedidos', data, adminToken),
       lerContexto('ligacoes', data, adminToken),
       lerContexto('nitzap', data, adminToken),
     ]);
-
     console.log(`Contextos: ${clientes.length} clientes, ${pedidos.length} pedidos, ${ligacoes.length} ligacoes, ${nitzap.length} nitzap`);
 
-    if (!clientes.length) {
-      return res.json({ ok: false, data, erro: 'Nenhum cliente no Firestore — verifique se os cenarios 1-4 rodaram', resultados: {}, totalClientes: 0 });
-    }
+    if (!clientes.length) return res.json({ ok: false, data, erro: 'Sem clientes no Firestore', resultados: {}, totalClientes: 0 });
 
-    // Indexar pedidos por cliente
     const pedidosPorCliente = {};
-    pedidos.forEach(p => {
-      if (!p) return;
-      const cliId = p.IdeCli__c;
-      if (!cliId) return;
-      if (!pedidosPorCliente[cliId]) pedidosPorCliente[cliId] = 0;
-      pedidosPorCliente[cliId] += (p.total || 1);
-    });
+    pedidos.forEach(p => { if (!p?.IdeCli__c) return; pedidosPorCliente[p.IdeCli__c] = (pedidosPorCliente[p.IdeCli__c]||0) + (p.total||1); });
 
-    // Indexar última ligação atendida por cliente
     const ligacoesPorCliente = {};
-    ligacoes.forEach(l => {
-      if (!l) return;
-      const whatId = l.WhatId;
-      const subject = l.Subject || '';
-      if (!whatId || ligacoesPorCliente[whatId]) return;
-      if (subject.includes('Atendida') && !subject.includes('Não Atendida')) {
-        ligacoesPorCliente[whatId] = l;
-      }
-    });
+    ligacoes.forEach(l => { if (!l?.WhatId || ligacoesPorCliente[l.WhatId]) return; if ((l.Subject||'').includes('Atendida') && !(l.Subject||'').includes('Não Atendida')) ligacoesPorCliente[l.WhatId] = l; });
 
-    // Indexar Nitzap por last_salesforce_user (Account ID)
     const nitzapPorCliente = {};
-    nitzap.forEach(n => {
-      if (!n || !n.last_salesforce_user || n.isgroup) return;
-      if (!nitzapPorCliente[n.last_salesforce_user]) {
-        nitzapPorCliente[n.last_salesforce_user] = n;
-      }
-    });
+    nitzap.forEach(n => { if (!n?.last_salesforce_user || n.isgroup) return; if (!nitzapPorCliente[n.last_salesforce_user]) nitzapPorCliente[n.last_salesforce_user] = n; });
 
-    // Montar fila por vendedor
     const filasPorVendedor = {};
     const ordemPrioridade = { URGENTE: 0, ALTA: 1, 'MÉDIA': 2, NORMAL: 3 };
 
     for (const cliente of clientes) {
-      if (!cliente || !cliente.Id) continue;
+      if (!cliente?.Id) continue;
       const lisVen = (cliente.LisVen__c || '').replace(/^;|;$/g, '').split(';').filter(Boolean);
-
       for (const cod of lisVen) {
         const vInfo = VENDEDORES[cod];
         if (!vInfo) continue;
-
         const pedidos90d = pedidosPorCliente[cliente.Id] || 0;
         const prioridade = calcPrioridade(cliente, pedidos90d);
         if (!deveContatarHoje(prioridade, diaSemana)) continue;
-
         if (!filasPorVendedor[cod]) filasPorVendedor[cod] = [];
         filasPorVendedor[cod].push({ ...cliente, _prioridade: prioridade, _vendedorCod: cod, _vendedorNome: vInfo.nome, _vendedorEmail: vInfo.email, _pedidos90d: pedidos90d });
       }
     }
 
     const resultados = {};
-
     for (const [cod, fila] of Object.entries(filasPorVendedor)) {
       const vInfo = VENDEDORES[cod];
 
-      // Filtrar clientes por feriado baseado no BillingCountry
+      // Filtrar por feriado baseado no BillingCountry do cliente
       const filaFiltrada = fila.filter(c => {
         const isUS = c.BillingCountry && c.BillingCountry !== 'Brazil';
         if (feriadoUS && isUS) return false;
@@ -291,45 +229,28 @@ export default async function handler(req, res) {
         return true;
       });
 
-      if (!filaFiltrada.length) {
-        console.log(`Feriado — todos clientes de ${vInfo.nome} estao em feriado hoje`);
-        resultados[vInfo.nome] = 'Feriado';
-        continue;
-      }
+      if (!filaFiltrada.length) { resultados[vInfo.nome] = 'Feriado'; continue; }
 
-      // Substitui fila pela filtrada
-      fila.length = 0;
-      fila.push(...filaFiltrada);
+      filaFiltrada.sort((a, b) => (ordemPrioridade[a._prioridade]||3) - (ordemPrioridade[b._prioridade]||3) || (parseFloat(b.QtdDip__c)||0) - (parseFloat(a.QtdDip__c)||0));
 
-      // Ordenar: URGENTE primeiro, depois por dias sem comprar
-      fila.sort((a, b) =>
-        (ordemPrioridade[a._prioridade]||3) - (ordemPrioridade[b._prioridade]||3) ||
-        (parseFloat(b.QtdDip__c)||0) - (parseFloat(a.QtdDip__c)||0)
-      );
-
-      // Cap de fila por prioridade
       const limite = vInfo.limite || 20;
-      const urgentes = fila.filter(c => c._prioridade === 'URGENTE');
-      const altas = fila.filter(c => c._prioridade === 'ALTA');
-      const medias = sexta ? [] : fila.filter(c => c._prioridade === 'MÉDIA');
+      const urgentes = filaFiltrada.filter(c => c._prioridade === 'URGENTE');
+      const altas = filaFiltrada.filter(c => c._prioridade === 'ALTA');
+      const medias = sexta ? [] : filaFiltrada.filter(c => c._prioridade === 'MÉDIA');
       const restante = Math.max(0, limite - urgentes.length);
-      const altasCap = altas.slice(0, restante);
-      const mediasCap = medias.slice(0, Math.max(0, restante - altasCap.length));
-      const filaFinal = [...urgentes, ...altasCap, ...mediasCap];
+      const filaFinal = [...urgentes, ...altas.slice(0, restante), ...medias.slice(0, Math.max(0, restante - altas.slice(0, restante).length))];
 
-      // Gerar scripts em lotes de 15
       const scripts = {};
       for (let i = 0; i < filaFinal.length; i += 15) {
         const lote = filaFinal.slice(i, i + 15);
-        const scriptsLote = await gerarScriptsLote(lote, ligacoesPorCliente, nitzapPorCliente, vInfo.nome, sexta);
-        Object.assign(scripts, scriptsLote);
+        Object.assign(scripts, await gerarScriptsLote(lote, ligacoesPorCliente, nitzapPorCliente, vInfo.nome, sexta));
       }
 
-      // Montar documento final
       const filaDoc = filaFinal.map(c => ({
         Id: c.Id, Name: c.Name, ScoAco__c: c.ScoAco__c||null, StsCli__c: c.StsCli__c||null,
         QtdDip__c: c.QtdDip__c||null, DatUli__c: c.DatUli__c||null, ResUli__c: c.ResUli__c||null,
-        LisVen__c: c.LisVen__c||null, nitzap20__DateTime_Last_Sent_Whatsapp__c: c.nitzap20__DateTime_Last_Sent_Whatsapp__c||null,
+        LisVen__c: c.LisVen__c||null, BillingCountry: c.BillingCountry||null,
+        nitzap20__DateTime_Last_Sent_Whatsapp__c: c.nitzap20__DateTime_Last_Sent_Whatsapp__c||null,
         prioridade: c._prioridade, pedidos90d: c._pedidos90d, contatado: false, respondeu: false,
         contexto: scripts[c.Id]?.contexto||null, script: scripts[c.Id]?.script||null,
         canal: scripts[c.Id]?.canal||'WA', melhorHorario: scripts[c.Id]?.melhorHorario||null,
@@ -337,32 +258,20 @@ export default async function handler(req, res) {
       }));
 
       const emailKey = vInfo.email.replace(/[@.]/g, '_');
-      await gravarFila(emailKey, data, {
-        email: vInfo.email, data, vendedor: vInfo.nome, fila: filaDoc,
-        total: filaDoc.length, urgentes: filaDoc.filter(c => c.prioridade==='URGENTE').length,
-        atualizadoEm: new Date().toISOString(),
-      }, adminToken);
-
+      await gravarFila(emailKey, data, { email: vInfo.email, data, vendedor: vInfo.nome, fila: filaDoc, total: filaDoc.length, urgentes: filaDoc.filter(c => c.prioridade==='URGENTE').length, atualizadoEm: new Date().toISOString() }, adminToken);
       resultados[vInfo.nome] = filaDoc.length;
     }
 
-    // Gravar "todos" para compatibilidade
     const filaTotal = Object.values(filasPorVendedor).flat().map(c => ({
       Id: c.Id, Name: c.Name, ScoAco__c: c.ScoAco__c, StsCli__c: c.StsCli__c,
       QtdDip__c: c.QtdDip__c, DatUli__c: c.DatUli__c, ResUli__c: c.ResUli__c,
       LisVen__c: c.LisVen__c, prioridade: c._prioridade, contatado: false, respondeu: false,
     }));
-
-    await gravarFila('todos', data, {
-      email: 'todos', data, fila: filaTotal, total: filaTotal.length,
-      atualizadoEm: new Date().toISOString(),
-    }, adminToken);
+    await gravarFila('todos', data, { email: 'todos', data, fila: filaTotal, total: filaTotal.length, atualizadoEm: new Date().toISOString() }, adminToken);
 
     return res.json({ ok: true, data, resultados, totalClientes: filaTotal.length });
-
   } catch(e) {
-    console.error('montar-fila.js:', e.message, e.stack);
+    console.error('montar-fila:', e.message, e.stack);
     return res.status(500).json({ error: e.message });
   }
 }
-// updated qui  4 jun 2026 20:18:03 -03
