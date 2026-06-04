@@ -203,6 +203,7 @@ export default async function handler(req, res) {
     const filasPorVendedor = {};
 
     for (const cliente of clientes) {
+      if (!cliente || !cliente.Id) continue;
       const lisVen = (cliente.LisVen__c || '').replace(/^;|;$/g, '').split(';').filter(Boolean);
 
       for (const cod of lisVen) {
