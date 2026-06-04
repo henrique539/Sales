@@ -304,261 +304,15 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 
   <!-- ══ FILA ══ -->
   <div id="tab-fila" style="display:none">
-
-    <!-- Sync bar -->
-    <div class="sync-bar">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
-        <div style="font-size:11px;font-weight:600;color:var(--text)">Progresso da fila hoje — meta: <span style="color:var(--navy);font-family:'JetBrains Mono',monospace">27</span> contatos</div>
-        <div style="font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace">atualizado às 09:00 · próx sync 12:00</div>
-      </div>
-      <div class="prog-fila">
-        <div class="prog-fill" style="width:30%;background:var(--green)"></div>
-      </div>
-      <div style="display:flex;gap:14px;font-size:10px">
-        <span style="color:var(--green);font-weight:600">✓ 8 contatados</span>
-        <span style="color:var(--amber);font-weight:600">⏳ 19 pendentes</span>
-        <span style="color:var(--muted)">30% da fila cumprido</span>
+    <div id="fila-container">
+      <div style="text-align:center;padding:40px;color:var(--muted);font-size:13px">
+        <div style="font-size:24px;margin-bottom:8px">⏳</div>
+        Carregando sua fila de hoje...
       </div>
     </div>
-
-    <!-- URGENTES -->
-    <div class="sec-label" style="color:var(--red)">
-      <i class="ti ti-flame" style="font-size:13px" aria-hidden="true"></i>
-      Urgentes — eram clientes fiéis, pararam de comprar
-    </div>
-
-    <!-- TECHNOGRAN -->
-    <div class="fi">
-      <div class="fi-hdr">
-        <div>
-          <div class="fi-tags">
-            <span class="ftag" style="background:rgba(248,113,113,.25);color:#f87171">URGENTE</span>
-            <span class="ftag" style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.55)">12 pedidos · R$281k histórico</span>
-            <span class="ftag" style="background:rgba(74,222,128,.15);color:#4ade80">recorrente fiel</span>
-          </div>
-          <div class="fi-nome">TECHNOGRAN</div>
-          <div class="fi-sub">Score ⭐⭐⭐ · 223 dias sem comprar · último out/25 · comprou 12x seguidas</div>
-        </div>
-        <div class="fi-btns">
-          <div class="btn-row">
-            <button class="btn-wa" onclick="marcar(this,'TECHNOGRAN')">💬 WA</button>
-            <button class="btn-lig" onclick="marcar(this,'TECHNOGRAN')">📞 Ligar</button>
-          </div>
-          <button class="btn-check" id="chk-technogran" onclick="toggleCheck(this,'technogran')">✓ Marcar feito</button>
-        </div>
-      </div>
-      <div class="fi-body">
-        <div style="font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px">Contexto</div>
-        <div class="fi-ctx">Comprou 12x de set/24 a out/25 — era cliente fiel com padrão mensal. Parou no mesmo período que 2A Decor. Pode ter migrado para concorrente ou mudou o comprador.</div>
-        <div class="fi-script-lbl">Script sugerido</div>
-        <div class="fi-script">"Oi [nome], Sizenando da Sabagram. Estava revisando minha carteira e vi que faz quase 8 meses que a gente não faz negócio. Aconteceu algo? Tem como me dar um retorno sobre o que mudou?"</div>
-      </div>
-    </div>
-
-    <!-- 2A DECOR -->
-    <div class="fi">
-      <div class="fi-hdr">
-        <div>
-          <div class="fi-tags">
-            <span class="ftag" style="background:rgba(248,113,113,.25);color:#f87171">URGENTE</span>
-            <span class="ftag" style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.55)">15 pedidos · R$181k histórico</span>
-            <span class="ftag" style="background:rgba(74,222,128,.15);color:#4ade80">recorrente fiel</span>
-          </div>
-          <div class="fi-nome">2A DECOR</div>
-          <div class="fi-sub">Score ⭐⭐⭐⭐⭐ · 229 dias sem comprar · último out/25 · parou junto com Technogran</div>
-        </div>
-        <div class="fi-btns">
-          <div class="btn-row">
-            <button class="btn-wa" onclick="marcar(this,'2A DECOR')">💬 WA</button>
-            <button class="btn-lig" onclick="marcar(this,'2A DECOR')">📞 Ligar</button>
-          </div>
-          <button class="btn-check" id="chk-2adecor" onclick="toggleCheck(this,'2adecor')">✓ Marcar feito</button>
-        </div>
-      </div>
-      <div class="fi-body">
-        <div style="font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px">Contexto</div>
-        <div class="fi-ctx">15 pedidos de out/24 a out/25 — padrão mensal regular. Parou exatamente ao mesmo tempo que Technogran. Pode ser problema de preço ou concorrente agressivo nessa região.</div>
-        <div class="fi-script-lbl">Script sugerido</div>
-        <div class="fi-script">"[Nome], tudo bem? Sizenando da Sabagram. Faz uns 8 meses — sei que às vezes a gente muda de fornecedor por preço ou prazo. Pode me falar o que aconteceu? Quero entender como posso te ajudar de volta."</div>
-      </div>
-    </div>
-
-    <!-- R BRANCO -->
-    <div class="fi">
-      <div class="fi-hdr">
-        <div>
-          <div class="fi-tags">
-            <span class="ftag" style="background:rgba(248,113,113,.25);color:#f87171">URGENTE</span>
-            <span class="ftag" style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.55)">9 pedidos · R$166k histórico</span>
-            <span class="ftag" style="background:rgba(74,222,128,.15);color:#4ade80">recorrente fiel</span>
-          </div>
-          <div class="fi-nome">R BRANCO ENGENHARIA</div>
-          <div class="fi-sub">Score ⭐⭐ · 170 dias sem comprar · último dez/25</div>
-        </div>
-        <div class="fi-btns">
-          <div class="btn-row">
-            <button class="btn-wa" onclick="marcar(this,'R BRANCO')">💬 WA</button>
-            <button class="btn-lig" onclick="marcar(this,'R BRANCO')">📞 Ligar</button>
-          </div>
-          <button class="btn-check" id="chk-rbranco" onclick="toggleCheck(this,'rbranco')">✓ Marcar feito</button>
-        </div>
-      </div>
-      <div class="fi-body">
-        <div class="fi-ctx">9 pedidos de set/24 a dez/25 — padrão constante. Construtora com projetos contínuos, não é pontual. Boa chance de reativar se tiver nova obra.</div>
-        <div class="fi-script-lbl">Script sugerido</div>
-        <div class="fi-script">"[Nome], bom dia! Sizenando da Sabagram. Tem algum projeto novo em andamento? Tenho material em estoque pra entrega rápida."</div>
-      </div>
-    </div>
-
-    <!-- ALTAS -->
-    <div class="sec-label" style="color:var(--amber)">
-      <i class="ti ti-arrow-up" style="font-size:13px" aria-hidden="true"></i>
-      Alta prioridade — recorrentes em risco ou perto do intervalo
-    </div>
-
-    <!-- POSTO JUPARANA -->
-    <div class="fi">
-      <div class="fi-hdr">
-        <div>
-          <div class="fi-tags">
-            <span class="ftag" style="background:rgba(251,191,36,.25);color:#fbbf24">ALTA</span>
-            <span class="ftag" style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.55)">6 pedidos · R$122k · bimestral</span>
-          </div>
-          <div class="fi-nome">POSTO JUPARANA</div>
-          <div class="fi-sub">Score ⭐⭐⭐⭐⭐ · 125 dias · último jan/26 · atendeu ligação mai/25</div>
-        </div>
-        <div class="fi-btns">
-          <div class="btn-row">
-            <button class="btn-wa" onclick="marcar(this,'POSTO JUPARANA')">💬 WA</button>
-          </div>
-          <button class="btn-check" id="chk-postojuparana" onclick="toggleCheck(this,'postojuparana')">✓ Marcar feito</button>
-        </div>
-      </div>
-      <div class="fi-body">
-        <div class="fi-ctx">Ciclo bimestral — já passou do intervalo. Na última conversa estava relutante mas interessado. Proposta estava pendente.</div>
-        <div class="fi-script-lbl">Script sugerido</div>
-        <div class="fi-script">"[Nome], bom dia! Preparei aquela proposta. Tenho condições especiais pra esse mês. Quando posso te enviar?"</div>
-      </div>
-    </div>
-
-    <!-- STILLOS -->
-    <div class="fi">
-      <div class="fi-hdr">
-        <div>
-          <div class="fi-tags">
-            <span class="ftag" style="background:rgba(251,191,36,.25);color:#fbbf24">ALTA</span>
-            <span class="ftag" style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.55)">6 pedidos · R$37k · último fev/25</span>
-          </div>
-          <div class="fi-nome">STILLOS MARMORARIA</div>
-          <div class="fi-sub">Score ⭐⭐⭐ · 478 dias sem comprar · comprou 6x de out/24 a fev/25</div>
-        </div>
-        <div class="fi-btns">
-          <div class="btn-row">
-            <button class="btn-wa" onclick="marcar(this,'STILLOS')">💬 WA</button>
-            <button class="btn-lig" onclick="marcar(this,'STILLOS')">📞 Ligar</button>
-          </div>
-          <button class="btn-check" id="chk-stillos" onclick="toggleCheck(this,'stillos')">✓ Marcar feito</button>
-        </div>
-      </div>
-      <div class="fi-body">
-        <div class="fi-ctx">6 pedidos consecutivos — depois sumiu. Longa inatividade mas foi cliente fiel por 4 meses. Vale tentar reativar com novidade de material.</div>
-        <div class="fi-script-lbl">Script sugerido</div>
-        <div class="fi-script">"Oi [nome], Sizenando! Tenho um material novo que lembrei de você. Posso te mandar uma foto?"</div>
-      </div>
-    </div>
-
-    <!-- MÉDIAS -->
-    <div class="sec-label">
-      <i class="ti ti-minus" style="font-size:13px" aria-hidden="true"></i>
-      Média prioridade — ativos recentes
-    </div>
-
-    <!-- MARMORARIA TOCANTINS — feito hoje -->
-    <div class="fi">
-      <div class="fi-hdr">
-        <div>
-          <div class="fi-tags">
-            <span class="ftag" style="background:rgba(96,165,250,.2);color:#60a5fa">MÉDIA</span>
-            <span class="ftag" style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.55)">16 pedidos · R$300k · maior cliente</span>
-            <span class="ftag" style="background:rgba(74,222,128,.2);color:#4ade80">contatado hoje ✓</span>
-          </div>
-          <div class="fi-nome">MARMORARIA TOCANTINS</div>
-          <div class="fi-sub">Score ⭐⭐⭐⭐⭐ · 54 dias · WA hoje 13:52 — Quartzito Emerald Lake</div>
-        </div>
-        <div class="fi-btns">
-          <div class="btn-row">
-            <button class="btn-wa">💬 WA</button>
-          </div>
-          <button class="btn-check done">✓ Feito hoje</button>
-        </div>
-      </div>
-      <div class="fi-body">
-        <div class="fi-ctx">Maior cliente da carteira. Perguntou sobre quartzito hoje — respondeu com interesse. Enviar fotos e valores agora.</div>
-        <div class="fi-script-lbl">Próximo passo</div>
-        <div class="fi-script">"[Nome], tenho o Quartzito Emerald Lake disponível. Posso te mandar as fotos e valores agora?"</div>
-      </div>
-    </div>
-
-    <!-- SEPARADOR PONTUAIS -->
-    <div style="border:0.5px dashed var(--border);border-radius:8px;padding:9px 13px;margin:10px 0;display:flex;align-items:flex-start;gap:9px;background:var(--s2)">
-      <div style="font-size:18px;flex-shrink:0;margin-top:1px">ℹ️</div>
-      <div>
-        <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:2px">Clientes pontuais — baixa prioridade</div>
-        <div style="font-size:11px;color:var(--text2);line-height:1.5">Compraram 1-2x por projeto ou obra específica. Não tendem a voltar. Contate <strong>apenas</strong> se tiver novidade específica para o perfil deles (ex: novo empreendimento mapeado).</div>
-      </div>
-    </div>
-
-    <!-- MÉTRIKA — pontual -->
-    <div class="fi fi-pontual">
-      <div class="fi-hdr">
-        <div>
-          <div class="fi-tags">
-            <span class="ftag" style="background:rgba(148,163,184,.2);color:#94a3b8">BAIXA</span>
-            <span class="ftag" style="background:rgba(255,255,255,.08);color:rgba(255,255,255,.35)">1 pedido · R$63k · dez/24</span>
-            <span class="ftag" style="background:rgba(148,163,184,.15);color:#94a3b8">pontual · construtora</span>
-          </div>
-          <div class="fi-nome" style="color:rgba(255,255,255,.5)">MÉTRIKA EMPREENDIMENTOS</div>
-          <div class="fi-sub">1 pedido único · obra provavelmente encerrada</div>
-        </div>
-        <div class="fi-btns">
-          <button class="btn-wa" style="opacity:.5">💬 WA</button>
-        </div>
-      </div>
-      <div class="fi-body">
-        <div class="fi-ctx">Construtora com projeto único. Só contate se tiver nova obra mapeada para ela.</div>
-        <div class="fi-script-lbl">Script se tiver contexto</div>
-        <div class="fi-script">"Oi [nome], tem algum projeto novo no radar pra esse semestre?"</div>
-      </div>
-    </div>
-
-    <!-- SILICON — pontual SPE -->
-    <div class="fi fi-pontual">
-      <div class="fi-hdr">
-        <div>
-          <div class="fi-tags">
-            <span class="ftag" style="background:rgba(148,163,184,.2);color:#94a3b8">BAIXA</span>
-            <span class="ftag" style="background:rgba(255,255,255,.08);color:rgba(255,255,255,.35)">3 pedidos · R$96k · jul/25</span>
-            <span class="ftag" style="background:rgba(148,163,184,.15);color:#94a3b8">SPE · projeto encerrado</span>
-          </div>
-          <div class="fi-nome" style="color:rgba(255,255,255,.5)">SILICON ENGENHARIA (SPE)</div>
-          <div class="fi-sub">Empresa de propósito específico — empreendimento concluído</div>
-        </div>
-        <div class="fi-btns">
-          <button class="btn-wa" style="opacity:.5">💬 WA</button>
-        </div>
-      </div>
-      <div class="fi-body">
-        <div class="fi-ctx">SPE = criada para 1 empreendimento. Após obra não há mais compras. Investigue se o responsável tem outras empresas antes de investir tempo.</div>
-        <div class="fi-script-lbl">Script se tiver contexto</div>
-        <div class="fi-script">"[Nome], vocês têm outro empreendimento em andamento? Tenho material que pode te interessar."</div>
-      </div>
-    </div>
-
-    <div style="text-align:center;font-size:10px;color:var(--muted);margin-top:12px;font-family:'JetBrains Mono',monospace">
-      Fila montada às 06:00 · 27 clientes total · dados do Firebase
-    </div>
-
   </div>
+
+</div>
 </div>
 
 <script type="module">
@@ -569,13 +323,24 @@ import{getFirestore,doc,getDoc}from"https://www.gstatic.com/firebasejs/10.12.0/f
 const FB={apiKey:"AIzaSyC6oWnbIyaZejwtNcL2S0SrHKLlLLxzUfI",authDomain:"sales-team-6aeb6.firebaseapp.com",projectId:"sales-team-6aeb6",storageBucket:"sales-team-6aeb6.firebasestorage.app",messagingSenderId:"421701680094",appId:"1:421701680094:web:1f8bc4ae716dd0d0f3bb4f"};
 
 const VENDEDORES={
-  "sizenando@sabagram.com.br":{nome:"Sizenando Andrade",avatar:"SA",cor:"#1a3254",fatJun:"R$7k",fatMai:"R$132k",bu:"BU MI",meta:"R$233k"},
-  "kelly@sabagram.com.br":{nome:"Kelly Julião",avatar:"KJ",cor:"#1a5f3a",fatJun:"R$4k",fatMai:"R$85k",bu:"BU MI",meta:"R$161k"},
-  "marcelo@sabagram.com.br":{nome:"Marcelo Melo",avatar:"MM",cor:"#8b1a1a",fatJun:"R$26k",fatMai:"R$210k",bu:"BU MI",meta:"R$463k"},
-  "renata@sabagram.com.br":{nome:"Renata Santana",avatar:"RS",cor:"#6b1a5f",fatJun:"R$10k",fatMai:"R$78k",bu:"BU MI",meta:"R$105k"},
-  "wesley@sabagram.com.br":{nome:"Wesley Matieli",avatar:"WM",cor:"#1a4a2a",fatJun:"R$12k",fatMai:"R$95k",bu:"BU Obras",meta:"R$172k"},
-  "cezar@sabagram.com.br":{nome:"Cezar Fiorio",avatar:"CF",cor:"#1a3a6b",fatJun:"US$0",fatMai:"US$77k",bu:"BU ME",meta:"US$172k"},
-  "diana@sabagram.com.br":{nome:"Diana Rigoni",avatar:"DR",cor:"#5f1a4a",fatJun:"US$0",fatMai:"US$0",bu:"BU ME",meta:"US$25k"},
+  "sizenando@sabagram.com.br":{nome:"Sizenando Andrade",avatar:"SA",cor:"#1a3254",fatJun:"R$7k",fatMai:"R$132k",bu:"BU MI",meta:"R$233k",metaVal:233000,ticket:13000,contatos_dia:27},
+  "kelly@sabagram.com.br":{nome:"Kelly Julião",avatar:"KJ",cor:"#1a5f3a",fatJun:"R$4k",fatMai:"R$85k",bu:"BU MI",meta:"R$161k",metaVal:161000,ticket:17000,contatos_dia:8},
+  "marcelo@sabagram.com.br":{nome:"Marcelo Melo",avatar:"MM",cor:"#8b1a1a",fatJun:"R$26k",fatMai:"R$210k",bu:"BU MI",meta:"R$463k",metaVal:463000,ticket:25000,contatos_dia:52},
+  "renata@sabagram.com.br":{nome:"Renata Santana",avatar:"RS",cor:"#6b1a5f",fatJun:"R$10k",fatMai:"R$78k",bu:"BU MI",meta:"R$105k",metaVal:105000,ticket:11000,contatos_dia:1},
+  "wesley@sabagram.com.br":{nome:"Wesley Matieli",avatar:"WM",cor:"#1a4a2a",fatJun:"R$12k",fatMai:"R$95k",bu:"BU Obras",meta:"R$172k",metaVal:172000,ticket:51000,contatos_dia:10},
+  "cezar@sabagram.com.br":{nome:"Cezar Fiorio",avatar:"CF",cor:"#1a3a6b",fatJun:"US$0",fatMai:"US$77k",bu:"BU ME",meta:"US$172k",metaVal:172000,ticket:25000,contatos_dia:21},
+  "diana@sabagram.com.br":{nome:"Diana Rigoni",avatar:"DR",cor:"#5f1a4a",fatJun:"US$0",fatMai:"US$0",bu:"BU ME",meta:"US$25k",metaVal:25000,ticket:22000,contatos_dia:4},
+};
+
+// IdeVen__c por email
+const IDEVENMAP={
+  "sizenando@sabagram.com.br":["001TW000003LbquYAC","001TW000003LcYSYA0"],
+  "kelly@sabagram.com.br":["001TW000005ag14YAA"],
+  "marcelo@sabagram.com.br":["0014S00000BK1xDQAT"],
+  "renata@sabagram.com.br":["001TW00000BusqcYAB","001TW00000Buxa9YAB","001TW00000C09VzYAJ"],
+  "cezar@sabagram.com.br":["001TW00000C114rYAB"],
+  "diana@sabagram.com.br":[],
+  "wesley@sabagram.com.br":[],
 };
 
 const app=initializeApp(FB);
@@ -586,7 +351,6 @@ const $=id=>document.getElementById(id);
 const tick=()=>{$('clock').textContent=new Date().toLocaleString('pt-BR',{weekday:'short',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}).toUpperCase();};
 tick();setInterval(tick,30000);
 
-// Modo preview: admin pode ver a tela de qualquer vendedor
 const previewEmail=new URLSearchParams(window.location.search).get('preview');
 
 function carregarVendedor(email,isPreview){
@@ -608,7 +372,6 @@ function carregarVendedor(email,isPreview){
   return true;
 }
 
-// Merge Firestore com VENDEDORES hardcoded
 async function resolverVendedor(email){
   const base=VENDEDORES[email]||{};
   try{
@@ -623,11 +386,200 @@ async function resolverVendedor(email){
   return Object.keys(base).length?base:null;
 }
 
+// ─── FILA DINÂMICA ───────────────────────────────────────────────────────────
+function urgencia(c){
+  const dias=parseFloat(c.QtdDip__c)||0;
+  const score=parseInt(c.ScoAco__c)||0;
+  if(score>=4&&dias>180) return 'URGENTE';
+  if(score>=3&&dias>90)  return 'URGENTE';
+  if(dias>90)            return 'ALTA';
+  if(dias>60)            return 'MÉDIA';
+  return 'NORMAL';
+}
+
+function statusTag(c){
+  if(c.contatado&&c.respondeu) return {txt:'✓ Respondeu',bg:'#dcfce7',cor:'#166534'};
+  if(c.contatado)               return {txt:'✓ Contatado',bg:'#d1fae5',cor:'#065f46'};
+  return                               {txt:'⏳ Pendente', bg:'#fee2e2',cor:'#991b1b'};
+}
+
+async function gerarScriptsIA(clientes){
+  const scripts={};
+  if(!clientes.length) return scripts;
+  try{
+    const prompt=`Você é assistente de vendas da Sabagram Granitos e Mármores.
+Para cada cliente, gere CONTEXTO (1-2 frases) e SCRIPT de WhatsApp natural em português.
+
+${clientes.map((c,i)=>`${i+1}. ID:${c.Id} | ${c.Name} | ${parseFloat(c.QtdDip__c)||0} dias sem comprar | status ${c.StsCli__c||'—'} | score ${c.ScoAco__c||'—'}`).join('\n')}
+
+Responda SOMENTE JSON válido:
+{"clientes":[{"id":"...","contexto":"...","script":"..."}]}`;
+
+    const r=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1500,
+        messages:[{role:'user',content:prompt}]})
+    });
+    const data=await r.json();
+    const txt=data.content?.find(b=>b.type==='text')?.text||'{}';
+    const parsed=JSON.parse(txt.replace(/```json|```/g,'').trim());
+    (parsed.clientes||[]).forEach(c=>{scripts[c.id]={contexto:c.contexto,script:c.script};});
+  }catch(e){console.error('IA erro:',e);}
+  return scripts;
+}
+
+function renderFila(fila,vInfo,scripts){
+  const pc=p=>p==='URGENTE'?'color:#f87171':p==='ALTA'?'color:#fbbf24':'color:#60a5fa';
+  const pbg=p=>p==='URGENTE'?'rgba(248,113,113,.18)':p==='ALTA'?'rgba(251,191,36,.18)':'rgba(96,165,250,.18)';
+  const stars=s=>s?'⭐'.repeat(Math.min(parseInt(s)||1,5)):'';
+
+  const contatados=fila.filter(c=>c.contatado).length;
+  const meta=vInfo?.contatos_dia||fila.length;
+  const pct=meta>0?Math.round(contatados/meta*100):0;
+
+  const colHdr=`<div style="display:grid;grid-template-columns:1.7fr 1.9fr 2.3fr 0.85fr;gap:0;margin-bottom:4px;padding:0 2px">
+    <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;padding:0 10px">Cliente</div>
+    <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;padding:0 10px">Status & contexto</div>
+    <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;padding:0 10px">Script sugerido IA</div>
+    <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;text-align:center">Ação</div>
+  </div>`;
+
+  const rows=fila.map((c,i)=>{
+    const u=urgencia(c);
+    const st=statusTag(c);
+    const sc=scripts[c.Id]||{};
+    const dias=parseFloat(c.QtdDip__c)||0;
+    return `<div style="display:grid;grid-template-columns:1.7fr 1.9fr 2.3fr 0.85fr;border:0.5px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:6px">
+      <div style="background:#1a3254;padding:10px 12px;border-right:0.5px solid rgba(255,255,255,.1)">
+        <div style="display:flex;align-items:center;gap:5px;margin-bottom:5px">
+          <span style="display:inline-flex;padding:1px 7px;border-radius:4px;font-size:10px;font-weight:700;background:${pbg(u)};${pc(u)}">${u}</span>
+          <span style="display:inline-flex;padding:1px 7px;border-radius:4px;font-size:10px;font-weight:700;background:${st.bg};color:${st.cor}">${st.txt}</span>
+        </div>
+        <div style="font-size:12px;font-weight:700;color:white;line-height:1.3;margin-bottom:3px">${i+1}. ${c.Name}</div>
+        <div style="font-size:11px;color:#e0aa18;margin-bottom:3px">${stars(c.ScoAco__c)}</div>
+        <div style="font-size:10px;color:rgba(255,255,255,.5);line-height:1.4">${dias} dias sem comprar · ${c.StsCli__c||'—'}</div>
+      </div>
+      <div style="padding:10px 12px;border-right:0.5px solid var(--border);background:var(--white)">
+        ${c.DatUli__c?`<div style="display:flex;align-items:center;gap:5px;margin-bottom:5px">
+          <span style="display:inline-flex;align-items:center;gap:3px;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:600;background:#e6f1fb;color:#0c447c">📞 ${new Date(c.DatUli__c).toLocaleDateString('pt-BR',{month:'short',year:'2-digit'})}</span>
+          ${c.ResUli__c?`<span style="font-size:10px;font-weight:600;color:#4ade80">✓ ${c.ResUli__c}</span>`:''}
+        </div>`:`<div style="font-size:10px;color:var(--muted);margin-bottom:5px">Sem contato recente</div>`}
+        <div style="font-size:9px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px">Contexto</div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.5">${sc.contexto||'Gerando análise...'}</div>
+      </div>
+      <div style="padding:10px 12px;border-right:0.5px solid var(--border);background:var(--white)">
+        <div style="font-size:9px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px">Script</div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.55;font-style:italic">${sc.script||'...'}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:10px 8px;background:var(--white)">
+        <button onclick="window.marcarFeito(this,'${c.Id}')" style="display:inline-flex;align-items:center;gap:4px;padding:6px 10px;border-radius:7px;font-size:11px;font-weight:600;border:0.5px solid;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;white-space:nowrap;background:#eaf3de;color:#1a5f3a;border-color:#c0dd97">
+          💬 WA
+        </button>
+        <button onclick="window.marcarFeito(this,'${c.Id}')" style="display:inline-flex;align-items:center;gap:4px;padding:6px 10px;border-radius:7px;font-size:11px;font-weight:600;border:0.5px solid;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;white-space:nowrap;background:#e6f1fb;color:#0c447c;border-color:#b5d4f4">
+          📞 Ligar
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+
+  return `
+  <div style="background:var(--navy);border-radius:8px;padding:12px 14px;margin-bottom:10px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+      <div>
+        <div style="font-size:9px;font-weight:700;color:rgba(255,255,255,.45);letter-spacing:.08em;text-transform:uppercase;margin-bottom:3px">Meta do dia — fim do mês com folga</div>
+        <div style="font-size:13px;color:white">Precisa de <strong style="color:var(--gold-l)">${meta} contatos/dia</strong> · Priorize os <strong style="color:var(--gold-l)">URGENTES</strong> primeiro</div>
+      </div>
+      <div style="text-align:right"><div style="font-size:20px;font-weight:800;color:var(--gold-l)">${fila.length}</div><div style="font-size:9px;color:rgba(255,255,255,.4)">clientes na fila</div></div>
+    </div>
+    <div style="border-top:0.5px solid rgba(255,255,255,.1);padding-top:8px;display:flex;gap:16px;font-size:11px">
+      <span style="color:#4ade80;font-weight:600">✓ ${contatados} contatados</span>
+      <span style="color:#fbbf24;font-weight:600">⏳ ${fila.length-contatados} pendentes</span>
+      <span style="color:rgba(255,255,255,.5)">${pct}% cumprido</span>
+    </div>
+  </div>
+  ${colHdr}${rows}`;
+}
+
+async function carregarFila(email){
+  const container=$('fila-container');
+  const hoje=new Date().toISOString().slice(0,10);
+  const vInfo=VENDEDORES[email];
+  const idsVendedor=IDEVENMAP[email]||[];
+
+  try{
+    const user=auth.currentUser;
+    if(!user) return;
+    const token=await user.getIdToken();
+    const resp=await fetch(`/api/fila?email=todos&data=${hoje}`,{headers:{Authorization:`Bearer ${token}`}});
+    const data=await resp.json();
+    const filaCompleta=data.fila||[];
+
+    // Filtrar por vendedor
+    const minha=idsVendedor.length
+      ? filaCompleta.filter(c=>idsVendedor.includes(c.IdeVen__c))
+      : filaCompleta; // admin/sem mapa vê tudo
+
+    if(!minha.length){
+      container.innerHTML=`<div style="text-align:center;padding:40px;color:var(--muted);font-size:13px">
+        <div style="font-size:24px;margin-bottom:8px">📭</div>
+        Nenhum cliente na sua fila hoje.<br>
+        <span style="font-size:11px">A fila é montada às 06h com dados do Salesforce.</span>
+      </div>`;
+      return;
+    }
+
+    // Ordenar: urgentes primeiro, depois por dias sem comprar
+    const ordem={URGENTE:0,ALTA:1,MÉDIA:2,NORMAL:3};
+    minha.sort((a,b)=>(ordem[urgencia(a)]||3)-(ordem[urgencia(b)]||3)||(parseFloat(b.QtdDip__c)||0)-(parseFloat(a.QtdDip__c)||0));
+
+    // Mostrar sem scripts primeiro
+    container.innerHTML=renderFila(minha,vInfo,{});
+
+    // Gerar scripts com IA para os top 10
+    const top=minha.slice(0,10);
+    const scripts=await gerarScriptsIA(top);
+
+    // Re-renderizar com scripts
+    container.innerHTML=renderFila(minha,vInfo,scripts);
+
+  }catch(e){
+    console.error('Erro fila:',e);
+    container.innerHTML=`<div style="text-align:center;padding:40px;color:var(--red);font-size:13px">
+      Erro ao carregar a fila. Tente novamente.
+    </div>`;
+  }
+}
+
+// Marcar feito localmente
+const feitosLocal={};
+window.marcarFeito=(btn,id)=>{
+  feitosLocal[id]=!feitosLocal[id];
+  const orig=btn.textContent;
+  btn.textContent='✓';
+  setTimeout(()=>{btn.textContent=orig;},600);
+};
+
+window.sair=async()=>{await signOut(auth);window.location.href='index.html';};
+
+let _emailAtual='';
+let _filaCarregada=false;
+
+window.showTab=(id,btn)=>{
+  ['desempenho','fila'].forEach(t=>{const el=$('tab-'+t);if(el)el.style.display='none';});
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
+  const sec=$('tab-'+id);if(sec)sec.style.display='block';
+  btn.classList.add('on');
+  if(id==='fila'&&!_filaCarregada&&_emailAtual){
+    _filaCarregada=true;
+    carregarFila(_emailAtual);
+  }
+};
+
 if(previewEmail){
   onAuthStateChanged(auth,async user=>{
     if(!user){window.location.href='index.html';return;}
     const v=await resolverVendedor(previewEmail);
-    if(v){carregarVendedor(previewEmail,true);}
+    if(v){carregarVendedor(previewEmail,true);_emailAtual=previewEmail;}
     else{window.location.href='gerente.html';}
   });
 }else{
@@ -637,40 +589,12 @@ if(previewEmail){
     const v=await resolverVendedor(email);
     if(v&&(VENDEDORES[email]||v.perfil==='vendedor')){
       carregarVendedor(email,false);
+      _emailAtual=email;
     }else{
       await signOut(auth);window.location.href='index.html';
     }
   });
 }
-
-window.sair=async()=>{await signOut(auth);window.location.href='index.html';};
-
-window.showTab=(id,btn)=>{
-  ['desempenho','fila'].forEach(t=>{const el=$('tab-'+t);if(el)el.style.display='none';});
-  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
-  const sec=$('tab-'+id);if(sec)sec.style.display='block';
-  btn.classList.add('on');
-};
-
-// Checks locais (antes do Make sincronizar)
-const checks={};
-window.toggleCheck=(btn,id)=>{
-  checks[id]=!checks[id];
-  if(checks[id]){
-    btn.classList.add('done');
-    btn.textContent='✓ Feito (sync pendente)';
-  }else{
-    btn.classList.remove('done');
-    btn.textContent='✓ Marcar feito';
-  }
-};
-
-window.marcar=(btn,nome)=>{
-  // Feedback visual no botão
-  const orig=btn.textContent;
-  btn.textContent='✓';
-  setTimeout(()=>{btn.textContent=orig;},800);
-};
 </script>
 </body>
 </html>
