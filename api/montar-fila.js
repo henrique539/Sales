@@ -174,19 +174,28 @@ export default async function handler(req, res) {
     const hoje = new Date(data + 'T12:00:00Z');
     const diaSemana = hoje.getDay();
 
-    // Indexar pedidos por cliente
+    // Indexar pedidos por cliente — campos podem vir como API names ou labels
     const pedidosPorCliente = {};
     (pedidos || []).forEach(p => {
-      if (!pedidosPorCliente[p.IdeCli__c]) pedidosPorCliente[p.IdeCli__c] = { total: 0, vendedor: p.IdeVen__c };
-      pedidosPorCliente[p.IdeCli__c].total += p.total || 1;
+      if (!p) return;
+      const clienteId = p.IdeCli__c || p['ID do cliente'] || p['Cliente'];
+      const vendedorId = p.IdeVen__c || p['ID do vendedor'] || p['Vendedor'];
+      const total = p.total || p['total'] || 1;
+      if (!clienteId) return;
+      if (!pedidosPorCliente[clienteId]) pedidosPorCliente[clienteId] = { total: 0, vendedor: vendedorId };
+      pedidosPorCliente[clienteId].total += total;
     });
 
     // Indexar última ligação atendida por cliente
     const ligacoesPorCliente = {};
     (ligacoes || []).forEach(l => {
-      if (!l.WhatId) return;
-      if (!ligacoesPorCliente[l.WhatId] && l.Subject?.includes('Atendida')) {
-        ligacoesPorCliente[l.WhatId] = { description: l.Description, date: l.ActivityDate };
+      if (!l) return;
+      const whatId = l.WhatId || l['ID do objeto relacionado'] || l['Relativo a'];
+      const subject = l.Subject || l['Assunto'] || '';
+      const desc = l.Description || l['Descrição'] || l['Descricao'] || '';
+      if (!whatId) return;
+      if (!ligacoesPorCliente[whatId] && subject.includes('Atendida')) {
+        ligacoesPorCliente[whatId] = { description: desc, date: l.ActivityDate || l['Data da atividade'] };
       }
     });
 
