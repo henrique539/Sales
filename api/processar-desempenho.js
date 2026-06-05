@@ -9,8 +9,8 @@ const PROJECT_ID    = 'sales-team-6aeb6';
 const FIRESTORE_URL = `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents`;
 
 const IDEVENMAP = {
-  '001TW000003LbquYAC': 'sizenando@sabagram.com.br',
-  '001TW000003LcYSYA0': 'sizenando@sabagram.com.br',
+  '001TW000003LbquYAC': 'nando@sabagram.com.br',
+  '001TW000003LcYSYA0': 'nando@sabagram.com.br',
   '001TW000005ag14YAA': 'kelly@sabagram.com.br',
   '0014S00000BK1xDQAT': 'marcelo@sabagram.com.br',
   '001TW00000Buxa9YAB': 'santana@sabagram.com.br',
@@ -21,7 +21,7 @@ const IDEVENMAP = {
 };
 
 const METAS = {
-  'sizenando@sabagram.com.br':   { meta: 233000, moeda: 'BRL' },
+  'nando@sabagram.com.br':   { meta: 233000, moeda: 'BRL' },
   'kelly@sabagram.com.br':   { meta: 161000, moeda: 'BRL' },
   'marcelo@sabagram.com.br': { meta: 463000, moeda: 'BRL' },
   'santana@sabagram.com.br': { meta: 105000, moeda: 'BRL' },
