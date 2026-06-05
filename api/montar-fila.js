@@ -335,11 +335,20 @@ export default async function handler(req, res) {
     // Indexar oportunidades por cliente — pega a mais relevante
     const statusPeso = { 'Inspeção': 6, 'PCP': 5, 'Negociação': 4, 'Aprovação Comercial': 3, 'Aprovação Financeira': 3, 'Oferta': 2, 'Sincronização': 1 };
     const oportunidadesPorCliente = {};
+    console.log('Oportunidades sample:', JSON.stringify(oportunidades.slice(0,2)));
     oportunidades.forEach(o => {
-      if (!o?.IdeCli__c) return;
-      const peso = statusPeso[o.StsOpo__c] || 0;
-      const atual = oportunidadesPorCliente[o.IdeCli__c];
-      if (!atual || peso > (statusPeso[atual.StsOpo__c] || 0)) oportunidadesPorCliente[o.IdeCli__c] = o;
+      // Make grava com labels em português
+      const cliId = o.IdeCli__c || o['Cliente'];
+      const sts = o.StsOpo__c || o['Status'];
+      const abeEmail = parseFloat(o.QtdAbe__c ?? o['Quantidade de Aberturas'] ?? 0);
+      const abeLink = parseFloat(o.QtdAbl__c ?? o['Quantidade de Aberturas do Link'] ?? 0);
+      const abeOferta = parseFloat(o.QtdAbo__c ?? o['Quantidade de Aberturas (Oferta)'] ?? 0);
+      const validade = o.DatVld__c || o['Data Validade'];
+      if (!cliId) return;
+      const oNorm = { IdeCli__c: cliId, StsOpo__c: sts, QtdAbe__c: abeEmail, QtdAbl__c: abeLink, QtdAbo__c: abeOferta, DatVld__c: validade };
+      const peso = statusPeso[sts] || 0;
+      const atual = oportunidadesPorCliente[cliId];
+      if (!atual || peso > (statusPeso[atual.StsOpo__c] || 0)) oportunidadesPorCliente[cliId] = oNorm;
     });
 
     // Montar fila por vendedor
