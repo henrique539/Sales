@@ -197,99 +197,69 @@ async function carregarDesempenho(email, vInfo) {
   const moeda = vInfo.moeda || 'BRL';
 
   try {
-    // 1. Ler desempenho
-    const resp = await fetch(`/api/contexto?tipo=desempenho&data=${hoje}`, {
-      headers: { Authorization: `Bearer ${await auth.currentUser.getIdToken()}` }
-    });
-    const data = await resp.json();
-    const registros = data.registros || [];
+    // 1. Ler desempenho direto do Firestore SDK
+    const snapDesemp = await getDoc(doc(db, 'contexto', `desempenho_${hoje}`));
+    const vd = snapDesemp.exists() ? (snapDesemp.data()?.vendedores?.[email] || null) : null;
 
-    // 2. Ler ligações (90 dias)
-    const respLig = await fetch(`/api/contexto?tipo=ligacoes&data=${hoje}`, {
-      headers: { Authorization: `Bearer ${await auth.currentUser.getIdToken()}` }
-    });
-    const dataLig = await respLig.json();
-    const ligacoes = (dataLig.registros || []).filter(l => l.OwnerId === vInfo.userId);
+    // 2. Ler ligações direto do Firestore SDK
+    const snapLig = await getDoc(doc(db, 'contexto', `ligacoes_${hoje}`));
+    const todasLigs = snapLig.exists() ? (snapLig.data()?.registros || []) : [];
+    const ligacoes = todasLigs.filter(l => l.OwnerId === vInfo.userId);
 
-    if (!registros.length) {
+    if (!vd) {
       container.innerHTML = renderDesempenhoVazio(vInfo);
       return;
     }
 
-    // 3. Filtrar pedidos do vendedor
-    const IDEVENMAP = {
-      "nando@sabagram.com.br": ["001TW000003LbquYAC","001TW000003LcYSYA0"],
-      "sizenando@sabagram.com.br": ["001TW000003LbquYAC","001TW000003LcYSYA0"],
-      "kelly@sabagram.com.br": ["001TW000005ag14YAA"],
-      "marcelo@sabagram.com.br": ["0014S00000BK1xDQAT"],
-      "santana@sabagram.com.br": ["001TW00000Buxa9YAB","001TW00000C09VzYAJ"],
-      "renata@sabagram.com.br": ["001TW00000Buxa9YAB","001TW00000C09VzYAJ"],
-      "cezar@sabagram.com.br": ["001TW00000C10vCYAR","001TW00000C114rYAB"],
-      "diana@sabagram.com.br": ["0054S000002TkpZQAS"],
-    };
-    const ideVens = IDEVENMAP[email] || [];
-    const meusPedidos = registros.filter(r => ideVens.includes(r.IdeVen__c));
-
-    // 4. Agrupar por mês
+    // 3. Extrair dados do objeto vendedor
+    const mesesArr = vd.meses || [];
     const porMes = {};
-    meusPedidos.forEach(r => {
-      const d = new Date(r.CreatedDate);
-      const m = d.getMonth() + 1;
-      if (!porMes[m]) porMes[m] = { pedidos: 0, faturamento: 0, clientes: new Set() };
-      porMes[m].pedidos++;
-      porMes[m].faturamento += Number(r.VlrLi2__c) || 0;
-      if (r.IdeCli__c) porMes[m].clientes.add(r.IdeCli__c);
+    mesesArr.forEach(m => {
+      porMes[m.mes] = { pedidos: m.pedidos || 0, faturamento: m.faturamento || 0 };
     });
 
-    // Mês atual e anterior
-    const dadosMesAtual = porMes[mesAtual] || { pedidos: 0, faturamento: 0, clientes: new Set() };
-    const dadosMesAnt   = porMes[mesAtual - 1] || { pedidos: 0, faturamento: 0, clientes: new Set() };
+    const dadosMesAtual = porMes[mesAtual] || { pedidos: 0, faturamento: 0 };
+    const dadosMesAnt   = porMes[mesAtual - 1] || { pedidos: 0, faturamento: 0 };
 
-    // 5. Calcular métricas de ligações
-    const totalLig    = ligacoes.length;
-    const ligAtendidas = ligacoes.filter(l => (l.Subject||'').includes('Atendida')).length;
-    const taxaAtend   = totalLig > 0 ? Math.round(ligAtendidas / totalLig * 100) : 0;
+    // 4. Ticket médio do desempenho
+    const ticketMedio = vd.ticket3m || vd.ticketMedio || 0;
 
-    // 6. Ticket médio (últimos 3 meses)
-    const meses3 = [mesAtual-2, mesAtual-1, mesAtual].filter(m => m > 0);
-    const ped3   = meses3.reduce((s,m) => s + (porMes[m]?.pedidos || 0), 0);
-    const fat3   = meses3.reduce((s,m) => s + (porMes[m]?.faturamento || 0), 0);
-    const ticketMedio = ped3 > 0 ? Math.round(fat3 / ped3) : 0;
+    // 5. Métricas de ligações
+    const totalLig     = ligacoes.length;
+    const ligAtendidas = ligacoes.filter(l => (l.Subject||'').includes('Atendida') && !(l.Subject||'').includes('Não Atendida')).length;
+    const taxaAtend    = totalLig > 0 ? Math.round(ligAtendidas / totalLig * 100) : 0;
 
-    // 7. Conversão: pedidos mês atual / ligações atendidas 90d
+    // 6. Conversão
     const taxaConv = ligAtendidas > 0 ? Math.min(99, Math.round(dadosMesAtual.pedidos / ligAtendidas * 100)) : 0;
 
-    // 8. Meta e projeção
-    const metaVal     = vInfo.metaVal;
-    const fatAtual    = Math.round(dadosMesAtual.faturamento);
+    // 7. Meta e projeção
+    const metaVal      = vInfo.metaVal;
+    const fatAtual     = vd.mesAtual?.faturamento || Math.round(dadosMesAtual.faturamento);
     const metaRestante = Math.max(0, metaVal - fatAtual);
-    const diaHoje     = new Date().getDate();
-    const diasMes     = new Date(new Date().getFullYear(), new Date().getMonth()+1, 0).getDate();
-    const projecao    = diaHoje > 0 ? Math.round(fatAtual / diaHoje * diasMes) : 0;
-    const pctMeta     = metaVal > 0 ? Math.round(fatAtual / metaVal * 100) : 0;
-    const pctProjecao = metaVal > 0 ? Math.round(projecao / metaVal * 100) : 0;
+    const diaHoje      = new Date().getDate();
+    const diasMes      = new Date(new Date().getFullYear(), new Date().getMonth()+1, 0).getDate();
+    const projecao     = diaHoje > 0 ? Math.round(fatAtual / diaHoje * diasMes) : 0;
+    const pctMeta      = metaVal > 0 ? Math.round(fatAtual / metaVal * 100) : 0;
+    const pctProjecao  = metaVal > 0 ? Math.round(projecao / metaVal * 100) : 0;
+    const fatAnt       = Math.round(dadosMesAnt.faturamento);
+    const deltaFat     = fatAnt > 0 ? Math.round((fatAtual - fatAnt) / fatAnt * 100) : 0;
+    const clientesMes  = vd.mesAtual?.pedidos || dadosMesAtual.pedidos;
 
-    // Delta vs mês anterior
-    const fatAnt    = Math.round(dadosMesAnt.faturamento);
-    const deltaFat  = fatAnt > 0 ? Math.round((fatAtual - fatAnt) / fatAnt * 100) : 0;
-
-    // 9. Gerar insights via IA
+    // 8. Insights via IA
     const insights = await gerarInsightsIA({
       nome: vInfo.nome, bu: vInfo.bu, moeda,
       fatAtual, fatAnt, metaVal, metaRestante, pctMeta,
       ticketMedio, taxaAtend, taxaConv,
       totalLig, ligAtendidas, pedidosMes: dadosMesAtual.pedidos,
-      clientesMes: dadosMesAtual.clientes.size,
-      projecao, diasMes, diaHoje,
-      porMes: Object.entries(porMes).map(([m,d]) => ({mes: NOMES_MESES[m], pedidos: d.pedidos, faturamento: Math.round(d.faturamento)})),
+      clientesMes, projecao, diasMes, diaHoje,
+      porMes: mesesArr.map(m => ({mes: NOMES_MESES[m.mes], pedidos: m.pedidos, faturamento: m.faturamento})),
     });
 
     container.innerHTML = renderDesempenho({
       fatAtual, fatAnt, metaVal, metaRestante, pctMeta, projecao, pctProjecao,
       ticketMedio, taxaAtend, taxaConv,
       totalLig, ligAtendidas, pedidosMes: dadosMesAtual.pedidos,
-      clientesMes: dadosMesAtual.clientes.size, deltaFat,
-      porMes, mesAtual, moeda, insights,
+      clientesMes, deltaFat, porMes, mesAtual, moeda, insights,
     });
 
     // Atualizar header
