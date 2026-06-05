@@ -287,14 +287,15 @@ export default async function handler(req, res) {
 
     // Ler os 4 contextos do Firestore
     console.log('Lendo contextos do Firestore para data:', data);
-    const [clientes, pedidos, ligacoes, nitzap] = await Promise.all([
+    const [clientes, pedidos, ligacoes, nitzap, oportunidades] = await Promise.all([
       lerContexto('clientes', data, adminToken),
       lerContexto('pedidos', data, adminToken),
       lerContexto('ligacoes', data, adminToken),
       lerContexto('nitzap', data, adminToken),
+      lerContexto('oportunidades', data, adminToken),
     ]);
 
-    console.log(`Contextos: ${clientes.length} clientes, ${pedidos.length} pedidos, ${ligacoes.length} ligacoes, ${nitzap.length} nitzap`);
+    console.log(`Contextos: ${clientes.length} clientes, ${pedidos.length} pedidos, ${ligacoes.length} ligacoes, ${nitzap.length} nitzap, ${oportunidades.length} oportunidades`);
 
     if (!clientes.length) {
       return res.json({ ok: false, data, erro: 'Nenhum cliente no Firestore — verifique se os cenarios 1-4 rodaram', resultados: {}, totalClientes: 0 });
