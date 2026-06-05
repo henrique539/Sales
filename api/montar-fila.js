@@ -156,14 +156,18 @@ async function buscarMensagensCliente(chat) {
     const sequenceFinal = String(chat.sequence);
     const sequenceInicio = String(chat.sequence - (3 * 24 * 60 * 60 * 1000));
     const target = chat.secondwhatsappid.replace('@s.whatsapp.net','');
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
     const r = await fetch(`${NITZAP_URL}/whatsapp/get-range-messages`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${process.env.NITZAP_TOKEN}`
       },
-      body: JSON.stringify({ target, sequence: sequenceInicio, finalSequence: sequenceFinal })
+      body: JSON.stringify({ target, sequence: sequenceInicio, finalSequence: sequenceFinal }),
+      signal: controller.signal
     });
+    clearTimeout(timeoutId);
     const data = await r.json();
     if (!Array.isArray(data)) return [];
     // Filtrar só texto, últimas 8 mensagens
