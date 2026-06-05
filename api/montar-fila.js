@@ -195,7 +195,7 @@ async function buscarMensagensCliente(chat) {
 }
 
 // ─── Scripts via IA ──────────────────────────────────────────────────────────
-async function gerarScriptsLote(clientes, ligacoesPorCliente, nitzapPorCliente, vendedorNome, sexta) {
+async function gerarScriptsLote(clientes, ligacoesPorCliente, nitzapPorCliente, nitzapPorTelefone, vendedorNome, sexta) {
   const scripts = {};
   if (!clientes.length) return scripts;
 
@@ -212,7 +212,7 @@ async function gerarScriptsLote(clientes, ligacoesPorCliente, nitzapPorCliente, 
     const dataLig = c.DatUli__c ? new Date(c.DatUli__c).toLocaleDateString('pt-BR', {month:'short',year:'2-digit'}) : 'nunca';
     const telNorm = (c.Phone||'').replace(/\D/g,'');
     const telBR = telNorm.length === 11 ? '55' + telNorm : telNorm.length === 13 ? telNorm : '';
-    const nitzapCtx = nitzapPorCliente[c.Id] || (telBR ? nitzapPorTelefone[telBR] : null);
+    const nitzapCtx = nitzapPorCliente[c.Id] || (telBR && nitzapPorTelefone ? nitzapPorTelefone[telBR] : null);
     const dataUltimoWA = c.nitzap20__DateTime_Last_Sent_Whatsapp__c;
     const historicoWA = nitzapCtx && nitzapCtx.text_last_message
       ? `    Vendedor (${(nitzapCtx.dt_lastmessage||'').slice(0,10)}): "${nitzapCtx.text_last_message}"`
@@ -573,7 +573,7 @@ export default async function handler(req, res) {
         lotes.push(filaFinal.slice(i, i + 15));
       }
       const scriptsPorLote = await Promise.all(
-        lotes.map(lote => gerarScriptsLote(lote, ligacoesPorCliente, nitzapPorCliente, vInfo.nome, sexta))
+        lotes.map(lote => gerarScriptsLote(lote, ligacoesPorCliente, nitzapPorCliente, nitzapPorTelefone, vInfo.nome, sexta))
       );
       scriptsPorLote.forEach(scriptsLote => Object.assign(scripts, scriptsLote));
 
