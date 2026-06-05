@@ -362,7 +362,7 @@ async function calcLimiteDinamico(email, vInfo, data, token) {
     const contatosNecessarios = metaRestante / diasUteisEfetivos / ticketMedio / (taxaAtendimento * taxaConversao);
     // Arredonda para cima, aplica min/max razoável
     const limiteDinamico = Math.min(
-      25,                        // cap absoluto — máximo 25 clientes por vendedor
+      vInfo.limite * 3,          // nunca mais que 3x o limite fixo
       Math.max(
         Math.ceil(vInfo.limite * 0.5), // nunca menos que 50% do limite fixo
         Math.ceil(contatosNecessarios)
@@ -390,8 +390,15 @@ export default async function handler(req, res) {
   if (secret !== MAKE_SECRET) return res.status(401).json({ error: 'Não autorizado' });
 
   try {
-    const { data } = req.body;
+    const { data, vendedor: vendedorFiltro } = req.body;
     if (!data) return res.status(400).json({ error: 'data é obrigatório' });
+    // Se vendedor especificado, processa só ele (ex: "185" para Sizenando)
+    const VENDEDORES_ATIVOS = vendedorFiltro
+      ? Object.fromEntries(Object.entries(VENDEDORES).filter(([cod]) => cod === vendedorFiltro))
+      : VENDEDORES;
+    if (vendedorFiltro && !Object.keys(VENDEDORES_ATIVOS).length) {
+      return res.status(400).json({ error: `Vendedor ${vendedorFiltro} não encontrado` });
+    }
 
     const hoje = new Date(data + 'T12:00:00Z');
     const diaSemana = hoje.getDay();
@@ -482,7 +489,7 @@ export default async function handler(req, res) {
       const lisVen = (cliente.LisVen__c || '').replace(/^;|;$/g, '').split(';').filter(Boolean);
 
       for (const cod of lisVen) {
-        const vInfo = VENDEDORES[cod];
+        const vInfo = VENDEDORES_ATIVOS[cod];
         if (!vInfo) continue;
 
         const pedidos90d = pedidosPorCliente[cliente.Id] || 0;
@@ -498,7 +505,7 @@ export default async function handler(req, res) {
     const resultados = {};
 
     for (const [cod, fila] of Object.entries(filasPorVendedor)) {
-      const vInfo = VENDEDORES[cod];
+      const vInfo = VENDEDORES_ATIVOS[cod];
 
       // Contar clientes ativos para definir modo EXPANSAO/FOCO
       const clientesAtivos = fila.filter(c => c.RecordTypeId !== '0124S0000005RiNQAU').length;
@@ -603,7 +610,7 @@ export default async function handler(req, res) {
 
     // Diagnóstico
     const diag = {};
-    for (const [cod, vInfo] of Object.entries(VENDEDORES)) {
+    for (const [cod, vInfo] of Object.entries(VENDEDORES_ATIVOS)) {
       const fila = filasPorVendedor[cod] || [];
       const ativos = fila.filter(c => c.RecordTypeId !== '0124S0000005RiNQAU').length;
       const prospects = fila.filter(c => c.RecordTypeId === '0124S0000005RiNQAU').length;
