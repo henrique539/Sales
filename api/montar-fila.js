@@ -389,12 +389,14 @@ export default async function handler(req, res) {
         // Modo FOCO — prospect só entra com engajamento
         const opo = oportunidadesPorCliente[c.Id];
         const temWA = nitzapPorCliente[c.Id];
-        if (opo) {
+        if (opo) { // DEBUG
+          console.log(`FOCO prospect ${c.Id} opo: ${opo.StsOpo__c} abre: ${opo.QtdAbe__c} link: ${opo.QtdAbl__c}`);
           const sts = opo.StsOpo__c;
           const abrioAlgo = (opo.QtdAbe__c||0) > 0 || (opo.QtdAbl__c||0) > 0;
           if (['Negociação','PCP','Inspeção'].includes(sts)) return true;
           if (abrioAlgo) return true;
           if (sts === 'Oferta') return true;
+          return true; // tem oportunidade → entra
         }
         if (temWA) return true;
         return false; // prospect frio → fora
