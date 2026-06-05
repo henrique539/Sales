@@ -210,7 +210,9 @@ async function gerarScriptsLote(clientes, ligacoesPorCliente, nitzapPorCliente, 
     const lig = ligacoesPorCliente[c.Id];
     const resumoLig = lig?.Description ? lig.Description.substring(0, 300) : null;
     const dataLig = c.DatUli__c ? new Date(c.DatUli__c).toLocaleDateString('pt-BR', {month:'short',year:'2-digit'}) : 'nunca';
-    const nitzapCtx = nitzapPorCliente[c.Id];
+    const telNorm = (c.Phone||'').replace(/\D/g,'');
+    const telBR = telNorm.length === 11 ? '55' + telNorm : telNorm.length === 13 ? telNorm : '';
+    const nitzapCtx = nitzapPorCliente[c.Id] || (telBR ? nitzapPorTelefone[telBR] : null);
     const dataUltimoWA = c.nitzap20__DateTime_Last_Sent_Whatsapp__c;
     const historicoWA = nitzapCtx && nitzapCtx.text_last_message
       ? `    Vendedor (${(nitzapCtx.dt_lastmessage||'').slice(0,10)}): "${nitzapCtx.text_last_message}"`
@@ -453,10 +455,15 @@ export default async function handler(req, res) {
 
     // Indexar Nitzap por last_salesforce_user (Account ID)
     const nitzapPorCliente = {};
+    const nitzapPorTelefone = {};
     nitzap.forEach(n => {
-      if (!n || !n.last_salesforce_user || n.isgroup) return;
-      if (!nitzapPorCliente[n.last_salesforce_user]) {
+      if (!n || n.isgroup) return;
+      if (n.last_salesforce_user && !nitzapPorCliente[n.last_salesforce_user]) {
         nitzapPorCliente[n.last_salesforce_user] = n;
+      }
+      if (n.secondwhatsappid) {
+        const num = (n.secondwhatsappid||'').replace('@s.whatsapp.net','').replace('@c.us','');
+        if (num && !nitzapPorTelefone[num]) nitzapPorTelefone[num] = n;
       }
     });
 
