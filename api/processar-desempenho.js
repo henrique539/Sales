@@ -113,7 +113,9 @@ export default async function handler(req, res) {
     }
 
     const porVendedor = {};
-    for (const r of registrosRaw) {
+    for (let r of registrosRaw) {
+      // registros podem vir como string JSON
+      if (typeof r === 'string') { try { r = JSON.parse(r); } catch(e) { continue; } }
       const email = IDEVENMAP[r.IdeVen__c];
       if (!email) continue;
       const dataPedido = r.DatFat__c || r.CreatedDate || '';
