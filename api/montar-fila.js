@@ -211,9 +211,12 @@ async function gerarScriptsLote(clientes, ligacoesPorCliente, nitzapPorCliente, 
     const resumoLig = lig?.Description ? lig.Description.substring(0, 300) : null;
     const dataLig = c.DatUli__c ? new Date(c.DatUli__c).toLocaleDateString('pt-BR', {month:'short',year:'2-digit'}) : 'nunca';
     const nitzapCtx = nitzapPorCliente[c.Id];
+    const dataUltimoWA = c.nitzap20__DateTime_Last_Sent_Whatsapp__c;
     const historicoWA = nitzapCtx && nitzapCtx.text_last_message
-      ? `    ${nitzapCtx.isent?'Vendedor':'Cliente'} (${(nitzapCtx.dt_lastmessage||'').slice(0,10)}): "${nitzapCtx.text_last_message}"`
-      : nitzapCtx ? '    [mídia ou sem texto]' : '    sem WhatsApp recente';
+      ? `    Vendedor (${(nitzapCtx.dt_lastmessage||'').slice(0,10)}): "${nitzapCtx.text_last_message}"`
+      : dataUltimoWA
+        ? `    Último WA enviado em ${new Date(dataUltimoWA).toLocaleDateString('pt-BR',{day:'2-digit',month:'short'})} (sem texto disponível)`
+        : '    sem WhatsApp recente';
     const oportunidade = c._oportunidade;
     const opoInfo = oportunidade ? `Oportunidade: ${oportunidade.StsOpo__c} | email aberto: ${oportunidade.QtdAbe__c>0?'SIM':'NÃO'} | link aberto: ${oportunidade.QtdAbl__c>0?'SIM':'NÃO'} | validade: ${oportunidade.DatVld__c?new Date(oportunidade.DatVld__c).toLocaleDateString('pt-BR'):'—'}` : 'Sem oportunidade ativa';
     return [
