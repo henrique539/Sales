@@ -256,6 +256,109 @@ Responda SOMENTE JSON válido sem markdown:
   return scripts;
 }
 
+
+// ─── Limite Dinâmico ─────────────────────────────────────────────────────────
+async function calcLimiteDinamico(email, vInfo, data, token) {
+  try {
+    // 1. Ler desempenho
+    const desempenhoUrl = `${FIRESTORE_URL}/contexto/desempenho_${data}`;
+    const dr = await fetch(desempenhoUrl, { headers: { Authorization: `Bearer ${token}` } });
+    const dd = await dr.json();
+    if (dd.error || !dd.fields) return vInfo.limite; // fallback
+
+    // Extrair dados do vendedor do desempenho
+    const vendedoresRaw = dd.fields.vendedores?.mapValue?.fields;
+    if (!vendedoresRaw || !vendedoresRaw[email]) return vInfo.limite;
+
+    const vdFields = vendedoresRaw[email].mapValue?.fields || {};
+    const fatMesAtual = parseFloat(vdFields.mesAtual?.mapValue?.fields?.faturamento?.integerValue
+      || vdFields.mesAtual?.mapValue?.fields?.faturamento?.doubleValue || 0);
+    const ticketMedio = parseFloat(vdFields.ticket3m?.integerValue
+      || vdFields.ticket3m?.doubleValue
+      || vdFields.ticketMedio?.integerValue
+      || vdFields.ticketMedio?.doubleValue || 0);
+
+    if (ticketMedio <= 0) return vInfo.limite;
+
+    // Meta restante no mês
+    const metaRestante = Math.max(0, vInfo.metaMensal - fatMesAtual);
+    if (metaRestante <= 0) return Math.max(3, Math.floor(vInfo.limite * 0.3)); // meta batida — reduz fila
+
+    // 2. Dias úteis restantes no mês
+    const hoje = new Date(data + 'T12:00:00Z');
+    const fimMes = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 0);
+    let diasUteis = 0;
+    const d = new Date(hoje);
+    d.setDate(d.getDate() + 1);
+    while (d <= fimMes) {
+      if (d.getDay() !== 0 && d.getDay() !== 6) diasUteis++;
+      d.setDate(d.getDate() + 1);
+    }
+    if (diasUteis <= 0) diasUteis = 1;
+    const diasUteisEfetivos = Math.max(1, diasUteis * 0.8); // 80% dos dias úteis como margem
+
+    // 3. Ler ligações para calcular taxas (últimos 90 dias)
+    const ligUrl = `${FIRESTORE_URL}/contexto/ligacoes_${data}`;
+    const lr = await fetch(ligUrl, { headers: { Authorization: `Bearer ${token}` } });
+    const ld = await lr.json();
+
+    let taxaAtendimento = 0.35; // default
+    let taxaConversao   = 0.10; // default
+
+    if (!ld.error && ld.fields) {
+      const ligsRaw = ld.fields.registros?.arrayValue?.values || [];
+      const ligs = ligsRaw.map(v => {
+        if (v.mapValue) {
+          const f = v.mapValue.fields || {};
+          return {
+            ownerId:  f.OwnerId?.stringValue || '',
+            subject:  f.Subject?.stringValue || '',
+          };
+        }
+        return null;
+      }).filter(Boolean);
+
+      const ligVendedor = ligs.filter(l => l.ownerId === vInfo.userId);
+      const totalLig    = ligVendedor.length;
+      const atendidas   = ligVendedor.filter(l => l.subject.includes('Atendida')).length;
+
+      if (totalLig > 5) {
+        taxaAtendimento = atendidas / totalLig;
+
+        // Taxa de conversão = pedidos mês / ligações atendidas 90d
+        const totalPedidos = parseFloat(vdFields.totalPedidos?.integerValue || 0);
+        const mesesArr = vdFields.meses?.arrayValue?.values || [];
+        // Usa pedidos dos últimos 3 meses para estimar conversão
+        const ped3m = mesesArr.slice(-3).reduce((s, m) => {
+          return s + parseFloat(m.mapValue?.fields?.pedidos?.integerValue || 0);
+        }, 0);
+        if (atendidas > 0 && ped3m > 0) {
+          taxaConversao = Math.min(0.8, ped3m / atendidas);
+        }
+      }
+    }
+
+    // 4. Cálculo do limite
+    // limite = metaRestante / diasUteis / ticketMedio / (taxaAtendimento * taxaConversao)
+    const contatosNecessarios = metaRestante / diasUteisEfetivos / ticketMedio / (taxaAtendimento * taxaConversao);
+    // Arredonda para cima, aplica min/max razoável
+    const limiteDinamico = Math.min(
+      vInfo.limite * 3,          // nunca mais que 3x o limite fixo
+      Math.max(
+        Math.ceil(vInfo.limite * 0.5), // nunca menos que 50% do limite fixo
+        Math.ceil(contatosNecessarios)
+      )
+    );
+
+    console.log(`[LIMITE] ${vInfo.nome}: meta=${vInfo.metaMensal} fat=${fatMesAtual} restante=${metaRestante} diasUteis=${diasUteis} efetivos=${diasUteisEfetivos.toFixed(1)} ticket=${ticketMedio} atend=${(taxaAtendimento*100).toFixed(0)}% conv=${(taxaConversao*100).toFixed(0)}% → limite=${limiteDinamico} (fixo=${vInfo.limite})`);
+    return limiteDinamico;
+
+  } catch(e) {
+    console.error(`[LIMITE] ${vInfo.nome} erro:`, e.message);
+    return vInfo.limite; // fallback
+  }
+}
+
 // ─── Handler principal ────────────────────────────────────────────────────────
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -427,8 +530,8 @@ export default async function handler(req, res) {
         (parseFloat(b.QtdDip__c)||0) - (parseFloat(a.QtdDip__c)||0)
       );
 
-      // Cap de fila — respeita ordem de prioridade até o limite
-      const limite = vInfo.limite || 20;
+      // Cap de fila — limite dinâmico calculado via desempenho + ligações
+      const limite = await calcLimiteDinamico(vInfo.email, vInfo, data, adminToken);
       const filaFinal = fila.slice(0, limite); // já está ordenada por prioridade
 
       // Gerar scripts em lotes de 15
