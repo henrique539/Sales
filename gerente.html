@@ -188,7 +188,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
       <button class="hbtn" onclick="togglePreview()" style="font-size:10px;padding:5px 10px">👤 Ver como vendedor</button>
       <div id="previewMenu" style="display:none;position:absolute;right:0;top:36px;background:white;border:0.5px solid #e2e7ef;border-radius:10px;padding:6px;min-width:180px;z-index:999;box-shadow:0 4px 16px rgba(0,0,0,.12)">
         <div style="font-size:9px;font-weight:700;color:#7589a8;text-transform:uppercase;letter-spacing:.07em;padding:4px 8px 6px">Visualizar como</div>
-        <a href="vendedor.html?preview=sizenando@sabagram.com.br" target="_blank" style="display:block;padding:6px 8px;font-size:12px;font-weight:600;color:#1a2540;text-decoration:none;border-radius:6px;background:transparent" onmouseover="this.style.background='#f4f6f9'" onmouseout="this.style.background='transparent'">SA · Sizenando</a>
+        <a href="vendedor.html?preview=nando@sabagram.com.br" target="_blank" style="display:block;padding:6px 8px;font-size:12px;font-weight:600;color:#1a2540;text-decoration:none;border-radius:6px;background:transparent" onmouseover="this.style.background='#f4f6f9'" onmouseout="this.style.background='transparent'">SA · Sizenando</a>
         <a href="vendedor.html?preview=kelly@sabagram.com.br" target="_blank" style="display:block;padding:6px 8px;font-size:12px;font-weight:600;color:#1a2540;text-decoration:none;border-radius:6px" onmouseover="this.style.background='#f4f6f9'" onmouseout="this.style.background='transparent'">KJ · Kelly</a>
         <a href="vendedor.html?preview=marcelo@sabagram.com.br" target="_blank" style="display:block;padding:6px 8px;font-size:12px;font-weight:600;color:#1a2540;text-decoration:none;border-radius:6px" onmouseover="this.style.background='#f4f6f9'" onmouseout="this.style.background='transparent'">MM · Marcelo</a>
         <a href="vendedor.html?preview=renata@sabagram.com.br" target="_blank" style="display:block;padding:6px 8px;font-size:12px;font-weight:600;color:#1a2540;text-decoration:none;border-radius:6px" onmouseover="this.style.background='#f4f6f9'" onmouseout="this.style.background='transparent'">RS · Renata</a>
@@ -358,7 +358,7 @@ const auth=getAuth(app);
 const db=getFirestore(app);
 
 const VENDEDORES=[
-  {email:"sizenando@sabagram.com.br",nome:"Sizenando Andrade",avatar:"SA",bu:"MI",moeda:"BRL",cor:"#1a3254",whatsapp:"5528999565519",
+  {email:"nando@sabagram.com.br",nome:"Sizenando Andrade",avatar:"SA",bu:"MI",moeda:"BRL",cor:"#1a3254",whatsapp:"5528999565519",
    fat7d:88810,clientes7d:7,lig7d:73,atend7d:24,waChats7d:80,waPessoal7d:21,ofertas7d:18,meta:233289,fat:7785},
   {email:"kelly@sabagram.com.br",nome:"Kelly Julião",avatar:"KJ",bu:"MI",moeda:"BRL",cor:"#1a5f3a",whatsapp:"5528999688866",
    fat7d:39938,clientes7d:4,lig7d:26,atend7d:11,waChats7d:76,waPessoal7d:1,ofertas7d:13,meta:161563,fat:4191},
@@ -375,7 +375,7 @@ const VENDEDORES=[
 ];
 
 const DADOS={
-  "sizenando@sabagram.com.br":{fat:7785,clientes:1,meta:233289,ligHoje:7,ligAtend:4,ligDurMedia:"1m50s",waTom:"pessoal",
+  "nando@sabagram.com.br":{fat:7785,clientes:1,meta:233289,ligHoje:7,ligAtend:4,ligDurMedia:"1m50s",waTom:"pessoal",
     waChats:[
       {hora:"19:01",contato:"Silvio Santos",empresa:"MARMORARIA SANTANA",msg:"Ligação atendida",tom:"comercial"},
       {hora:"17:09",contato:"Michele Carvalho",empresa:"Sem vínculo SF",msg:"polido, escovado, flameado, qual seria a textura?",tom:"comercial"},
@@ -411,7 +411,7 @@ const DADOS={
 };
 
 const CONVERSAO={
-  "sizenando@sabagram.com.br":{contatos_dia:27,explicacao:"73 lig + 80 WA em 7 dias com 33% atendimento e 8% conversão. Precisa de 27 contatos/dia para bater R$233k.",distribuicao:"Seg/Qua/Sex: 14 URGENTES · Ter/Qui: 13 ALTAS e MÉDIAS",frequencia:"URGENTE: 1x/semana (4x/mês) · ALTA: 2x/mês · MÉDIA: 1x/mês"},
+  "nando@sabagram.com.br":{contatos_dia:27,explicacao:"73 lig + 80 WA em 7 dias com 33% atendimento e 8% conversão. Precisa de 27 contatos/dia para bater R$233k.",distribuicao:"Seg/Qua/Sex: 14 URGENTES · Ter/Qui: 13 ALTAS e MÉDIAS",frequencia:"URGENTE: 1x/semana (4x/mês) · ALTA: 2x/mês · MÉDIA: 1x/mês"},
   "kelly@sabagram.com.br":{contatos_dia:8,explicacao:"Conversão 18%, melhor do time. Com 41% atendimento, precisa de apenas 8 contatos/dia.",distribuicao:"Seg/Qua/Sex: 4 URGENTES · Ter/Qui: 4 ALTAS e MÉDIAS",frequencia:"URGENTE: 1x/semana (4x/mês) · ALTA: 2x/mês · MÉDIA: 1x/mês"},
   "marcelo@sabagram.com.br":{contatos_dia:52,explicacao:"Ticket R$25k mas meta R$463k exige velocidade. Sem dados de ligação, estimado em 52 contatos/dia.",distribuicao:"Seg/Qua/Sex: 26 URGENTES · Ter/Qui: 26 ALTAS e MÉDIAS",frequencia:"URGENTE: 1x/semana (4x/mês) · ALTA: 2x/mês · MÉDIA: 1x/mês"},
   "renata@sabagram.com.br":{contatos_dia:1,explicacao:"Conversão excepcional 85%! Com 70% de atendimento, precisa de apenas 1 contato/dia.",distribuicao:"Foco em 1 contato estratégico por dia",frequencia:"URGENTE: 1x/semana (4x/mês) · ALTA: 2x/mês · MÉDIA: 1x/mês"},
@@ -421,7 +421,7 @@ const CONVERSAO={
 };
 
 const VD_CONFIG={
-  "sizenando@sabagram.com.br":{alertaTipo:"warn",alertaTxt:"Volume ok (73 lig) mas 33% atendimento e 21% WA pessoal — esforço alto, resultado médio.",atitudeTxt:"No 1:1: mostrar mensagens pessoais vs comerciais. Cobrar 5 reativações documentadas até sexta. Compartilhar modelo WA da Kelly.",atitudeCor:"#d97706"},
+  "nando@sabagram.com.br":{alertaTipo:"warn",alertaTxt:"Volume ok (73 lig) mas 33% atendimento e 21% WA pessoal — esforço alto, resultado médio.",atitudeTxt:"No 1:1: mostrar mensagens pessoais vs comerciais. Cobrar 5 reativações documentadas até sexta. Compartilhar modelo WA da Kelly.",atitudeCor:"#d97706"},
   "kelly@sabagram.com.br":{alertaTipo:"ok",alertaTxt:"Padrão consistente e comercial. Conversão 18%, WA alto volume com tom correto — melhor do time.",atitudeTxt:"Reconhecer publicamente. Desafio: aumentar de 8 para 12 contatos/dia mantendo qualidade. Compartilhar modelo WA com Sizenando.",atitudeCor:"#16a34a"},
   "marcelo@sabagram.com.br":{alertaTipo:"info",alertaTxt:"Sem WA monitorado. 80 ofertas em 7d com 21 clientes. Ticket médio caiu de R$25k para R$5k — mix errado.",atitudeTxt:"Ativar WA urgente. Investigar mix: ticket de R$5k com 21 clientes = produto errado. Revisar pipeline e foco em clientes maiores.",atitudeCor:"#d97706"},
   "renata@sabagram.com.br":{alertaTipo:"ok",alertaTxt:"Conversão excepcional (85%) — 2 clientes em 7d já vale R$22k. Baixo volume, altíssima eficiência.",atitudeTxt:"Manter autonomia. Ativar WA para visibilidade. Investigar se pode aumentar ticket com produtos premium (conversão permite).",atitudeCor:"#16a34a"},
@@ -431,7 +431,7 @@ const VD_CONFIG={
 };
 
 const FILAS={
-  "sizenando@sabagram.com.br":[
+  "nando@sabagram.com.br":[
     {nome:"NILGRAN",fat:"R$37k",dias:278,score:5,status:"1A60",prioridade:"URGENTE",modo:"WhatsApp",ultimoCanal:"WhatsApp",ultimaData:"ago/25",ultimoTom:"comercial",ultimoResumo:"Último WA há 9 meses. 278 dias sem comprar. Risco alto de migração para concorrente.",script:"Bom dia [nome], tudo bem? Faz um tempo que a gente não faz negócio. Qual material você está precisando agora para o próximo mês?"},
     {nome:"2A DECOR",fat:"R$181k",dias:229,score:5,status:"Inativo",prioridade:"URGENTE",modo:"Ligação",ultimoCanal:"",ultimaData:"",ultimoTom:"",ultimoResumo:"Nenhum contato registrado desde outubro 2025. 229 dias sem interação.",script:"Oi [nome], Sizenando da Sabagram. Sumiu! Já faz uns 8 meses. O que aconteceu? Tem algum material que você está precisando?"},
     {nome:"POSTO JUPARANA",fat:"R$122k",dias:125,score:5,status:"61A90",prioridade:"URGENTE",modo:"WhatsApp",ultimoCanal:"Ligação",ultimaData:"25/mai",ultimoTom:"comercial",ultimoResumo:"Vendedor propôs venda, cliente relutante. Interesse 6/10. Próximo passo pendente: enviar proposta com preços definidos.",script:"[Nome], bom dia! Preparei aquela proposta que você pediu. Tenho condições especiais para esse mês. Quando posso te enviar os detalhes?"},
