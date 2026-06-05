@@ -116,17 +116,29 @@ async function gravarFila(emailKey, data, doc, token) {
 }
 
 // ─── Prioridade ───────────────────────────────────────────────────────────────
-function calcPrioridade(c, pedidos90d) {
+function calcPrioridade(c, oportunidade) {
+  const isProspect = c.RecordTypeId === '0124S0000005RiNQAU';
   const dias = parseFloat(c.QtdDip__c) || 0;
-  const score = parseInt(c.ScoAco__c) || 0;
-  const status = c.StsCli__c || '';
-  if (score >= 4 && dias > 120) return 'URGENTE';
-  if (score >= 3 && dias > 90 && pedidos90d >= 3) return 'URGENTE';
-  if (dias > 90) return 'ALTA';
-  if (dias > 60 && pedidos90d >= 2) return 'ALTA';
-  if (status === '91A120' || status === '121A150' || status === '151A180') return 'ALTA';
-  if (dias > 30) return 'MÉDIA';
-  return 'NORMAL';
+
+  // Oportunidade ativa sobe prioridade
+  if (oportunidade) {
+    const sts = oportunidade.StsOpo__c;
+    const abrioLink   = (parseFloat(oportunidade.QtdAbl__c) || 0) > 0;
+    const abrioEmail  = (parseFloat(oportunidade.QtdAbe__c) || 0) > 0;
+    const abrioOferta = (parseFloat(oportunidade.QtdAbo__c) || 0) > 0;
+    if (sts === 'Inspeção' || sts === 'PCP') return 'CRÍTICO';
+    if (sts === 'Negociação') return 'URGENTE';
+    if (abrioLink || abrioOferta) return 'URGENTE';
+    if (abrioEmail) return 'ALTA';
+    if (sts === 'Oferta') return 'ATENÇÃO';
+  }
+
+  if (isProspect) return 'PROSPECÇÃO';
+  if (dias > 120) return 'CRÍTICO';
+  if (dias > 90)  return 'URGENTE';
+  if (dias > 60)  return 'ALTA';
+  if (dias > 30)  return 'ATENÇÃO';
+  return 'MANUTENÇÃO';
 }
 
 function deveContatarHoje(prioridade, diaSemana) {
@@ -187,8 +199,11 @@ async function gerarScriptsLote(clientes, ligacoesPorCliente, nitzapPorCliente, 
     const historicoWA = msgs.length
       ? msgs.map(m => `    ${m.de} (${new Date(m.data).toLocaleDateString('pt-BR',{day:'2-digit',month:'short'})}): "${m.texto}"`).join('\n')
       : '    sem mensagens recentes';
+    const oportunidade = c._oportunidade;
+    const opoInfo = oportunidade ? `Oportunidade: ${oportunidade.StsOpo__c} | email aberto: ${oportunidade.QtdAbe__c>0?'SIM':'NÃO'} | link aberto: ${oportunidade.QtdAbl__c>0?'SIM':'NÃO'} | validade: ${oportunidade.DatVld__c?new Date(oportunidade.DatVld__c).toLocaleDateString('pt-BR'):'—'}` : 'Sem oportunidade ativa';
     return [
       `${i+1}. ID:${c.Id} | ${c.Name} | ${isProspect?'PROSPECT':dias+'d sem comprar'} | score ${c.ScoAco__c||'?'}`,
+      `   ${opoInfo}`,
       `   Ult.lig: ${dataLig} (${c.ResUli__c||'sem registro'})${resumoLig?' | Resumo lig: '+resumoLig:''}`,
       `   Histórico WA 3 dias:\n${historicoWA}`
     ].join('\n');
@@ -329,11 +344,12 @@ export default async function handler(req, res) {
         if (!vInfo) continue;
 
         const pedidos90d = pedidosPorCliente[cliente.Id] || 0;
-        const prioridade = calcPrioridade(cliente);
+        const oportunidade = oportunidadesPorCliente[cliente.Id] || null;
+        const prioridade = calcPrioridade(cliente, oportunidade);
         if (!deveContatarHoje(prioridade, diaSemana)) continue;
 
         if (!filasPorVendedor[cod]) filasPorVendedor[cod] = [];
-        filasPorVendedor[cod].push({ ...cliente, _prioridade: prioridade, _vendedorCod: cod, _vendedorNome: vInfo.nome, _vendedorEmail: vInfo.email, _pedidos90d: pedidos90d });
+        filasPorVendedor[cod].push({ ...cliente, _prioridade: prioridade, _vendedorCod: cod, _vendedorNome: vInfo.nome, _vendedorEmail: vInfo.email, _pedidos90d: pedidos90d, _oportunidade: oportunidade });
       }
     }
 
@@ -390,6 +406,8 @@ export default async function handler(req, res) {
         QtdDip__c: c.QtdDip__c||null, DatUli__c: c.DatUli__c||null, ResUli__c: c.ResUli__c||null,
         LisVen__c: c.LisVen__c||null, nitzap20__DateTime_Last_Sent_Whatsapp__c: c.nitzap20__DateTime_Last_Sent_Whatsapp__c||null,
         prioridade: c._prioridade, pedidos90d: c._pedidos90d, contatado: false, respondeu: false,
+        oportunidade: c._oportunidade ? { status: c._oportunidade.StsOpo__c, abrioEmail: c._oportunidade.QtdAbe__c > 0, abrioLink: c._oportunidade.QtdAbl__c > 0, validade: c._oportunidade.DatVld__c } : null,
+        oportunidade: c._oportunidade ? { status: c._oportunidade.StsOpo__c, abrioEmail: (c._oportunidade.QtdAbe__c||0)>0, abrioLink: (c._oportunidade.QtdAbl__c||0)>0, validade: c._oportunidade.DatVld__c||null } : null,
         prioridadeAjustada: scripts[c.Id]?.prioridadeAjustada||null,
         motivo: scripts[c.Id]?.motivo||null,
         contexto: scripts[c.Id]?.contexto||null, script: scripts[c.Id]?.script||null,
