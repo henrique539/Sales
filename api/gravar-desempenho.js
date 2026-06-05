@@ -1,20 +1,20 @@
-// api/gravar-desempenho.js — v2
-// Aceita campos separados por vendedor como strings JSON
+// api/gravar-desempenho.js — v3
+// Aceita UMA chamada por mês por vendedor
 // POST /api/gravar-desempenho
-// Body: { data, nando, kelly, marcelo, renata, cezar, diana }
-// Cada campo é uma STRING JSON do array de records do SF
+// Body: { email, mes, pedidos, faturamento, moeda, data }
+// Faz merge no documento Firestore contexto/desempenho_{data}
 
-const MAKE_SECRET  = 'sabagram-make-2026';
-const PROJECT_ID   = 'sales-team-6aeb6';
+const MAKE_SECRET   = 'sabagram-make-2026';
+const PROJECT_ID    = 'sales-team-6aeb6';
 const FIRESTORE_URL = `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents`;
 
-const VENDEDORES = {
-  nando:   { email: 'nando@sabagram.com.br',   meta: 233000, moeda: 'BRL' },
-  kelly:   { email: 'kelly@sabagram.com.br',   meta: 161000, moeda: 'BRL' },
-  marcelo: { email: 'marcelo@sabagram.com.br', meta: 463000, moeda: 'BRL' },
-  renata:  { email: 'santana@sabagram.com.br', meta: 105000, moeda: 'BRL' },
-  cezar:   { email: 'cezar@sabagram.com.br',  meta: 172000, moeda: 'USD' },
-  diana:   { email: 'diana@sabagram.com.br',   meta:  25000, moeda: 'USD' },
+const METAS = {
+  'nando@sabagram.com.br':   { meta: 233000, moeda: 'BRL' },
+  'kelly@sabagram.com.br':   { meta: 161000, moeda: 'BRL' },
+  'marcelo@sabagram.com.br': { meta: 463000, moeda: 'BRL' },
+  'santana@sabagram.com.br': { meta: 105000, moeda: 'BRL' },
+  'cezar@sabagram.com.br':   { meta: 172000, moeda: 'USD' },
+  'diana@sabagram.com.br':   { meta:  25000, moeda: 'USD' },
 };
 
 async function getAdminToken() {
@@ -64,15 +64,20 @@ function objToFs(obj) {
   for (const [k, v] of Object.entries(obj)) f[k] = fsVal(v);
   return f;
 }
-
-function parseRecords(val) {
-  if (!val) return [];
-  // Pode vir como string JSON ou já como array
-  if (Array.isArray(val)) return val;
-  if (typeof val === 'string') {
-    try { return JSON.parse(val); } catch(e) { return []; }
+function fsToVal(v) {
+  if (!v) return null;
+  if (v.stringValue  !== undefined) return v.stringValue;
+  if (v.integerValue !== undefined) return parseInt(v.integerValue);
+  if (v.doubleValue  !== undefined) return v.doubleValue;
+  if (v.booleanValue !== undefined) return v.booleanValue;
+  if (v.nullValue    !== undefined) return null;
+  if (v.arrayValue)  return (v.arrayValue.values || []).map(fsToVal);
+  if (v.mapValue) {
+    const obj = {};
+    for (const [k, val] of Object.entries(v.mapValue.fields || {})) obj[k] = fsToVal(val);
+    return obj;
   }
-  return [];
+  return null;
 }
 
 export default async function handler(req, res) {
@@ -83,77 +88,96 @@ export default async function handler(req, res) {
   if (req.method !== 'POST')   return res.status(405).json({ error: 'Método não permitido' });
   if (req.headers['x-make-secret'] !== MAKE_SECRET) return res.status(401).json({ error: 'Não autorizado' });
 
-  const { data, nando, kelly, marcelo, renata, cezar, diana } = req.body;
-  if (!data) return res.status(400).json({ error: 'data é obrigatório (YYYY-MM-DD)' });
+  const { email, mes, pedidos, faturamento, moeda, data } = req.body;
+  if (!email || !mes || !data) return res.status(400).json({ error: 'email, mes e data são obrigatórios' });
 
-  const mesAtualNum = new Date().getMonth() + 1;
-  const anoAtual    = new Date().getFullYear();
-
-  const inputs = { nando, kelly, marcelo, renata, cezar, diana };
-  const vendedores = {};
-
-  for (const [chave, cfg] of Object.entries(VENDEDORES)) {
-    const records = parseRecords(inputs[chave]);
-    const mesesArr = records
-      .filter(r => r && r.mes)
-      .map(r => ({
-        mes:          Number(r.mes),
-        pedidos:      Number(r.pedidos)     || 0,
-        faturamento:  Math.round(Number(r.faturamento) || 0),
-        moeda:        cfg.moeda,
-      }))
-      .sort((a, b) => a.mes - b.mes);
-
-    const totalPedidos     = mesesArr.reduce((s, m) => s + m.pedidos, 0);
-    const totalFaturamento = mesesArr.reduce((s, m) => s + m.faturamento, 0);
-    const ticketMedio      = totalPedidos > 0 ? Math.round(totalFaturamento / totalPedidos) : 0;
-
-    // Ticket médio últimos 3 meses (exclui mês atual)
-    const ultimos3  = mesesArr.filter(m => m.mes !== mesAtualNum).slice(-3);
-    const ped3      = ultimos3.reduce((s, m) => s + m.pedidos, 0);
-    const fat3      = ultimos3.reduce((s, m) => s + m.faturamento, 0);
-    const ticket3m  = ped3 > 0 ? Math.round(fat3 / ped3) : ticketMedio;
-
-    const mesAtual  = mesesArr.find(m => m.mes === mesAtualNum) || { pedidos: 0, faturamento: 0 };
-    const pctMeta   = cfg.meta > 0 ? Math.round(mesAtual.faturamento / cfg.meta * 100) : 0;
-    const diaHoje   = new Date().getDate();
-    const projecao  = diaHoje > 0 ? Math.round(mesAtual.faturamento / diaHoje * 30) : 0;
-
-    vendedores[cfg.email] = {
-      meses: mesesArr,
-      totalPedidos,
-      totalFaturamento,
-      ticketMedio,
-      ticket3m,
-      moeda:      cfg.moeda,
-      metaMensal: cfg.meta,
-      mesAtual: {
-        mes:        mesAtualNum,
-        pedidos:    mesAtual.pedidos,
-        faturamento: mesAtual.faturamento,
-        pctMeta,
-        projecao,
-      },
-    };
-  }
+  const mesNum       = Number(mes);
+  const pedidosNum   = Number(pedidos)    || 0;
+  const fatNum       = Number(faturamento) || 0;
+  const mesAtualNum  = new Date().getMonth() + 1;
+  const anoAtual     = new Date().getFullYear();
+  const cfg          = METAS[email] || { meta: 0, moeda: moeda || 'BRL' };
 
   const token  = await getAdminToken();
   const docUrl = `${FIRESTORE_URL}/contexto/desempenho_${data}`;
-  const fsRes  = await fetch(docUrl, {
+
+  // Ler documento existente
+  const getRes  = await fetch(docUrl, { headers: { Authorization: `Bearer ${token}` } });
+  const getData = await getRes.json();
+
+  let vendedores = {};
+  if (!getData.error && getData.fields) {
+    const raw = fsToVal(getData.fields.vendedores);
+    if (raw) vendedores = raw;
+  }
+
+  // Inicializa estrutura do vendedor se não existir
+  if (!vendedores[email]) {
+    vendedores[email] = {
+      meses: [],
+      totalPedidos: 0,
+      totalFaturamento: 0,
+      ticketMedio: 0,
+      ticket3m: 0,
+      moeda: cfg.moeda,
+      metaMensal: cfg.meta,
+      mesAtual: { mes: mesAtualNum, pedidos: 0, faturamento: 0, pctMeta: 0, projecao: 0 },
+    };
+  }
+
+  const vd = vendedores[email];
+
+  // Remove mês existente se já foi gravado (re-run)
+  vd.meses = (vd.meses || []).filter(m => m.mes !== mesNum);
+
+  // Adiciona o mês novo
+  vd.meses.push({ mes: mesNum, pedidos: pedidosNum, faturamento: Math.round(fatNum), moeda: cfg.moeda });
+  vd.meses.sort((a, b) => a.mes - b.mes);
+
+  // Recalcula totais
+  vd.totalPedidos     = vd.meses.reduce((s, m) => s + m.pedidos, 0);
+  vd.totalFaturamento = vd.meses.reduce((s, m) => s + m.faturamento, 0);
+  vd.ticketMedio      = vd.totalPedidos > 0 ? Math.round(vd.totalFaturamento / vd.totalPedidos) : 0;
+
+  // Ticket médio últimos 3 meses excluindo mês atual
+  const ultimos3 = vd.meses.filter(m => m.mes !== mesAtualNum).slice(-3);
+  const ped3     = ultimos3.reduce((s, m) => s + m.pedidos, 0);
+  const fat3     = ultimos3.reduce((s, m) => s + m.faturamento, 0);
+  vd.ticket3m    = ped3 > 0 ? Math.round(fat3 / ped3) : vd.ticketMedio;
+
+  // Mês atual
+  const mesAtualObj  = vd.meses.find(m => m.mes === mesAtualNum) || { pedidos: 0, faturamento: 0 };
+  const diaHoje      = new Date().getDate();
+  vd.mesAtual = {
+    mes:         mesAtualNum,
+    pedidos:     mesAtualObj.pedidos,
+    faturamento: mesAtualObj.faturamento,
+    pctMeta:     cfg.meta > 0 ? Math.round(mesAtualObj.faturamento / cfg.meta * 100) : 0,
+    projecao:    diaHoje > 0 ? Math.round(mesAtualObj.faturamento / diaHoje * 30) : 0,
+  };
+
+  vendedores[email] = vd;
+
+  // Grava de volta no Firestore
+  const patchRes = await fetch(docUrl, {
     method:  'PATCH',
     headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-    body:    JSON.stringify({
-      fields: objToFs({ geradoEm: new Date().toISOString(), data, anoRef: anoAtual, periodo: 'THIS_YEAR', vendedores })
+    body: JSON.stringify({
+      fields: objToFs({
+        geradoEm:  new Date().toISOString(),
+        data,
+        anoRef:    anoAtual,
+        periodo:   'THIS_YEAR',
+        vendedores,
+      })
     }),
   });
-  const fsData = await fsRes.json();
-  if (fsData.error) return res.status(500).json({ error: 'Firestore: ' + fsData.error.message });
+  const patchData = await patchRes.json();
+  if (patchData.error) return res.status(500).json({ error: 'Firestore: ' + patchData.error.message });
 
-  console.log(`desempenho_${data} gravado`);
+  console.log(`desempenho_${data} | ${email} | mes ${mesNum} | R$${Math.round(fatNum)}`);
   return res.json({
-    ok: true, data,
-    resumo: Object.fromEntries(Object.entries(vendedores).map(([email, vd]) => [
-      email, { totalFaturamento: vd.totalFaturamento, ticketMedio: vd.ticketMedio, mesAtual: vd.mesAtual }
-    ]))
+    ok: true, email, mes: mesNum, faturamento: Math.round(fatNum),
+    totalFaturamento: vd.totalFaturamento, mesesGravados: vd.meses.length,
   });
 }
