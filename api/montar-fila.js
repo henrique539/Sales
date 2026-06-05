@@ -362,7 +362,7 @@ async function calcLimiteDinamico(email, vInfo, data, token) {
     const contatosNecessarios = metaRestante / diasUteisEfetivos / ticketMedio / (taxaAtendimento * taxaConversao);
     // Arredonda para cima, aplica min/max razoável
     const limiteDinamico = Math.min(
-      vInfo.limite * 3,          // nunca mais que 3x o limite fixo
+      25,                        // cap absoluto — máximo 25 clientes por vendedor
       Math.max(
         Math.ceil(vInfo.limite * 0.5), // nunca menos que 50% do limite fixo
         Math.ceil(contatosNecessarios)
