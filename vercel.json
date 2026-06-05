@@ -1,6 +1,26 @@
 {
   "rewrites": [
-    { "source": "/api/claude", "destination": "/api/claude" },
-    { "source": "/api/users", "destination": "/api/users" }
-  ]
+    {
+      "source": "/api/claude",
+      "destination": "/api/claude"
+    },
+    {
+      "source": "/api/users",
+      "destination": "/api/users"
+    }
+  ],
+  "functions": {
+    "api/montar-fila.js": {
+      "maxDuration": 300
+    },
+    "api/processar-desempenho.js": {
+      "maxDuration": 60
+    },
+    "api/compliance.js": {
+      "maxDuration": 60
+    },
+    "api/gravar-desempenho.js": {
+      "maxDuration": 60
+    }
+  }
 }
