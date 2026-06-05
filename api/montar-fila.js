@@ -130,12 +130,10 @@ function calcPrioridade(c, pedidos90d) {
 }
 
 function deveContatarHoje(prioridade, diaSemana) {
+  // Fim de semana nunca
   if (diaSemana === 0 || diaSemana === 6) return false;
-  if (prioridade === 'URGENTE') return true;
-  if (prioridade === 'ALTA' && diaSemana !== 5) return true;
-  if (prioridade === 'ALTA' && diaSemana === 5) return true; // sexta tom leve
-  if (prioridade === 'MÉDIA' && diaSemana === 1) return true; // só segunda
-  return false;
+  // Todo dia útil todos os 6 níveis entram — o cap controla a quantidade
+  return ['CRÍTICO','URGENTE','ALTA','ATENÇÃO','PROSPECÇÃO','MANUTENÇÃO'].includes(prioridade);
 }
 
 // ─── Mensagens Nitzap por cliente ────────────────────────────────────────────
