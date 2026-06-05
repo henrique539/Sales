@@ -116,7 +116,7 @@ export default async function handler(req, res) {
     for (const r of registrosRaw) {
       const email = IDEVENMAP[r.IdeVen__c];
       if (!email) continue;
-      const dataPedido = r.CreatedDate || r.DatFat__c || '';
+      const dataPedido = r.DatFat__c || r.CreatedDate || '';
       if (!dataPedido) continue;
       const mes = new Date(dataPedido).getMonth() + 1;
       if (!mes || mes < 1 || mes > 12) continue;
