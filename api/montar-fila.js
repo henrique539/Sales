@@ -427,15 +427,9 @@ export default async function handler(req, res) {
         (parseFloat(b.QtdDip__c)||0) - (parseFloat(a.QtdDip__c)||0)
       );
 
-      // Cap de fila por prioridade
+      // Cap de fila — respeita ordem de prioridade até o limite
       const limite = vInfo.limite || 20;
-      const urgentes = fila.filter(c => c._prioridade === 'URGENTE');
-      const altas = fila.filter(c => c._prioridade === 'ALTA');
-      const medias = sexta ? [] : fila.filter(c => c._prioridade === 'MÉDIA');
-      const restante = Math.max(0, limite - urgentes.length);
-      const altasCap = altas.slice(0, restante);
-      const mediasCap = medias.slice(0, Math.max(0, restante - altasCap.length));
-      const filaFinal = [...urgentes, ...altasCap, ...mediasCap];
+      const filaFinal = fila.slice(0, limite); // já está ordenada por prioridade
 
       // Gerar scripts em lotes de 15
       const scripts = {};
