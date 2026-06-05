@@ -201,10 +201,12 @@ async function carregarDesempenho(email, vInfo) {
     const snapDesemp = await getDoc(doc(db, 'contexto', `desempenho_${hoje}`));
     const vd = snapDesemp.exists() ? (snapDesemp.data()?.vendedores?.[email] || null) : null;
 
-    // 2. Ler ligações direto do Firestore SDK
-    const snapLig = await getDoc(doc(db, 'contexto', `ligacoes_${hoje}`));
-    const todasLigs = snapLig.exists() ? (snapLig.data()?.registros || []) : [];
-    const ligacoes = todasLigs.filter(l => l.OwnerId === vInfo.userId);
+    // 2. Ler ligações via /api/contexto (parse strings JSON)
+    const respLig = await fetch(`/api/contexto?tipo=ligacoes&data=${hoje}`, {
+      headers: { Authorization: `Bearer ${await auth.currentUser.getIdToken()}` }
+    });
+    const dataLig = await respLig.json();
+    const ligacoes = (dataLig.registros || []).filter(l => l.OwnerId === vInfo.userId);
 
     if (!vd) {
       container.innerHTML = renderDesempenhoVazio(vInfo);
