@@ -91,6 +91,10 @@ export default async function handler(req, res) {
       const d = await r.json();
       if (d.error || !d.fields) return res.json({ registros: [], total: 0 });
       const registros = d.fields.registros?.arrayValue?.values?.map(v => {
+        // Registros podem vir como string JSON (gravados pelo Make Array Aggregator)
+        if (v.stringValue !== undefined) {
+          try { return JSON.parse(v.stringValue); } catch(e) { return null; }
+        }
         if (v.mapValue) {
           const obj = {};
           for (const [k, val] of Object.entries(v.mapValue.fields || {})) {
