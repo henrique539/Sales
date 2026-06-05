@@ -6,12 +6,12 @@ const ANTHROPIC_API = 'https://api.anthropic.com/v1/messages';
 const NITZAP_URL = 'https://sabagram.nitzap.com';
 
 const VENDEDORES = {
-  '185': { nome: 'Sizenando Andrade', email: 'nando@sabagram.com.br',   userId: '005TW0000002BnNYAU', metaMensal: 233000, bu: 'BU MI', limite: 20 },
-  '192': { nome: 'Kelly Julião',      email: 'kelly@sabagram.com.br',   userId: '005TW0000003rpNYAQ', metaMensal: 161000, bu: 'BU MI', limite: 15 },
-  '11':  { nome: 'Marcelo Melo',      email: 'marcelo@sabagram.com.br', userId: '0054S000002TkpGQAS', metaMensal: 463000, bu: 'BU MI', limite: 20 },
-  '203': { nome: 'Renata Santana',    email: 'santana@sabagram.com.br', userId: '005TW000000ANTBYA4', metaMensal: 105000, bu: 'BU MI', limite: 10 },
-  '204': { nome: 'Cezar Fiorio',      email: 'cezar@sabagram.com.br',  userId: '005TW000000APunYAG', metaMensal: 172000, bu: 'BU ME', limite: 15 },
-  '212': { nome: 'Diana Rigoni',      email: 'diana@sabagram.com.br',   userId: '0054S000002TkpZQAS', metaMensal: 25000,  bu: 'BU ME', limite: 10 },
+  '185': { nome: 'Sizenando Andrade', email: 'nando@sabagram.com.br',   userId: '005TW0000002BnNYAU', metaMensal: 233000, bu: 'BU MI', limite: 20, threshold: 100 },
+  '192': { nome: 'Kelly Julião',      email: 'kelly@sabagram.com.br',   userId: '005TW0000003rpNYAQ', metaMensal: 161000, bu: 'BU MI', limite: 15, threshold: 100 },
+  '11':  { nome: 'Marcelo Melo',      email: 'marcelo@sabagram.com.br', userId: '0054S000002TkpGQAS', metaMensal: 463000, bu: 'BU MI', limite: 20, threshold: 100 },
+  '203': { nome: 'Renata Santana',    email: 'santana@sabagram.com.br', userId: '005TW000000ANTBYA4', metaMensal: 105000, bu: 'BU MI', limite: 15, threshold: 100 },
+  '204': { nome: 'Cezar Fiorio',      email: 'cezar@sabagram.com.br',  userId: '005TW000000APunYAG', metaMensal: 172000, bu: 'BU ME', limite: 15, threshold: 50 },
+  '212': { nome: 'Diana Rigoni',      email: 'diana@sabagram.com.br',   userId: '0054S000002TkpZQAS', metaMensal: 25000,  bu: 'BU ME', limite: 10, threshold: 50 },
   // Wesley (171) excluído — BU Obras trabalha com projetos
 };
 
@@ -331,6 +331,16 @@ export default async function handler(req, res) {
       }
     });
 
+    // Indexar oportunidades por cliente — pega a mais relevante
+    const statusPeso = { 'Inspeção': 6, 'PCP': 5, 'Negociação': 4, 'Aprovação Comercial': 3, 'Aprovação Financeira': 3, 'Oferta': 2, 'Sincronização': 1 };
+    const oportunidadesPorCliente = {};
+    oportunidades.forEach(o => {
+      if (!o?.IdeCli__c) return;
+      const peso = statusPeso[o.StsOpo__c] || 0;
+      const atual = oportunidadesPorCliente[o.IdeCli__c];
+      if (!atual || peso > (statusPeso[atual.StsOpo__c] || 0)) oportunidadesPorCliente[o.IdeCli__c] = o;
+    });
+
     // Montar fila por vendedor
     const filasPorVendedor = {};
     const ordemPrioridade = { 'CRÍTICO': 0, URGENTE: 1, ALTA: 2, 'ATENÇÃO': 3, 'PROSPECÇÃO': 4, 'MANUTENÇÃO': 5 };
@@ -358,16 +368,39 @@ export default async function handler(req, res) {
     for (const [cod, fila] of Object.entries(filasPorVendedor)) {
       const vInfo = VENDEDORES[cod];
 
-      // Filtrar clientes por feriado baseado no BillingCountry
+      // Contar clientes ativos para definir modo EXPANSAO/FOCO
+      const clientesAtivos = fila.filter(c => c.RecordTypeId !== '0124S0000005RiNQAU').length;
+      const modo = clientesAtivos < (vInfo.threshold || 100) ? 'EXPANSAO' : 'FOCO';
+      console.log(`${vInfo.nome}: ${clientesAtivos} ativos → modo ${modo}`);
+
+      // Filtrar por feriado + modo EXPANSAO/FOCO
       const filaFiltrada = fila.filter(c => {
         const isUS = c.BillingCountry && c.BillingCountry !== 'Brazil';
         if (feriadoUS && isUS) return false;
         if (feriadoBR && !isUS) return false;
-        return true;
+
+        const isProspect = c.RecordTypeId === '0124S0000005RiNQAU';
+        if (!isProspect) return true; // clientes sempre entram
+
+        // Prospect — depende do modo
+        if (modo === 'EXPANSAO') return true; // todos entram
+
+        // Modo FOCO — prospect só entra com engajamento
+        const opo = oportunidadesPorCliente[c.Id];
+        const temWA = nitzapPorCliente[c.Id];
+        if (opo) {
+          const sts = opo.StsOpo__c;
+          const abrioAlgo = (opo.QtdAbe__c||0) > 0 || (opo.QtdAbl__c||0) > 0;
+          if (['Negociação','PCP','Inspeção'].includes(sts)) return true;
+          if (abrioAlgo) return true;
+          if (sts === 'Oferta') return true;
+        }
+        if (temWA) return true;
+        return false; // prospect frio → fora
       });
 
       if (!filaFiltrada.length) {
-        console.log(`Feriado — todos clientes de ${vInfo.nome} estao em feriado hoje`);
+        console.log(`Feriado/sem clientes — ${vInfo.nome}`);
         resultados[vInfo.nome] = 'Feriado';
         continue;
       }
