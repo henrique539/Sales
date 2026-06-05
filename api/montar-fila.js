@@ -4,6 +4,9 @@ const FIRESTORE_URL = `https://firestore.googleapis.com/v1/projects/${PROJECT_ID
 const MAKE_SECRET = 'sabagram-make-2026';
 const ANTHROPIC_API = 'https://api.anthropic.com/v1/messages';
 const NITZAP_URL = 'https://sabagram.nitzap.com';
+const NITZAP_TIMEOUT_MS = 5000;
+const CLAUDE_TIMEOUT_MS = 25000;
+const NITZAP_DETAIL_LIMIT_PER_BATCH = 5;
 
 const VENDEDORES = {
   '185': { nome: 'Sizenando Andrade', email: 'nando@sabagram.com.br',   userId: '005TW0000002BnNYAU', metaMensal: 233000, bu: 'BU MI', limite: 20, threshold: 100 },
@@ -14,6 +17,16 @@ const VENDEDORES = {
   '212': { nome: 'Diana Rigoni',      email: 'diana@sabagram.com.br',   userId: '0054S000002TkpZQAS', metaMensal: 25000,  bu: 'BU ME', limite: 10, threshold: 50 },
   // Wesley (171) excluído — BU Obras trabalha com projetos
 };
+
+async function fetchWithTimeout(url, options = {}, timeoutMs = 10000) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(url, { ...options, signal: controller.signal });
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
 
 // ─── Feriados via API (dinâmico, funciona todo ano) ───────────────────────────
 async function getFeriados(ano) {
@@ -158,7 +171,7 @@ async function buscarMensagensCliente(chat) {
     const target = chat.secondwhatsappid.replace('@s.whatsapp.net','');
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 5000);
-    const r = await fetch(`${NITZAP_URL}/whatsapp/get-range-messages`, {
+    const r = await fetchWithTimeout(`${NITZAP_URL}/whatsapp/get-range-messages`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -188,9 +201,11 @@ async function gerarScriptsLote(clientes, ligacoesPorCliente, nitzapPorCliente, 
 
   // Buscar mensagens Nitzap para cada cliente do lote (últimos 3 dias)
   const msgsPorCliente = {};
-  await Promise.all(clientes.map(async c => {
-    const chat = nitzapPorCliente[c.Id];
-    if (chat) msgsPorCliente[c.Id] = await buscarMensagensCliente(chat);
+  const clientesComWhatsapp = clientes
+    .filter(c => nitzapPorCliente[c.Id])
+    .slice(0, NITZAP_DETAIL_LIMIT_PER_BATCH);
+  await Promise.all(clientesComWhatsapp.map(async c => {
+    msgsPorCliente[c.Id] = await buscarMensagensCliente(nitzapPorCliente[c.Id]);
   }));
 
   const linhas = clientes.map((c, i) => {
@@ -237,11 +252,11 @@ Responda SOMENTE JSON válido sem markdown:
 {"scripts":[{"id":"ID","prioridadeAjustada":"CRÍTICO|URGENTE|ALTA|ATENÇÃO|MANUTENÇÃO|PROSPECÇÃO","motivo":"...","contexto":"...","script":"...","canal":"WA","melhorHorario":"...","proximoPasso":"..."}]}`;
 
   try {
-    const r = await fetch(ANTHROPIC_API, {
+    const r = await fetchWithTimeout(ANTHROPIC_API, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'anthropic-version': '2023-06-01', 'x-api-key': process.env.ANTHROPIC_API_KEY },
       body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 4000, messages: [{ role: 'user', content: prompt }] })
-    });
+    }, CLAUDE_TIMEOUT_MS);
     const data = await r.json();
     const text = data.content?.find(b => b.type === 'text')?.text || '{}';
     const parsed = JSON.parse(text.replace(/```json|```/g,'').trim());
@@ -538,13 +553,16 @@ export default async function handler(req, res) {
       const limite = await calcLimiteDinamico(vInfo.email, vInfo, data, adminToken);
       const filaFinal = fila.slice(0, limite); // já está ordenada por prioridade
 
-      // Gerar scripts em lotes de 15
+      // Gerar scripts em lotes de 15 em paralelo
       const scripts = {};
+      const lotes = [];
       for (let i = 0; i < filaFinal.length; i += 15) {
-        const lote = filaFinal.slice(i, i + 15);
-        const scriptsLote = await gerarScriptsLote(lote, ligacoesPorCliente, nitzapPorCliente, vInfo.nome, sexta);
-        Object.assign(scripts, scriptsLote);
+        lotes.push(filaFinal.slice(i, i + 15));
       }
+      const scriptsPorLote = await Promise.all(
+        lotes.map(lote => gerarScriptsLote(lote, ligacoesPorCliente, nitzapPorCliente, vInfo.nome, sexta))
+      );
+      scriptsPorLote.forEach(scriptsLote => Object.assign(scripts, scriptsLote));
 
       // Montar documento final
       const filaDoc = filaFinal.map(c => ({
