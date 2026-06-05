@@ -3,6 +3,7 @@ const PROJECT_ID = 'sales-team-6aeb6';
 const FIRESTORE_URL = `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents`;
 const MAKE_SECRET = 'sabagram-make-2026';
 const ANTHROPIC_API = 'https://api.anthropic.com/v1/messages';
+const NITZAP_URL = 'https://sabagram.nitzap.com';
 
 const VENDEDORES = {
   '185': { nome: 'Sizenando Andrade', email: 'nando@sabagram.com.br',   userId: '005TW0000002BnNYAU', metaMensal: 233000, bu: 'BU MI', limite: 20 },
@@ -137,51 +138,106 @@ function deveContatarHoje(prioridade, diaSemana) {
   return false;
 }
 
+// ─── Mensagens Nitzap por cliente ────────────────────────────────────────────
+async function buscarMensagensCliente(chat) {
+  if (!chat?.sequence || !chat?.secondwhatsappid) return [];
+  try {
+    // 3 dias antes da última mensagem
+    const sequenceFinal = String(chat.sequence);
+    const sequenceInicio = String(chat.sequence - (3 * 24 * 60 * 60 * 1000));
+    const target = chat.secondwhatsappid.replace('@s.whatsapp.net','');
+    const r = await fetch(`${NITZAP_URL}/whatsapp/get-range-messages`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.NITZAP_TOKEN}`
+      },
+      body: JSON.stringify({ target, sequence: sequenceInicio, finalSequence: sequenceFinal })
+    });
+    const data = await r.json();
+    if (!Array.isArray(data)) return [];
+    // Filtrar só texto, últimas 8 mensagens
+    return data
+      .filter(m => m.type === 'text' && m.text && m.text.trim())
+      .slice(-8)
+      .map(m => ({ de: m.isent ? 'Vendedor' : 'Cliente', texto: m.text, data: m.datemsg }));
+  } catch(e) {
+    console.error('Nitzap msgs erro:', e.message);
+    return [];
+  }
+}
+
 // ─── Scripts via IA ──────────────────────────────────────────────────────────
 async function gerarScriptsLote(clientes, ligacoesPorCliente, nitzapPorCliente, vendedorNome, sexta) {
   const scripts = {};
   if (!clientes.length) return scripts;
 
+  // Buscar mensagens Nitzap para cada cliente do lote (últimos 3 dias)
+  const msgsPorCliente = {};
+  await Promise.all(clientes.map(async c => {
+    const chat = nitzapPorCliente[c.Id];
+    if (chat) msgsPorCliente[c.Id] = await buscarMensagensCliente(chat);
+  }));
+
   const linhas = clientes.map((c, i) => {
     const dias = parseFloat(c.QtdDip__c) || 0;
+    const isProspect = c.RecordTypeId === '0124S0000005RiNQAU';
     const lig = ligacoesPorCliente[c.Id];
-    const resumoLig = lig?.Description ? lig.Description.substring(0, 200) : null;
+    const resumoLig = lig?.Description ? lig.Description.substring(0, 300) : null;
     const dataLig = c.DatUli__c ? new Date(c.DatUli__c).toLocaleDateString('pt-BR', {month:'short',year:'2-digit'}) : 'nunca';
-    const nitzap = nitzapPorCliente[c.Id];
-    const ultimoWA = nitzap ? `WA recente: "${(nitzap.text_last_message||'').substring(0,80)}"` : 'sem WA recente';
-    const canalHist = (c.ResUli__c === 'Atendeu') ? 'historico: atende ligacao' : 'historico: nao atende bem';
-    return `${i+1}. ID:${c.Id} | ${c.Name} | ${dias} dias sem comprar | score ${c.ScoAco__c||'?'} | ${c.StsCli__c||'?'} | ult.lig: ${dataLig} (${c.ResUli__c||'sem registro'}) | ${canalHist}${resumoLig?` | resumo: ${resumoLig}`:''}${ultimoWA?` | ${ultimoWA}`:''}`;
-  }).join('\n');
+    const msgs = msgsPorCliente[c.Id] || [];
+    const historicoWA = msgs.length
+      ? msgs.map(m => `    ${m.de} (${new Date(m.data).toLocaleDateString('pt-BR',{day:'2-digit',month:'short'})}): "${m.texto}"`).join('\n')
+      : '    sem mensagens recentes';
+    return [
+      `${i+1}. ID:${c.Id} | ${c.Name} | ${isProspect?'PROSPECT':dias+'d sem comprar'} | score ${c.ScoAco__c||'?'}`,
+      `   Ult.lig: ${dataLig} (${c.ResUli__c||'sem registro'})${resumoLig?' | Resumo lig: '+resumoLig:''}`,
+      `   Histórico WA 3 dias:\n${historicoWA}`
+    ].join('\n');
+  }).join('\n\n');
 
-  const tomsexta = sexta ? 'Hoje é SEXTA-FEIRA — use tom de relacionamento, não venda fria. Prefira WA a ligação fria.' : '';
+  const tomsexta = sexta ? 'Hoje é SEXTA — use tom de relacionamento, não venda fria. Prefira WA.' : '';
 
   const prompt = `Você é assistente de vendas sênior da Sabagram Granitos e Mármores.
 O vendedor ${vendedorNome} vai contatar esses clientes hoje. ${tomsexta}
 
-Para cada cliente gere:
-1. CONTEXTO: 1-2 frases sobre a situação comercial atual
-2. SCRIPT: mensagem personalizada para o canal sugerido (max 2 frases, português informal)
-3. CANAL: "WA" ou "Ligação" — se atende ligação use Ligação, se sexta prefira WA
-4. MELHOR_HORARIO: sugestão de horário baseado no histórico (ex: "manhã 9h-11h", "tarde 14h-16h")
-5. PROXIMO_PASSO: o que fazer se não atender (1 frase)
+IDIOMAS: Analise interações em qualquer idioma (português, inglês, espanhol).
+Gere o SCRIPT no idioma do cliente baseado no histórico de comunicação dele.
+
+PARA CADA CLIENTE analise o histórico WA e a última ligação e gere:
+1. PRIORIDADE_AJUSTADA: sinal de compra iminente (perguntou preço, pediu catálogo, disse que precisa) → suba 1 nível | descarte explícito → mantenha ou baixe | sem contexto → mantenha
+2. MOTIVO: 1 frase explicando o ajuste de prioridade
+3. CONTEXTO: 1-2 frases sobre a situação comercial atual
+4. SCRIPT: mensagem personalizada no idioma do cliente, max 2 frases, tom informal e natural — use o estilo das últimas mensagens do vendedor com esse cliente
+5. CANAL: "WA" ou "Ligação" — baseado no histórico de resposta do cliente
+6. MELHOR_HORARIO: janela de maior chance baseada nos horários que atendeu ligações e respondeu WA
+7. PROXIMO_PASSO: o que fazer se não atender (1 frase)
 
 Clientes:
 ${linhas}
 
 Responda SOMENTE JSON válido sem markdown:
-{"scripts":[{"id":"ID","contexto":"...","script":"...","canal":"WA","melhorHorario":"...","proximoPasso":"..."}]}`;
+{"scripts":[{"id":"ID","prioridadeAjustada":"CRÍTICO|URGENTE|ALTA|ATENÇÃO|MANUTENÇÃO|PROSPECÇÃO","motivo":"...","contexto":"...","script":"...","canal":"WA","melhorHorario":"...","proximoPasso":"..."}]}`;
 
   try {
     const r = await fetch(ANTHROPIC_API, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'anthropic-version': '2023-06-01', 'x-api-key': process.env.ANTHROPIC_API_KEY },
-      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 3000, messages: [{ role: 'user', content: prompt }] })
+      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 4000, messages: [{ role: 'user', content: prompt }] })
     });
     const data = await r.json();
     const text = data.content?.find(b => b.type === 'text')?.text || '{}';
     const parsed = JSON.parse(text.replace(/```json|```/g,'').trim());
     (parsed.scripts || []).forEach(s => {
-      scripts[s.id] = { contexto: s.contexto, script: s.script, canal: s.canal||'WA', melhorHorario: s.melhorHorario, proximoPasso: s.proximoPasso };
+      scripts[s.id] = {
+        prioridadeAjustada: s.prioridadeAjustada || null,
+        motivo: s.motivo || null,
+        contexto: s.contexto, 
+        script: s.script, 
+        canal: s.canal||'WA', 
+        melhorHorario: s.melhorHorario, 
+        proximoPasso: s.proximoPasso
+      };
     });
   } catch(e) { console.error('Script lote erro:', e.message); }
   return scripts;
@@ -264,7 +320,7 @@ export default async function handler(req, res) {
 
     // Montar fila por vendedor
     const filasPorVendedor = {};
-    const ordemPrioridade = { URGENTE: 0, ALTA: 1, 'MÉDIA': 2, NORMAL: 3 };
+    const ordemPrioridade = { 'CRÍTICO': 0, URGENTE: 1, ALTA: 2, 'ATENÇÃO': 3, 'PROSPECÇÃO': 4, 'MANUTENÇÃO': 5 };
 
     for (const cliente of clientes) {
       if (!cliente || !cliente.Id) continue;
@@ -275,7 +331,7 @@ export default async function handler(req, res) {
         if (!vInfo) continue;
 
         const pedidos90d = pedidosPorCliente[cliente.Id] || 0;
-        const prioridade = calcPrioridade(cliente, pedidos90d);
+        const prioridade = calcPrioridade(cliente);
         if (!deveContatarHoje(prioridade, diaSemana)) continue;
 
         if (!filasPorVendedor[cod]) filasPorVendedor[cod] = [];
@@ -336,6 +392,8 @@ export default async function handler(req, res) {
         QtdDip__c: c.QtdDip__c||null, DatUli__c: c.DatUli__c||null, ResUli__c: c.ResUli__c||null,
         LisVen__c: c.LisVen__c||null, nitzap20__DateTime_Last_Sent_Whatsapp__c: c.nitzap20__DateTime_Last_Sent_Whatsapp__c||null,
         prioridade: c._prioridade, pedidos90d: c._pedidos90d, contatado: false, respondeu: false,
+        prioridadeAjustada: scripts[c.Id]?.prioridadeAjustada||null,
+        motivo: scripts[c.Id]?.motivo||null,
         contexto: scripts[c.Id]?.contexto||null, script: scripts[c.Id]?.script||null,
         canal: scripts[c.Id]?.canal||'WA', melhorHorario: scripts[c.Id]?.melhorHorario||null,
         proximoPasso: scripts[c.Id]?.proximoPasso||null,
