@@ -471,7 +471,18 @@ export default async function handler(req, res) {
       atualizadoEm: new Date().toISOString(),
     }, adminToken);
 
-    return res.json({ ok: true, data, resultados, totalClientes: filaTotal.length });
+    // Diagnóstico
+    const diag = {};
+    for (const [cod, vInfo] of Object.entries(VENDEDORES)) {
+      const fila = filasPorVendedor[cod] || [];
+      const ativos = fila.filter(c => c.RecordTypeId !== '0124S0000005RiNQAU').length;
+      const prospects = fila.filter(c => c.RecordTypeId === '0124S0000005RiNQAU').length;
+      const comOpo = fila.filter(c => oportunidadesPorCliente[c.Id]).length;
+      diag[vInfo.nome] = { ativos, prospects, comOpo, modo: ativos < (vInfo.threshold||100) ? 'EXPANSAO' : 'FOCO' };
+    }
+    console.log('DIAGNOSTICO:', JSON.stringify(diag));
+
+    return res.json({ ok: true, data, resultados, totalClientes: filaTotal.length, diag });
 
   } catch(e) {
     console.error('montar-fila.js:', e.message, e.stack);
