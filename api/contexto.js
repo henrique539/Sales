@@ -114,7 +114,7 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: 'tipo, data e registros[] são obrigatórios' });
       }
 
-      const tiposValidos = ['clientes', 'pedidos', 'ligacoes', 'nitzap', 'oportunidades'];
+      const tiposValidos = ['clientes', 'pedidos', 'ligacoes', 'nitzap', 'oportunidades', 'desempenho'];
       if (!tiposValidos.includes(tipo)) {
         return res.status(400).json({ error: `tipo deve ser: ${tiposValidos.join(', ')}` });
       }
