@@ -201,12 +201,8 @@ async function gerarScriptsLote(clientes, ligacoesPorCliente, nitzapPorCliente, 
 
   // Buscar mensagens Nitzap para cada cliente do lote (últimos 3 dias)
   const msgsPorCliente = {};
-  const clientesComWhatsapp = clientes
-    .filter(c => nitzapPorCliente[c.Id])
-    .slice(0, NITZAP_DETAIL_LIMIT_PER_BATCH);
-  await Promise.all(clientesComWhatsapp.map(async c => {
-    msgsPorCliente[c.Id] = await buscarMensagensCliente(nitzapPorCliente[c.Id]);
-  }));
+  // Não busca histórico — usa text_last_message do contexto (zero chamadas extras)
+  // msgsPorCliente fica vazio — o script usa nitzapPorCliente diretamente
 
   const linhas = clientes.map((c, i) => {
     const dias = parseFloat(c.QtdDip__c) || 0;
@@ -214,10 +210,10 @@ async function gerarScriptsLote(clientes, ligacoesPorCliente, nitzapPorCliente, 
     const lig = ligacoesPorCliente[c.Id];
     const resumoLig = lig?.Description ? lig.Description.substring(0, 300) : null;
     const dataLig = c.DatUli__c ? new Date(c.DatUli__c).toLocaleDateString('pt-BR', {month:'short',year:'2-digit'}) : 'nunca';
-    const msgs = msgsPorCliente[c.Id] || [];
-    const historicoWA = msgs.length
-      ? msgs.map(m => `    ${m.de} (${new Date(m.data).toLocaleDateString('pt-BR',{day:'2-digit',month:'short'})}): "${m.texto}"`).join('\n')
-      : '    sem mensagens recentes';
+    const nitzapCtx = nitzapPorCliente[c.Id];
+    const historicoWA = nitzapCtx && nitzapCtx.text_last_message
+      ? `    ${nitzapCtx.isent?'Vendedor':'Cliente'} (${(nitzapCtx.dt_lastmessage||'').slice(0,10)}): "${nitzapCtx.text_last_message}"`
+      : nitzapCtx ? '    [mídia ou sem texto]' : '    sem WhatsApp recente';
     const oportunidade = c._oportunidade;
     const opoInfo = oportunidade ? `Oportunidade: ${oportunidade.StsOpo__c} | email aberto: ${oportunidade.QtdAbe__c>0?'SIM':'NÃO'} | link aberto: ${oportunidade.QtdAbl__c>0?'SIM':'NÃO'} | validade: ${oportunidade.DatVld__c?new Date(oportunidade.DatVld__c).toLocaleDateString('pt-BR'):'—'}` : 'Sem oportunidade ativa';
     return [
