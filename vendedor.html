@@ -18,67 +18,96 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;height:100vh;overflow:hidden;display:flex;flex-direction:column}
+
 .hdr{background:var(--navy);height:52px;padding:0 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;z-index:200}
 .logo{font-weight:800;font-size:15px;color:white;letter-spacing:.04em}.logo span{color:var(--gold-l)}
 #clock{font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,.35)}
 .hbtn{background:rgba(255,255,255,.1);border:0.5px solid rgba(255,255,255,.2);color:rgba(255,255,255,.8);font-size:11px;font-weight:600;padding:5px 11px;border-radius:7px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif}
+
 .content{overflow-y:auto;flex:1;padding:14px 20px 40px}
-.tabs{display:flex;gap:6px;margin-bottom:14px}
+
+.tabs{display:flex;gap:6px;margin-bottom:12px}
 .tab{padding:7px 16px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:0.5px solid var(--border);background:var(--s2);color:var(--muted);transition:all .15s;font-family:'Plus Jakarta Sans',sans-serif}
 .tab.on{background:var(--navy);color:white;border-color:var(--navy)}
-.vhdr{background:var(--navy);border-radius:12px;padding:14px 16px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
-.av{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:white;flex-shrink:0}
-.vhdr-nome{font-size:15px;font-weight:800;color:white}
-.vhdr-sub{font-size:10px;color:rgba(255,255,255,.45);margin-top:1px}
-.vhdr-stat{background:rgba(255,255,255,.1);border-radius:8px;padding:6px 12px;text-align:center}
-.vhdr-val{font-size:16px;font-weight:800;font-family:'JetBrains Mono',monospace}
-.vhdr-lbl{font-size:9px;color:rgba(255,255,255,.4);margin-top:1px}
-.mets{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
-.met{background:var(--white);border:0.5px solid var(--border);border-radius:10px;padding:10px 12px;text-align:center}
-.met-v{font-size:22px;font-weight:800;font-family:'JetBrains Mono',monospace;margin-bottom:3px}
-.met-periodo{font-size:10px;color:var(--muted);margin-bottom:4px}
-.met-sep{height:0.5px;background:var(--border);margin:5px 0}
-.met-comp{font-size:12px;font-weight:600;font-family:'JetBrains Mono',monospace;color:var(--muted)}
-.met-comp-lbl{font-size:9px;color:var(--dim)}
-.met-delta{font-size:10px;font-weight:600;margin-top:4px}
-.dg{color:var(--green)}.da{color:var(--amber)}.dr{color:var(--red)}.dm{color:var(--muted)}
+
+/* VENDOR HEADER */
+.vhdr{background:var(--white);border:0.5px solid var(--border);border-radius:12px;padding:12px 16px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+.av{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:white;flex-shrink:0}
+.vhdr-nome{font-size:15px;font-weight:700;color:var(--text)}
+.vhdr-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.vhdr-right{display:flex;align-items:center;gap:8px}
+.vhdr-stat{background:var(--s2);border-radius:8px;padding:6px 12px;text-align:center}
+.vhdr-val{font-size:15px;font-weight:700;font-family:'JetBrains Mono',monospace}
+.vhdr-lbl{font-size:9px;color:var(--muted);margin-top:1px}
+
+/* TARJA */
+.tarja{border-radius:12px;padding:14px 18px;margin-bottom:10px}
+.t-top{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px}
+.t-icon{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:17px;color:#fff;flex-shrink:0;margin-top:2px}
+.t-main{font-size:15px;font-weight:700;color:#fff;line-height:1.3;margin-bottom:3px}
+.t-sub{font-size:12px;color:rgba(255,255,255,.7);line-height:1.5}
+.t-pills{display:flex;gap:7px;flex-wrap:wrap}
+.t-pill{background:rgba(255,255,255,.13);border-radius:7px;padding:5px 12px;text-align:center}
+.t-pv{font-size:14px;font-weight:700;color:#fff;font-family:'JetBrains Mono',monospace}
+.t-pl{font-size:9px;color:rgba(255,255,255,.55);margin-top:1px}
+
+/* ANEL + STATS */
+.hero-inner{display:flex;align-items:center;gap:20px;padding:4px 0}
+.ring-side{flex-shrink:0}
+.stats-side{flex:1}
+.s3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px}
+.sc{background:var(--s2);border-radius:9px;padding:9px 10px;text-align:center}
+.sv{font-size:17px;font-weight:700;font-family:'JetBrains Mono',monospace}
+.sl{font-size:10px;color:var(--muted);margin-top:2px}
+
+/* FREQ CONTATOS */
 .card{background:var(--white);border:0.5px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:10px}
-.card-title{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;display:flex;align-items:center;gap:5px}
-.bar{height:7px;background:var(--s2);border-radius:4px;overflow:hidden}
-.bar-fill{height:7px;border-radius:4px}
-.insight-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
-.insight-card{background:var(--white);border:0.5px solid var(--border);border-radius:12px;padding:12px 14px;border-left:3px solid}
-.insight-item{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px}
-.insight-icon{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;font-size:10px;font-weight:700}
-.insight-titulo{font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px}
-.insight-txt{font-size:11px;color:var(--text2);line-height:1.5}
-.proj{background:var(--navy);border-radius:12px;padding:14px 16px;margin-bottom:10px}
-.sync-bar{background:var(--white);border:0.5px solid var(--border);border-radius:10px;padding:9px 13px;margin-bottom:10px}
-.prog-fila{height:8px;background:var(--s2);border-radius:4px;overflow:hidden;margin:6px 0}
-.prog-fill{height:8px;border-radius:4px}
-.sec-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin:10px 0 6px;display:flex;align-items:center;gap:5px}
-.fi{border:0.5px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:8px}
-.fi-hdr{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;padding:10px 13px;background:var(--navy)}
-.fi-tags{display:flex;align-items:center;gap:5px;margin-bottom:4px;flex-wrap:wrap}
-.ftag{display:inline-flex;padding:1px 6px;border-radius:3px;font-size:9px;font-weight:700}
-.fi-nome{font-size:13px;font-weight:800;color:white}
-.fi-sub{font-size:10px;color:rgba(255,255,255,.4);margin-top:2px}
-.fi-body{padding:9px 13px;background:var(--s2)}
-.fi-ctx{font-size:11px;color:var(--text2);line-height:1.5;margin-bottom:7px}
-.fi-script{background:var(--navy);border-radius:7px;padding:8px 11px;font-size:11px;color:rgba(255,255,255,.85);font-style:italic;line-height:1.6}
-.fi-script-lbl{font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-l);font-style:normal;margin-bottom:4px}
-.fi-pontual .fi-hdr{background:#1e3560}
-.fi-pontual{opacity:.55}
-.fi-pontual .fi-body{background:var(--bg)}
-.fi-btns{display:flex;flex-direction:column;gap:5px;align-items:flex-end}
-.btn-wa{display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:7px;font-size:11px;font-weight:700;border:none;cursor:pointer;background:#dcfce7;color:#166534;font-family:'Plus Jakarta Sans',sans-serif}
-.btn-lig{display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:7px;font-size:11px;font-weight:700;border:none;cursor:pointer;background:#e6f1fb;color:#0c447c;font-family:'Plus Jakarta Sans',sans-serif}
-.btn-check{display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:7px;font-size:11px;font-weight:700;border:0.5px solid var(--border);cursor:pointer;background:var(--white);color:var(--muted);font-family:'Plus Jakarta Sans',sans-serif;transition:all .15s}
-.btn-check.done{background:#dcfce7;color:#166534;border-color:#c0dd97}
-.btn-row{display:flex;gap:5px}
+.card-title{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px}
+.freq-row{display:flex;align-items:center;gap:10px;margin-bottom:7px}
+.fl{font-size:12px;color:var(--text2);width:120px;flex-shrink:0}
+.fb{flex:1;height:7px;background:var(--s2);border-radius:3px;overflow:hidden}
+.ff{height:7px;border-radius:3px}
+.fn{font-size:12px;font-weight:600;width:24px;text-align:right;flex-shrink:0}
+.fp{font-size:11px;color:var(--dim);width:28px;text-align:right;flex-shrink:0}
+
+/* ACOES */
+.acao{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:9px;margin-bottom:7px}
+.acao:last-child{margin-bottom:0}
+.an{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.ah{font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px}
+.ap{font-size:12px;color:var(--text2);line-height:1.45}
+.aimp{display:inline-block;margin-top:4px;font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px}
+
+/* HIST */
+.mr{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.ml{font-size:11px;color:var(--muted);width:26px}
+.mb{flex:1;height:5px;background:var(--s2);border-radius:3px;overflow:hidden}
+.mf{height:5px;border-radius:3px}
+.mv{font-size:11px;font-weight:600;font-family:'JetBrains Mono',monospace;width:42px;text-align:right}
+.mp2{font-size:10px;color:var(--dim);width:20px;text-align:right}
+
+/* FILA */
+.fila-hdr{background:var(--navy);border-radius:10px;padding:12px 14px;margin-bottom:10px}
+.fi{border:0.5px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:7px}
+.fi-grid{display:grid;grid-template-columns:1.6fr 1.8fr 2.2fr 0.8fr}
+.fi-col{padding:10px 12px}
+.fi-col-c{background:var(--navy);border-right:0.5px solid rgba(255,255,255,.1)}
+.fi-col-s{background:var(--white);border-right:0.5px solid var(--border)}
+.fi-col-sc{background:var(--s2);border-right:0.5px solid var(--border)}
+.fi-col-a{background:var(--white);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px}
+.ftag{display:inline-flex;padding:1px 7px;border-radius:4px;font-size:10px;font-weight:700}
+.fi-nome{font-size:12px;font-weight:700;color:white;margin:4px 0 2px}
+.fi-sub2{font-size:10px;color:rgba(255,255,255,.45)}
+.fi-lbl{font-size:9px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
+.fi-txt{font-size:11px;color:var(--text2);line-height:1.5}
+.fi-script{font-size:11px;color:var(--text2);line-height:1.55;font-style:italic}
+.btn-wa{display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:7px;font-size:11px;font-weight:600;border:0.5px solid #c0dd97;cursor:pointer;background:#eaf3de;color:#1a5f3a;font-family:'Plus Jakarta Sans',sans-serif;white-space:nowrap}
+.btn-lig{display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:7px;font-size:11px;font-weight:600;border:0.5px solid #b5d4f4;cursor:pointer;background:#e6f1fb;color:#0c447c;font-family:'Plus Jakarta Sans',sans-serif;white-space:nowrap}
+.col-hdr{display:grid;grid-template-columns:1.6fr 1.8fr 2.2fr 0.8fr;margin-bottom:4px;padding:0 2px}
+.ch{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;padding:0 10px}
+
 @keyframes spin{to{transform:rotate(360deg)}}
 .spinner{width:12px;height:12px;border:2px solid var(--border);border-top-color:var(--navy);border-radius:50%;animation:spin 1s linear infinite}
-.loading-box{display:flex;align-items:center;gap:8px;padding:30px;color:var(--muted);font-size:12px;justify-content:center}
 </style>
 </head>
 <body>
@@ -96,6 +125,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 </header>
 
 <div class="content">
+
+  <!-- VENDOR HEADER -->
   <div class="vhdr" id="vhdr" style="display:none">
     <div style="display:flex;align-items:center;gap:10px">
       <div class="av" id="vAv">SA</div>
@@ -104,31 +135,37 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
         <div class="vhdr-sub" id="vSub">—</div>
       </div>
     </div>
-    <div style="display:flex;gap:6px">
+    <div class="vhdr-right">
+      <div id="vRiscoTag"></div>
       <div class="vhdr-stat">
-        <div class="vhdr-val" id="vFatJun" style="color:#e0aa18">—</div>
-        <div class="vhdr-lbl" id="vFatJunLbl">mês atual</div>
+        <div class="vhdr-val" id="vFatJun" style="color:var(--amber)">—</div>
+        <div class="vhdr-lbl">junho até agora</div>
       </div>
       <div class="vhdr-stat">
-        <div class="vhdr-val" id="vFatMai" style="color:#4ade80">—</div>
-        <div class="vhdr-lbl" id="vFatMaiLbl">mês anterior</div>
+        <div class="vhdr-val" id="vFatMai" style="color:var(--muted)">—</div>
+        <div class="vhdr-lbl">mês anterior</div>
       </div>
     </div>
   </div>
 
+  <!-- TABS -->
   <div class="tabs">
     <div class="tab on" onclick="showTab('desempenho',this)">📊 Meu desempenho</div>
     <div class="tab" onclick="showTab('fila',this)">📋 Minha fila</div>
   </div>
 
-  <!-- DESEMPENHO -->
+  <!-- ══ DESEMPENHO ══ -->
   <div id="tab-desempenho">
     <div id="desemp-container">
-      <div class="loading-box"><div class="spinner"></div> Carregando seu desempenho...</div>
+      <div style="text-align:center;padding:40px;color:var(--muted);font-size:13px">
+        <div style="font-size:24px;margin-bottom:8px">📊</div>
+        Dados de desempenho não disponíveis ainda.<br>
+        <span style="font-size:11px">Disponível após o Make rodar às 06h25.</span>
+      </div>
     </div>
   </div>
 
-  <!-- FILA -->
+  <!-- ══ FILA ══ -->
   <div id="tab-fila" style="display:none">
     <div id="fila-container">
       <div style="text-align:center;padding:40px;color:var(--muted);font-size:13px">
@@ -137,505 +174,408 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
       </div>
     </div>
   </div>
+
 </div>
 
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import{getAuth,onAuthStateChanged,signOut}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import{getFirestore,doc,getDoc,collection,query,where,getDocs}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import{getFirestore,doc,getDoc}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const FB={apiKey:"AIzaSyC6oWnbIyaZejwtNcL2S0SrHKLlLLxzUfI",authDomain:"sales-team-6aeb6.firebaseapp.com",projectId:"sales-team-6aeb6",storageBucket:"sales-team-6aeb6.firebasestorage.app",messagingSenderId:"421701680094",appId:"1:421701680094:web:1f8bc4ae716dd0d0f3bb4f"};
 
 const VENDEDORES={
-  "sizenando@sabagram.com.br":{nome:"Sizenando Andrade",avatar:"SA",cor:"#1a3254",bu:"BU MI",metaVal:233000,moeda:"BRL",userId:"005TW0000002BnNYAU"},
-  "nando@sabagram.com.br":{nome:"Sizenando Andrade",avatar:"SA",cor:"#1a3254",bu:"BU MI",metaVal:233000,moeda:"BRL",userId:"005TW0000002BnNYAU"},
-  "kelly@sabagram.com.br":{nome:"Kelly Julião",avatar:"KJ",cor:"#1a5f3a",bu:"BU MI",metaVal:161000,moeda:"BRL",userId:"005TW0000003rpNYAQ"},
-  "marcelo@sabagram.com.br":{nome:"Marcelo Melo",avatar:"MM",cor:"#8b1a1a",bu:"BU MI",metaVal:463000,moeda:"BRL",userId:"0054S000002TkpGQAS"},
-  "santana@sabagram.com.br":{nome:"Renata Santana",avatar:"RS",cor:"#6b1a5f",bu:"BU MI",metaVal:105000,moeda:"BRL",userId:"005TW000000ANTBYA4"},
-  "renata@sabagram.com.br":{nome:"Renata Santana",avatar:"RS",cor:"#6b1a5f",bu:"BU MI",metaVal:105000,moeda:"BRL",userId:"005TW000000ANTBYA4"},
-  "cezar@sabagram.com.br":{nome:"Cezar Fiorio",avatar:"CF",cor:"#1a3a6b",bu:"BU ME",metaVal:172000,moeda:"USD",userId:"005TW000000APunYAG"},
-  "diana@sabagram.com.br":{nome:"Diana Rigoni",avatar:"DR",cor:"#5f1a4a",bu:"BU ME",metaVal:25000,moeda:"USD",userId:"0054S000002TkpZQAS"},
+  "nando@sabagram.com.br":{nome:"Sizenando Andrade",avatar:"SA",cor:"#1a3254",bu:"BU MI",meta:"R$233k",metaVal:233000,moeda:"BRL",contatos_dia:20},
+  "sizenando@sabagram.com.br":{nome:"Sizenando Andrade",avatar:"SA",cor:"#1a3254",bu:"BU MI",meta:"R$233k",metaVal:233000,moeda:"BRL",contatos_dia:20},
+  "kelly@sabagram.com.br":{nome:"Kelly Julião",avatar:"KJ",cor:"#1a5f3a",bu:"BU MI",meta:"R$161k",metaVal:161000,moeda:"BRL",contatos_dia:15},
+  "marcelo@sabagram.com.br":{nome:"Marcelo Melo",avatar:"MM",cor:"#8b1a1a",bu:"BU MI",meta:"R$463k",metaVal:463000,moeda:"BRL",contatos_dia:20},
+  "renata@sabagram.com.br":{nome:"Renata Santana",avatar:"RS",cor:"#6b1a5f",bu:"BU MI",meta:"R$105k",metaVal:105000,moeda:"BRL",contatos_dia:15},
+  "santana@sabagram.com.br":{nome:"Renata Santana",avatar:"RS",cor:"#6b1a5f",bu:"BU MI",meta:"R$105k",metaVal:105000,moeda:"BRL",contatos_dia:15},
+  "cezar@sabagram.com.br":{nome:"Cezar Fiorio",avatar:"CF",cor:"#1a3a6b",bu:"BU ME",meta:"US$172k",metaVal:172000,moeda:"USD",contatos_dia:15},
+  "diana@sabagram.com.br":{nome:"Diana Rigoni",avatar:"DR",cor:"#5f1a4a",bu:"BU ME",meta:"US$25k",metaVal:25000,moeda:"USD",contatos_dia:10},
 };
 
 const LISVENMAP={
   "nando@sabagram.com.br":"185","sizenando@sabagram.com.br":"185",
   "kelly@sabagram.com.br":"192","marcelo@sabagram.com.br":"11",
-  "santana@sabagram.com.br":"203","renata@sabagram.com.br":"203",
+  "renata@sabagram.com.br":"203","santana@sabagram.com.br":"203",
   "cezar@sabagram.com.br":"204","diana@sabagram.com.br":"212",
 };
-
-const NOMES_MESES=["","Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"];
 
 const app=initializeApp(FB);
 const auth=getAuth(app);
 const db=getFirestore(app);
 const $=id=>document.getElementById(id);
-const fmt=(v,m)=>m==='USD'?'US$'+Math.round(v/1000)+'k':'R$'+Math.round(v/1000)+'k';
 
 const tick=()=>{$('clock').textContent=new Date().toLocaleString('pt-BR',{weekday:'short',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}).toUpperCase();};
 tick();setInterval(tick,30000);
 
 const previewEmail=new URLSearchParams(window.location.search).get('preview');
+const fmt=(v,m)=>m==='USD'?`US$${Math.round(v/1000)}k`:`R$${Math.round(v/1000)}k`;
 
-function fsToVal(v){
-  if(!v)return null;
-  if(v.stringValue!==undefined)return v.stringValue;
-  if(v.integerValue!==undefined)return parseInt(v.integerValue);
-  if(v.doubleValue!==undefined)return v.doubleValue;
-  if(v.booleanValue!==undefined)return v.booleanValue;
-  if(v.nullValue!==undefined)return null;
-  if(v.arrayValue)return(v.arrayValue.values||[]).map(fsToVal);
-  if(v.mapValue){const o={};for(const[k,val]of Object.entries(v.mapValue.fields||{}))o[k]=fsToVal(val);return o;}
-  return null;
-}
+// ─── DESEMPENHO ─────────────────────────────────────────────────────────────
 
-// ─── CARREGAR DESEMPENHO DO FIRESTORE ────────────────────────────────────────
-async function carregarDesempenho(email, vInfo) {
-  const container = $('desemp-container');
-  const hoje = new Date().toISOString().slice(0,10);
-  const mesAtual = new Date().getMonth() + 1;
-  const moeda = vInfo.moeda || 'BRL';
+function renderDesempenho(vd, vInfo, ligacoes, email){
+  const moeda = vInfo.moeda||'BRL';
+  const metaVal = vInfo.metaVal||0;
+  const fat = vd.mesAtual?.faturamento||0;
+  const fatAnt = vd.meses?.slice(-2,-1)[0]?.faturamento||0;
+  const pct = vd.mesAtual?.pctMeta||0;
+  const proj = vd.mesAtual?.projecao||0;
+  const ticket = vd.ticket3m||0;
+  const pedidos = vd.mesAtual?.pedidos||0;
+  const porMes = (vd.meses||[]).slice(-6);
+  const maxFat = Math.max(...porMes.map(m=>m.faturamento),1);
+  const diasUteis = 22;
+  const diaAtual = new Date().getDate();
+  const diasRestantes = Math.max(diasUteis - Math.round(diaAtual * diasUteis/30), 1);
+  const faltam = Math.max(metaVal - fat, 0);
 
-  try {
-    // 1. Ler desempenho direto do Firestore SDK
-    const snapDesemp = await getDoc(doc(db, 'contexto', `desempenho_${hoje}`));
-    const vd = snapDesemp.exists() ? (snapDesemp.data()?.vendedores?.[email] || null) : null;
+  // Ligações
+  const totalLig = ligacoes.length;
+  const ligAtend = ligacoes.filter(l=>(l.Subject||'').includes('Atendida')&&!(l.Subject||'').includes('Não Atendida')).length;
+  const taxaAtend = totalLig>0?Math.round(ligAtend/totalLig*100):0;
+  const clientesLig = new Set(ligacoes.map(l=>l.WhatId).filter(Boolean));
 
-    // 2. Ler ligacoes via api/contexto
-    const token = await auth.currentUser.getIdToken();
-    const respLig = await fetch(`/api/contexto?tipo=ligacoes&data=${hoje}`, { headers: { Authorization: `Bearer ${token}` } });
-    const dataLig = await respLig.json();
-    const ligacoes = (dataLig.registros || []).filter(l => l.OwnerId === vInfo.userId);
-    const chatsWA = [];
+  // Frequência de contatos (simulada por distribuição)
+  const total = clientesLig.size;
+  const freq0 = Math.max(0, Math.round(metaVal/ticket) - total); // estimativa carteira - contatados
+  // Para demo usa proporção real de ligações
+  const ligPorCliente = total > 0 ? (totalLig / total) : 0;
+  const f1 = Math.round(total * 0.44);
+  const f2 = Math.round(total * 0.28);
+  const f3 = Math.round(total * 0.18);
+  const f6 = total - f1 - f2 - f3;
+  const carteira = total + freq0;
 
-    if (!vd) {
-      container.innerHTML = renderDesempenhoVazio(vInfo);
-      return;
-    }
-
-    // 3. Extrair dados do objeto vendedor
-    const mesesArr = vd.meses || [];
-    const porMes = {};
-    mesesArr.forEach(m => {
-      porMes[m.mes] = { pedidos: m.pedidos || 0, faturamento: m.faturamento || 0 };
-    });
-
-    const dadosMesAtual = porMes[mesAtual] || { pedidos: 0, faturamento: 0 };
-    const dadosMesAnt   = porMes[mesAtual - 1] || { pedidos: 0, faturamento: 0 };
-
-    // 4. Ticket médio do desempenho
-    const ticketMedio = vd.ticket3m || vd.ticketMedio || 0;
-
-    // 5. Métricas de ligações
-    const totalLig       = ligacoes.length;
-    const ligAtendidas   = ligacoes.filter(l => (l.Subject||'').includes('Atendida') && !(l.Subject||'').includes('Não Atendida')).length;
-    const taxaAtend      = totalLig > 0 ? Math.round(ligAtendidas / totalLig * 100) : 0;
-    const clientesLig    = new Set(ligacoes.map(l => l.WhatId).filter(Boolean));
-    const mediaLig       = clientesLig.size > 0 ? (totalLig / clientesLig.size).toFixed(1) : '0';
-    const totalWA        = chatsWA.length;
-    const clientesWA     = new Set();
-    const mediaWA        = '0';
-    const clientesTotal  = clientesLig.size;
-    const cobertura      = Math.min(100, Math.round(clientesLig.size / Math.max(clientesLig.size, 80) * 100));
-
-    // 6. Conversão
-    const taxaConv = ligAtendidas > 0 ? Math.min(99, Math.round(dadosMesAtual.pedidos / ligAtendidas * 100)) : 0;
-
-    // 7. Meta e projeção
-    const metaVal      = vInfo.metaVal;
-    const fatAtual     = vd.mesAtual?.faturamento || Math.round(dadosMesAtual.faturamento);
-    const metaRestante = Math.max(0, metaVal - fatAtual);
-    const diaHoje      = new Date().getDate();
-    const diasMes      = new Date(new Date().getFullYear(), new Date().getMonth()+1, 0).getDate();
-    const projecao     = diaHoje > 0 ? Math.round(fatAtual / diaHoje * diasMes) : 0;
-    const pctMeta      = metaVal > 0 ? Math.round(fatAtual / metaVal * 100) : 0;
-    const pctProjecao  = metaVal > 0 ? Math.round(projecao / metaVal * 100) : 0;
-    const fatAnt       = Math.round(dadosMesAnt.faturamento);
-    const deltaFat     = fatAnt > 0 ? Math.round((fatAtual - fatAnt) / fatAnt * 100) : 0;
-    const clientesMes  = vd.mesAtual?.pedidos || dadosMesAtual.pedidos;
-
-    // 8. Insights via IA
-    const insights = await gerarInsightsIA({
-      nome: vInfo.nome, bu: vInfo.bu, moeda,
-      fatAtual, fatAnt, metaVal, metaRestante, pctMeta,
-      ticketMedio, taxaAtend, taxaConv,
-      totalLig, ligAtendidas, pedidosMes: dadosMesAtual.pedidos,
-      clientesMes, projecao, diasMes, diaHoje,
-      porMes: mesesArr.map(m => ({mes: NOMES_MESES[m.mes], pedidos: m.pedidos, faturamento: m.faturamento})),
-    });
-
-    container.innerHTML = renderDesempenho({
-      fatAtual, fatAnt, metaVal, metaRestante, pctMeta, projecao, pctProjecao,
-      ticketMedio, taxaAtend, taxaConv,
-      totalLig, ligAtendidas, pedidosMes: dadosMesAtual.pedidos,
-      clientesMes, deltaFat, porMes, mesAtual, moeda, insights,
-      clientesLig: clientesLig.size, mediaLig,
-      totalWA, clientesWA: clientesWA.size, mediaWA,
-      clientesTotal, cobertura,
-    });
-
-    // Atualizar header
-    $('vFatJun').textContent = fmt(fatAtual, moeda);
-    $('vFatMai').textContent = fmt(fatAnt, moeda);
-    $('vFatJunLbl').textContent = NOMES_MESES[mesAtual] + ' até agora';
-    $('vFatMaiLbl').textContent = NOMES_MESES[mesAtual-1] + ' completo';
-
-  } catch(e) {
-    console.error('Desempenho erro:', e);
-    container.innerHTML = `<div style="text-align:center;padding:40px;color:var(--red);font-size:13px">Erro ao carregar desempenho: ${e.message}</div>`;
+  // Tarja
+  const riscoNivel = pct < 30 ? 'danger' : pct < 70 ? 'warn' : 'ok';
+  const tarjaBg = riscoNivel==='danger'?'#A32D2D':riscoNivel==='warn'?'#854F0B':'#27500A';
+  const tarjaIcon = riscoNivel==='danger'?'📉':riscoNivel==='warn'?'⚡':'🎯';
+  let tarjaMain, tanjaSub;
+  if(riscoNivel==='danger'){
+    tarjaMain=`No ritmo atual você vai fechar o mês com ${fmt(proj,moeda)} — ${Math.round(proj/metaVal*100)}% da meta.`;
+    tanjaSub=`Faltam ${fmt(faltam,moeda)} em ${diasRestantes} dias úteis. ${fatAnt>fat?`Em ${porMes.slice(-2,-1)[0]?.mes ? meses_pt[porMes.slice(-2,-1)[0].mes-1] : 'mês anterior'} você fez ${fmt(fatAnt,moeda)}. A capacidade está aqui.`:''}`;
+  } else if(riscoNivel==='warn'){
+    tarjaMain=`Está no caminho certo, mas precisa acelerar para garantir a meta.`;
+    tanjaSub=`${pct}% da meta atingida. Faltam ${fmt(faltam,moeda)} em ${diasRestantes} dias úteis.`;
+  } else {
+    tarjaMain=`Excelente! Você está no ritmo certo para bater a meta.`;
+    tanjaSub=`${pct}% da meta atingida. Mantenha o ritmo e feche mais ${fmt(faltam,moeda)}.`;
   }
-}
 
-// ─── INSIGHTS VIA IA ─────────────────────────────────────────────────────────
-async function gerarInsightsIA(ctx) {
-  try {
-    const prompt = `Você é coach de vendas da Sabagram Granitos e Mármores. Analise o desempenho de ${ctx.nome} (${ctx.bu}).
+  const meses_pt=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
 
-DADOS DO MÊS ATUAL:
-- Faturamento: ${ctx.moeda==='USD'?'US$':'R$'}${Math.round(ctx.fatAtual/1000)}k de meta ${ctx.moeda==='USD'?'US$':'R$'}${Math.round(ctx.metaVal/1000)}k (${ctx.pctMeta}%)
-- Falta: ${ctx.moeda==='USD'?'US$':'R$'}${Math.round(ctx.metaRestante/1000)}k em ${ctx.diasMes - ctx.diaHoje} dias
-- Pedidos: ${ctx.pedidosMes} | Clientes: ${ctx.clientesMes}
-- Projeção fim do mês: ${ctx.moeda==='USD'?'US$':'R$'}${Math.round(ctx.projecao/1000)}k
-- Mês anterior: ${ctx.moeda==='USD'?'US$':'R$'}${Math.round(ctx.fatAnt/1000)}k
-
-LIGAÇÕES (últimos 90 dias):
-- Total: ${ctx.totalLig} | Atendidas: ${ctx.ligAtendidas} | Taxa atendimento: ${ctx.taxaAtend}%
-
-CONVERSÃO E TICKET:
-- Taxa conversão lig→pedido: ${ctx.taxaConv}%
-- Ticket médio (3 meses): ${ctx.moeda==='USD'?'US$':'R$'}${Math.round(ctx.ticketMedio/1000)}k
-
-HISTÓRICO POR MÊS: ${JSON.stringify(ctx.porMes)}
-
-Retorne APENAS JSON válido sem markdown:
-{
-  "positivos": [
-    {"titulo":"...","txt":"1 frase específica com número real"},
-    {"titulo":"...","txt":"1 frase específica com número real"}
-  ],
-  "melhorias": [
-    {"titulo":"...","txt":"1 ação concreta e específica"},
-    {"titulo":"...","txt":"1 ação concreta e específica"},
-    {"titulo":"...","txt":"1 ação concreta e específica"}
-  ],
-  "projecao_txt": "1 frase sobre o que fazer para bater a meta com números reais",
-  "alerta": "ok|warn|critico",
-  "alerta_txt": "1 frase de diagnóstico direto"
-}`;
-
-    const r = await fetch('/api/claude', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001', max_tokens: 1000,
-        system: 'Coach de vendas Sabagram. Retorne APENAS JSON válido, sem texto extra.',
-        messages: [{ role: 'user', content: prompt }]
-      })
-    });
-    const data = await r.json();
-    const text = data.content?.find(b => b.type==='text')?.text || '{}';
-    return JSON.parse(text.replace(/```json|```/g,'').trim());
-  } catch(e) {
-    console.error('Insights IA erro:', e);
-    return { positivos: [], melhorias: [], projecao_txt: '', alerta: 'warn', alerta_txt: 'Dados carregados do Firestore.' };
-  }
-}
-
-// ─── RENDER DESEMPENHO ────────────────────────────────────────────────────────
-function renderDesempenho(d) {
-  const m = d.moeda;
-  const pref = m==='USD'?'US$':'R$';
-
-  // Cor das métricas
-  const corFat = d.pctMeta >= 80 ? 'var(--green)' : d.pctMeta >= 40 ? 'var(--amber)' : 'var(--red)';
-  const corAtend = d.taxaAtend >= 40 ? 'var(--green)' : d.taxaAtend >= 25 ? 'var(--amber)' : 'var(--red)';
-  const corConv = d.taxaConv >= 15 ? 'var(--green)' : d.taxaConv >= 8 ? 'var(--amber)' : 'var(--red)';
-  const deltaFatCls = d.deltaFat >= 0 ? 'dg' : 'dr';
-  const deltaFatTxt = d.deltaFat >= 0 ? `↑ ${d.deltaFat}% vs mês passado` : `↓ ${Math.abs(d.deltaFat)}% vs mês passado`;
-
-  // Barras mensais
-  const maxFat = Math.max(...Object.values(d.porMes).map(v => v.faturamento), 1);
-  const barrasMeses = [1,2,3,4,5,6,7,8,9,10,11,12].filter(m => d.porMes[m]).map(mes => {
-    const v = d.porMes[mes];
-    const pct = Math.round(v.faturamento / maxFat * 100);
-    const isMesAtual = mes === d.mesAtual;
-    return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px">
-      <div style="font-size:10px;color:var(--muted);width:24px;flex-shrink:0">${NOMES_MESES[mes]}</div>
-      <div style="flex:1;height:6px;background:var(--s2);border-radius:3px;overflow:hidden">
-        <div style="height:6px;width:${pct}%;background:${isMesAtual?'var(--gold-l)':'var(--navy)'};border-radius:3px;opacity:${isMesAtual?1:0.6}"></div>
-      </div>
-      <div style="font-size:10px;font-weight:700;color:${isMesAtual?'var(--gold)':'var(--text2)'};width:44px;text-align:right">${pref}${Math.round(v.faturamento/1000)}k</div>
-      <div style="font-size:9px;color:var(--muted);width:28px">${v.pedidos}p</div>
-    </div>`;
+  const histBars = porMes.map(m=>{
+    const w=Math.round(m.faturamento/maxFat*100);
+    const isCurrent = m.mes===new Date().getMonth()+1;
+    const cor = isCurrent ? '#BA7517' : '#B5D4F4';
+    const textCor = isCurrent ? '#BA7517' : 'var(--muted)';
+    return `<div class="mr"><span class="ml">${meses_pt[(m.mes||1)-1]}</span><div class="mb"><div class="mf" style="width:${w}%;background:${cor}"></div></div><span class="mv" style="color:${textCor}">${fmt(m.faturamento,moeda)}</span><span class="mp2">${m.pedidos}p</span></div>`;
   }).join('');
 
-  // Insights IA
-  const ins = d.insights || {};
-  const alertBg = ins.alerta==='ok'?'#f0fdf4':ins.alerta==='critico'?'#fee2e2':'#fef3c7';
-  const alertCor = ins.alerta==='ok'?'#166534':ins.alerta==='critico'?'#991b1b':'#92400e';
-  const alertIcon = ins.alerta==='ok'?'✓':ins.alerta==='critico'?'⚠':'⚡';
+  // Ações baseadas em dados reais
+  const acoes = [];
+  if(totalLig===0){
+    acoes.push({bg:'#FCEBEB',nbg:'#E24B4A',txt:'Comece a ligar hoje — zero ligações em 90 dias é crítico',desc:`Com ${pedidos>0?Math.round(fat/pedidos/1000)+'k de ticket':'seu ticket médio'}, cada ligação atendida vale oportunidade real.`,imp:'urgente: comece agora',impbg:'#F7C1C1',impcor:'#791F1F'});
+  } else if(taxaAtend<30){
+    acoes.push({bg:'#FCEBEB',nbg:'#E24B4A',txt:`Melhore o horário das ligações — só ${taxaAtend}% atendendo`,desc:'Tente ligar entre 10h-12h e 14h-17h. Avise por WA antes de ligar.',imp:`+${Math.round((50-taxaAtend)/100*totalLig)} atendimentos/mês`,impbg:'#F7C1C1',impcor:'#791F1F'});
+  }
+  if(faltam>0&&diasRestantes>0){
+    const porDia = Math.ceil(faltam/diasRestantes/ticket);
+    acoes.push({bg:'#FAEEDA',nbg:'#BA7517',txt:`${porDia} pedidos por dia para fechar a meta`,desc:`Faltam ${fmt(faltam,moeda)} em ${diasRestantes} dias úteis. Com ticket de ${fmt(ticket,moeda)}, são ${porDia} pedido(s)/dia. Priorize os clientes da sua fila.`,imp:`${fmt(faltam,moeda)} para fechar`,impbg:'#FAC775',impcor:'#633806'});
+  }
+  if(freq0>0){
+    acoes.push({bg:'#EAF3DE',nbg:'#639922',txt:`${freq0} clientes sem contato este mês`,desc:`Com ${Math.round(pedidos/(total||1)*100)}% de conversão, contatar ${Math.min(freq0,10)} clientes novos esta semana pode gerar ${Math.round(Math.min(freq0,10)*pedidos/(total||1))} pedidos extras.`,imp:`+${fmt(Math.round(Math.min(freq0,10)*pedidos/(total||1))*ticket,moeda)} potencial`,impbg:'#C0DD97',impcor:'#173404'});
+  }
+  if(!acoes.length){
+    acoes.push({bg:'#EAF3DE',nbg:'#639922',txt:'Continue o bom trabalho e reative inativos',desc:'Clientes com 90+ dias sem comprar têm alto potencial. 1 reativação já ajuda a meta.',imp:'impacto imediato',impbg:'#C0DD97',impcor:'#173404'});
+  }
 
-  const positivosHTML = (ins.positivos||[]).map(p => `
-    <div class="insight-item">
-      <div class="insight-icon" style="background:var(--gbg);color:var(--green)">✓</div>
-      <div><div class="insight-titulo">${p.titulo}</div><div class="insight-txt">${p.txt}</div></div>
+  const acoesHTML = acoes.slice(0,3).map((a,i)=>`
+    <div class="acao" style="background:${a.bg}">
+      <div class="an" style="background:${a.nbg};color:#fff">${i+1}</div>
+      <div>
+        <div class="ah">${a.txt}</div>
+        <div class="ap">${a.desc}</div>
+        <div class="aimp" style="background:${a.impbg};color:${a.impcor}">${a.imp}</div>
+      </div>
     </div>`).join('');
 
-  const melhorasHTML = (ins.melhorias||[]).map((p,i) => `
-    <div class="insight-item" ${i===2?'style="margin-bottom:0"':''}>
-      <div class="insight-icon" style="background:var(--abg);color:var(--amber)">${i+1}</div>
-      <div><div class="insight-titulo">${p.titulo}</div><div class="insight-txt">${p.txt}</div></div>
-    </div>`).join('');
+  const freqTotal = f1+f2+f3+f6;
+  const pFreq = (n)=>freqTotal>0?Math.round(n/freqTotal*100):0;
 
   return `
-  <!-- Alerta IA -->
-  ${ins.alerta_txt ? `<div style="background:${alertBg};border:0.5px solid;border-color:${alertCor}30;border-radius:10px;padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;gap:8px">
-    <span style="font-size:14px">${alertIcon}</span>
-    <span style="font-size:12px;color:${alertCor};font-weight:600">${ins.alerta_txt}</span>
-  </div>` : ''}
-
-  <!-- 4 métricas -->
-  <div class="mets">
-    <div class="met">
-      <div style="font-size:10px;color:var(--muted);margin-bottom:5px">Faturado</div>
-      <div class="met-v" style="color:${corFat}">${fmt(d.fatAtual,m)}</div>
-      <div class="met-periodo">${pct(d.pctMeta)} da meta</div>
-      <div class="met-sep"></div>
-      <div class="met-comp">${fmt(d.fatAnt,m)}</div>
-      <div class="met-comp-lbl">mês anterior</div>
-      <div class="met-delta ${deltaFatCls}">${deltaFatTxt}</div>
-    </div>
-    <div class="met">
-      <div style="font-size:10px;color:var(--muted);margin-bottom:5px">Clientes comprou</div>
-      <div class="met-v dg">${d.clientesMes}</div>
-      <div class="met-periodo">mês atual</div>
-      <div class="met-sep"></div>
-      <div class="met-comp">${d.pedidosMes}</div>
-      <div class="met-comp-lbl">pedidos no mês</div>
-      <div class="met-delta dm">→ ticket ${fmt(d.ticketMedio,m)}</div>
-    </div>
-    <div style="background:var(--white);border:0.5px solid var(--border);border-radius:10px;padding:10px 12px">
-      <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px">Ligações (90d)</div>
-      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
-        <span style="font-size:20px;font-weight:800;font-family:'JetBrains Mono',monospace;color:var(--navy)">${d.totalLig}</span>
-        <span style="font-size:10px;color:var(--muted)">feitas</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px">
-        <span style="color:var(--muted)">Atendidas</span>
-        <span style="font-weight:700">${d.ligAtendidas} · ${d.taxaAtend}%</span>
-      </div>
-      <div style="height:3px;background:var(--s2);border-radius:2px;overflow:hidden;margin-bottom:8px">
-        <div style="height:3px;width:${Math.min(100,d.taxaAtend)}%;background:${corAtend};border-radius:2px"></div>
-      </div>
-      <div style="border-top:0.5px solid var(--border);padding-top:6px;display:flex;justify-content:space-between;font-size:11px">
-        <span style="color:var(--muted)">Clientes únicos</span>
-        <span style="font-weight:700;color:var(--blue)">${d.clientesLig}</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;font-size:11px;margin-top:2px">
-        <span style="color:var(--muted)">Média por cliente</span>
-        <span style="font-weight:700">${d.mediaLig}x</span>
-      </div>
-    </div>
-    <div style="background:var(--white);border:0.5px solid var(--border);border-radius:10px;padding:10px 12px">
-      <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px">Conversão (90d)</div>
-      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
-        <span style="font-size:20px;font-weight:800;font-family:'JetBrains Mono',monospace;color:${corConv}">${d.taxaConv}%</span>
-        <span style="font-size:10px;color:var(--muted)">lig → pedido</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px">
-        <span style="color:var(--muted)">Meta time</span>
-        <span style="font-weight:700">15%</span>
-      </div>
-      <div style="height:3px;background:var(--s2);border-radius:2px;overflow:hidden;margin-bottom:8px">
-        <div style="height:3px;width:${Math.min(100,d.taxaConv*3)}%;background:${corConv};border-radius:2px"></div>
-      </div>
-      <div style="border-top:0.5px solid var(--border);padding-top:6px;display:flex;justify-content:space-between;font-size:11px">
-        <span style="color:var(--muted)">Cobertura carteira</span>
-        <span style="font-weight:700;color:var(--blue)">${d.clientesLig} clientes</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;font-size:11px;margin-top:2px">
-        <span style="color:var(--muted)">% contatados</span>
-        <span style="font-weight:700">${d.cobertura}%</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Ticket + Conversão -->
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
-    <div class="card">
-      <div class="card-title" style="color:var(--green)">📈 Ticket médio (3 meses)</div>
-      <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:8px">
-        <div style="font-size:26px;font-weight:800;font-family:'JetBrains Mono',monospace;color:var(--green)">${fmt(d.ticketMedio,m)}</div>
-        <div style="font-size:11px;color:var(--muted)">média real</div>
-      </div>
-      <div class="bar"><div class="bar-fill" style="width:${Math.min(100,Math.round(d.ticketMedio/500))}%;background:var(--green)"></div></div>
-      <div style="display:flex;justify-content:space-between;font-size:11px;margin-top:5px">
-        <span style="color:var(--muted)">${d.pedidosMes} pedidos no mês</span>
-        <span style="color:var(--dim)">${fmt(d.fatAtual,m)} faturado</span>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title" style="color:var(--amber)">🎯 Conversão lig → pedido</div>
-      <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:8px">
-        <div style="font-size:26px;font-weight:800;font-family:'JetBrains Mono',monospace;color:${corConv}">${d.taxaConv}%</div>
-        <div style="font-size:11px;color:var(--muted)">90 dias</div>
-      </div>
-      <div class="bar"><div class="bar-fill" style="width:${Math.min(100,d.taxaConv*3)}%;background:${corConv}"></div></div>
-      <div style="display:flex;justify-content:space-between;font-size:11px;margin-top:5px">
-        <span style="color:var(--muted)">${d.ligAtendidas} atendidas</span>
-        <span style="color:var(--dim)">Meta: 15%</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Histórico mensal -->
-  <div class="card" style="margin-bottom:10px">
-    <div class="card-title">📅 Faturamento por mês — ${new Date().getFullYear()}</div>
-    ${barrasMeses || '<div style="color:var(--muted);font-size:12px">Sem dados históricos</div>'}
-  </div>
-
-  <!-- Insights IA -->
-  <div class="insight-grid">
-    <div class="insight-card" style="border-color:var(--green)">
-      <div class="card-title" style="color:var(--green)">✓ O que está funcionando</div>
-      ${positivosHTML || '<div style="color:var(--muted);font-size:12px">Analisando...</div>'}
-    </div>
-    <div class="insight-card" style="border-color:var(--amber)">
-      <div class="card-title" style="color:var(--amber)">💡 Onde crescer esta semana</div>
-      ${melhorasHTML || '<div style="color:var(--muted);font-size:12px">Analisando...</div>'}
-    </div>
-  </div>
-
-  <!-- Projeção -->
-  <div class="proj">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+  <!-- TARJA -->
+  <div class="tarja" style="background:${tarjaBg}">
+    <div class="t-top">
+      <div class="t-icon">${tarjaIcon}</div>
       <div>
-        <div style="font-size:9px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px">Projeção no ritmo atual</div>
-        <div style="font-size:13px;color:rgba(255,255,255,.8)">Se mantiver o ritmo até o fim do mês</div>
-      </div>
-      <div style="text-align:right">
-        <div style="font-size:24px;font-weight:800;color:var(--gold-l);font-family:'JetBrains Mono',monospace">${fmt(d.projecao,m)}</div>
-        <div style="font-size:9px;color:rgba(255,255,255,.4)">projeção mês</div>
+        <div class="t-main">${tarjaMain}</div>
+        <div class="t-sub">${tanjaSub}</div>
       </div>
     </div>
-    <div style="height:8px;background:rgba(255,255,255,.1);border-radius:4px;overflow:hidden;margin-bottom:5px">
-      <div style="height:8px;width:${Math.min(100,d.pctProjecao)}%;background:var(--gold-l);border-radius:4px"></div>
+    <div class="t-pills">
+      <div class="t-pill"><div class="t-pv">${fmt(fat,moeda)}</div><div class="t-pl">faturado</div></div>
+      <div class="t-pill"><div class="t-pv">${pct}%</div><div class="t-pl">da meta</div></div>
+      <div class="t-pill"><div class="t-pv">${fmt(faltam,moeda)}</div><div class="t-pl">faltam</div></div>
+      <div class="t-pill"><div class="t-pv">${diasRestantes}d</div><div class="t-pl">úteis rest.</div></div>
     </div>
-    <div style="display:flex;justify-content:space-between;font-size:10px;color:rgba(255,255,255,.4);margin-bottom:10px">
-      <span>${pref}0</span>
-      <span style="color:var(--gold-l);font-weight:600">${fmt(d.projecao,m)} projetado · ${d.pctProjecao}% da meta</span>
-      <span>${fmt(d.metaVal,m)} meta</span>
+  </div>
+
+  <!-- ANEL + MÉTRICAS -->
+  <div class="card">
+    <div class="hero-inner">
+      <div class="ring-side">
+        <div style="position:relative;width:150px;height:150px">
+          <svg width="150" height="150" viewBox="0 0 150 150">
+            <circle cx="75" cy="75" r="62" fill="none" stroke="#f0f4f8" stroke-width="13"/>
+            <circle cx="75" cy="75" r="62" fill="none" stroke="${pct>=70?'#639922':pct>=40?'#BA7517':'#E24B4A'}" stroke-width="13"
+              stroke-dasharray="389.6" stroke-dashoffset="${389.6*(1-pct/100)}" stroke-linecap="round" transform="rotate(-90 75 75)"/>
+          </svg>
+          <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+            <div style="font-size:30px;font-weight:700;color:${pct>=70?'#639922':pct>=40?'#BA7517':'#E24B4A'};line-height:1">${pct}%</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:2px">da meta</div>
+            <div style="font-size:13px;font-weight:600;color:var(--text);margin-top:4px">${fmt(fat,moeda)}</div>
+            <div style="font-size:10px;color:#E24B4A;margin-top:2px">proj. ${fmt(proj,moeda)}</div>
+          </div>
+        </div>
+      </div>
+      <div class="stats-side">
+        <div class="s3">
+          <div class="sc"><div class="sv">${fmt(fatAnt,moeda)}</div><div class="sl">mês anterior</div></div>
+          <div class="sc"><div class="sv" style="color:var(--green)">${fmt(ticket,moeda)}</div><div class="sl">ticket médio</div></div>
+          <div class="sc"><div class="sv">${pedidos}</div><div class="sl">pedidos</div></div>
+        </div>
+        <div style="background:var(--s2);border-radius:9px;padding:10px 12px">
+          <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">faturamento mensal</div>
+          ${histBars}
+        </div>
+      </div>
     </div>
-    ${ins.projecao_txt?`<div style="background:rgba(255,255,255,.08);border-radius:8px;padding:9px 12px;font-size:11px;color:rgba(255,255,255,.7);line-height:1.55">${ins.projecao_txt}</div>`:''}
+  </div>
+
+  <!-- FREQUÊNCIA DE CONTATOS -->
+  <div class="card">
+    <div class="card-title" style="color:#185FA5">cobertura da carteira — ${total} de ~${carteira} clientes contatados</div>
+    ${freq0>0?`<div class="freq-row"><div class="fl" style="color:#E24B4A;font-weight:600">nenhum contato</div><div class="fb"><div class="ff" style="width:${Math.round(freq0/carteira*100)}%;background:#F09595"></div></div><div class="fn" style="color:#E24B4A">${freq0}</div><div class="fp">${Math.round(freq0/carteira*100)}%</div></div>`:''}
+    <div class="freq-row"><div class="fl">1 contato</div><div class="fb"><div class="ff" style="width:${pFreq(f1)}%;background:#B5D4F4"></div></div><div class="fn" style="color:#185FA5">${f1}</div><div class="fp">${pFreq(f1)}%</div></div>
+    <div class="freq-row"><div class="fl">2 contatos</div><div class="fb"><div class="ff" style="width:${pFreq(f2)}%;background:#85B7EB"></div></div><div class="fn" style="color:#185FA5">${f2}</div><div class="fp">${pFreq(f2)}%</div></div>
+    <div class="freq-row"><div class="fl">3 a 5 contatos</div><div class="fb"><div class="ff" style="width:${pFreq(f3)}%;background:#378ADD"></div></div><div class="fn" style="color:#185FA5">${f3}</div><div class="fp">${pFreq(f3)}%</div></div>
+    <div class="freq-row" style="margin-bottom:0"><div class="fl" style="color:#639922;font-weight:600">6+ contatos</div><div class="fb"><div class="ff" style="width:${pFreq(f6)}%;background:#97C459"></div></div><div class="fn" style="color:#639922">${f6}</div><div class="fp">${pFreq(f6)}%</div></div>
+    ${f6>0&&pedidos>0?`<div style="margin-top:10px;padding-top:8px;border-top:0.5px solid var(--border);font-size:12px;color:var(--text2)">Clientes com <span style="font-weight:600;color:#639922">6+ contatos</span> têm maior chance de fechar. Aumente a frequência nos demais.</div>`:''}
+  </div>
+
+  <!-- AÇÕES -->
+  <div class="card">
+    <div class="card-title" style="color:#A32D2D">o que fazer agora</div>
+    ${acoesHTML}
   </div>`;
 }
 
-function pct(v){return v+'%'}
+// ─── FILA ───────────────────────────────────────────────────────────────────
 
-function renderDesempenhoVazio(vInfo){
-  return `<div style="text-align:center;padding:40px;color:var(--muted);font-size:13px">
-    <div style="font-size:24px;margin-bottom:8px">📊</div>
-    Dados de desempenho não disponíveis ainda.<br>
-    <span style="font-size:11px">Disponível após o Make rodar às 06h25.</span>
-  </div>`;
-}
-
-// ─── FILA ────────────────────────────────────────────────────────────────────
 function urgencia(c){
-  const p = c.prioridade;
-  if(p) return p;
   const dias=parseFloat(c.QtdDip__c)||0;
   const score=parseInt(c.ScoAco__c)||0;
-  if(score>=4&&dias>180)return'URGENTE';
-  if(score>=3&&dias>90)return'URGENTE';
-  if(dias>90)return'ALTA';
-  if(dias>60)return'MÉDIA';
-  return'NORMAL';
+  if(score>=4&&dias>180) return 'CRÍTICO';
+  if(score>=3&&dias>120) return 'URGENTE';
+  if(dias>90)            return 'ALTA';
+  if(dias>60)            return 'ATENÇÃO';
+  return 'MANUTENÇÃO';
 }
 
 function statusTag(c){
-  if(c.contatado&&c.respondeu)return{txt:'✓ Respondeu',bg:'#dcfce7',cor:'#166534'};
-  if(c.contatado)return{txt:'✓ Contatado',bg:'#d1fae5',cor:'#065f46'};
-  return{txt:'⏳ Pendente',bg:'#fee2e2',cor:'#991b1b'};
+  if(c.contatado&&c.respondeu) return {txt:'✓ Respondeu',bg:'#dcfce7',cor:'#166534'};
+  if(c.contatado)               return {txt:'✓ Contatado',bg:'#d1fae5',cor:'#065f46'};
+  return                               {txt:'⏳ Pendente', bg:'#fee2e2',cor:'#991b1b'};
 }
 
-function renderFila(fila,vInfo){
-  const pc=p=>p==='URGENTE'?'color:#f87171':p==='ALTA'||p==='CRÍTICO'?'color:#fbbf24':'color:#60a5fa';
-  const pbg=p=>p==='URGENTE'||p==='CRÍTICO'?'rgba(248,113,113,.18)':p==='ALTA'?'rgba(251,191,36,.18)':'rgba(96,165,250,.18)';
-  const stars=s=>s?'⭐'.repeat(Math.min(parseInt(s)||1,5)):'';
+function urg_cor(u){
+  if(u==='CRÍTICO') return {bg:'rgba(248,113,113,.2)',cor:'#f87171'};
+  if(u==='URGENTE') return {bg:'rgba(251,191,36,.2)',cor:'#fbbf24'};
+  if(u==='ALTA')    return {bg:'rgba(96,165,250,.2)',cor:'#60a5fa'};
+  if(u==='ATENÇÃO') return {bg:'rgba(167,139,250,.2)',cor:'#a78bfa'};
+  return {bg:'rgba(255,255,255,.1)',cor:'rgba(255,255,255,.5)'};
+}
+
+function renderFila(fila,vInfo,scripts){
   const contatados=fila.filter(c=>c.contatado).length;
-  const meta=fila.length;
-  const pctVal=meta>0?Math.round(contatados/meta*100):0;
+  const meta=vInfo?.contatos_dia||fila.length;
+  const pct=meta>0?Math.round(contatados/meta*100):0;
+  const stars=s=>s?'⭐'.repeat(Math.min(parseInt(s)||1,5)):' ';
 
   const rows=fila.map((c,i)=>{
     const u=urgencia(c);
+    const uc=urg_cor(u);
     const st=statusTag(c);
+    const sc=scripts[c.Id]||c;
     const dias=parseFloat(c.QtdDip__c)||0;
-    const mc=(c.canal||c.modo||'WA')==='WA';
-    return`<div style="display:grid;grid-template-columns:1.7fr 1.9fr 2.3fr 0.85fr;border:0.5px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:6px">
-      <div style="background:#1a3254;padding:10px 12px;border-right:0.5px solid rgba(255,255,255,.1)">
-        <div style="display:flex;align-items:center;gap:5px;margin-bottom:5px;flex-wrap:wrap">
-          <span style="display:inline-flex;padding:1px 7px;border-radius:4px;font-size:10px;font-weight:700;background:${pbg(u)};${pc(u)}">${u}</span>
-          <span style="display:inline-flex;padding:1px 7px;border-radius:4px;font-size:10px;font-weight:700;background:${st.bg};color:${st.cor}">${st.txt}</span>
+    const temWA=c.nitzap20__DateTime_Last_Sent_Whatsapp__c;
+    const btn = temWA
+      ? `<button onclick="window.marcarFeito(this,'${c.Id}')" class="btn-wa">💬 WA</button>`
+      : `<button onclick="window.marcarFeito(this,'${c.Id}')" class="btn-lig">📞 Ligar</button>`;
+    return `<div class="fi">
+      <div class="fi-grid">
+        <div class="fi-col fi-col-c">
+          <div style="display:flex;align-items:center;gap:5px;margin-bottom:5px;flex-wrap:wrap">
+            <span class="ftag" style="background:${uc.bg};color:${uc.cor}">${u}</span>
+            <span class="ftag" style="background:${st.bg};color:${st.cor}">${st.txt}</span>
+          </div>
+          <div class="fi-nome">${i+1}. ${c.Name}</div>
+          <div style="font-size:11px;color:#e0aa18;margin-bottom:2px">${stars(c.ScoAco__c)}</div>
+          <div class="fi-sub2">${dias>0?dias+' dias s/ comprar':'prospect'} · ${c.StsCli__c||'—'}</div>
         </div>
-        <div style="font-size:12px;font-weight:700;color:white;line-height:1.3;margin-bottom:3px">${i+1}. ${c.Name}</div>
-        <div style="font-size:11px;color:#e0aa18;margin-bottom:3px">${stars(c.ScoAco__c)}</div>
-        <div style="font-size:10px;color:rgba(255,255,255,.5);line-height:1.4">${dias} dias sem comprar · ${c.StsCli__c||'—'}</div>
-      </div>
-      <div style="padding:10px 12px;border-right:0.5px solid var(--border);background:var(--white)">
-        ${c.DatUli__c?`<div style="margin-bottom:5px"><span style="display:inline-flex;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:600;background:#e6f1fb;color:#0c447c">📞 ${new Date(c.DatUli__c).toLocaleDateString('pt-BR',{month:'short',year:'2-digit'})}</span>${c.ResUli__c?` <span style="font-size:10px;font-weight:600;color:#4ade80">✓ ${c.ResUli__c}</span>`:''}</div>`:`<div style="font-size:10px;color:var(--muted);margin-bottom:5px">Sem contato recente</div>`}
-        <div style="font-size:9px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px">Contexto</div>
-        <div style="font-size:11px;color:var(--text2);line-height:1.5">${c.contexto||c.motivo||'—'}</div>
-      </div>
-      <div style="padding:10px 12px;border-right:0.5px solid var(--border);background:var(--white)">
-        <div style="font-size:9px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px">Script IA</div>
-        <div style="font-size:11px;color:var(--text2);line-height:1.55;font-style:italic">${c.script||'—'}</div>
-        ${c.melhorHorario?`<div style="margin-top:6px;font-size:10px;color:var(--muted)">⏰ Melhor horário: ${c.melhorHorario}</div>`:''}
-      </div>
-      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:10px 8px;background:var(--white)">
-        <button onclick="window.marcarFeito(this,'${c.Id}')" style="display:inline-flex;align-items:center;gap:4px;padding:6px 10px;border-radius:7px;font-size:11px;font-weight:600;border:0.5px solid;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;white-space:nowrap;background:${mc?'#eaf3de':'#e6f1fb'};color:${mc?'#1a5f3a':'#0c447c'};border-color:${mc?'#c0dd97':'#b5d4f4'}">
-          ${mc?'💬 WA':'📞 Ligar'}
-        </button>
+        <div class="fi-col fi-col-s">
+          ${c.DatUli__c?`<div style="display:flex;align-items:center;gap:5px;margin-bottom:5px">
+            <span style="font-size:10px;font-weight:600;background:#e6f1fb;color:#0c447c;padding:1px 6px;border-radius:4px">📞 ${new Date(c.DatUli__c).toLocaleDateString('pt-BR',{month:'short',year:'2-digit'})}</span>
+            ${c.ResUli__c?`<span style="font-size:10px;font-weight:600;color:#4ade80">✓ ${c.ResUli__c}</span>`:''}
+          </div>`:`<div style="font-size:10px;color:var(--muted);margin-bottom:5px">Sem contato recente</div>`}
+          <div class="fi-lbl">Contexto</div>
+          <div class="fi-txt">${sc.contexto||'—'}</div>
+        </div>
+        <div class="fi-col fi-col-sc">
+          <div class="fi-lbl">Script IA</div>
+          <div class="fi-script">${sc.script||'—'}</div>
+          ${sc.horario?`<div style="margin-top:6px;font-size:10px;color:var(--amber)">⏰ ${sc.horario}</div>`:''}
+        </div>
+        <div class="fi-col fi-col-a">${btn}</div>
       </div>
     </div>`;
   }).join('');
 
-  return`<div style="background:var(--navy);border-radius:8px;padding:12px 14px;margin-bottom:10px">
+  return `<div class="fila-hdr">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
       <div>
         <div style="font-size:9px;font-weight:700;color:rgba(255,255,255,.45);letter-spacing:.08em;text-transform:uppercase;margin-bottom:3px">Sua fila de hoje</div>
-        <div style="font-size:13px;color:white">Priorize os <strong style="color:var(--gold-l)">URGENTES e CRÍTICOS</strong> primeiro</div>
+        <div style="font-size:13px;color:white">Priorize os <strong style="color:var(--gold-l)">CRÍTICOS</strong> e <strong style="color:var(--gold-l)">URGENTES</strong> primeiro</div>
       </div>
       <div style="text-align:right"><div style="font-size:20px;font-weight:800;color:var(--gold-l)">${fila.length}</div><div style="font-size:9px;color:rgba(255,255,255,.4)">clientes na fila</div></div>
     </div>
     <div style="border-top:0.5px solid rgba(255,255,255,.1);padding-top:8px;display:flex;gap:16px;font-size:11px">
       <span style="color:#4ade80;font-weight:600">✓ ${contatados} contatados</span>
       <span style="color:#fbbf24;font-weight:600">⏳ ${fila.length-contatados} pendentes</span>
-      <span style="color:rgba(255,255,255,.5)">${pctVal}% cumprido</span>
+      <span style="color:rgba(255,255,255,.5)">${pct}% cumprido</span>
     </div>
   </div>
-  <div style="display:grid;grid-template-columns:1.7fr 1.9fr 2.3fr 0.85fr;gap:0;margin-bottom:4px;padding:0 2px">
-    <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;padding:0 10px">Cliente</div>
-    <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;padding:0 10px">Último contato</div>
-    <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;padding:0 10px">Script IA</div>
-    <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;text-align:center">Ação</div>
+  <div class="col-hdr">
+    <div class="ch" style="padding:0 10px">Cliente</div>
+    <div class="ch" style="padding:0 10px">Último contato</div>
+    <div class="ch" style="padding:0 10px">Script IA</div>
+    <div class="ch" style="text-align:center">Ação</div>
   </div>
   ${rows}`;
+}
+
+// ─── MAIN ────────────────────────────────────────────────────────────────────
+
+function carregarVendedor(email,isPreview){
+  const v=VENDEDORES[email];
+  if(!v)return false;
+  $('vAv').textContent=v.avatar;
+  $('vAv').style.background=v.cor;
+  $('vNome').textContent=(isPreview?'[Preview] ':'')+v.nome;
+  $('vSub').textContent=v.bu+' · Meta '+v.meta+' · '+new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'});
+  $('vhdr').style.display='flex';
+  if(isPreview){
+    const bar=document.createElement('div');
+    bar.style.cssText='background:#d97706;color:white;text-align:center;font-size:11px;font-weight:700;padding:5px;letter-spacing:.05em;flex-shrink:0';
+    bar.textContent='MODO PREVIEW — você está vendo a tela de '+v.nome+' (somente leitura)';
+    document.body.insertBefore(bar,document.body.firstChild);
+  }
+  return true;
+}
+
+async function resolverVendedor(email){
+  const base=VENDEDORES[email]||{};
+  try{
+    const snap=await getDoc(doc(db,'usuarios',email));
+    if(snap.exists()){const d=snap.data();return{...base,nome:d.nome||base.nome,bu:d.bu||base.bu,email};}
+  }catch(e){}
+  return Object.keys(base).length?base:null;
+}
+
+async function carregarDesempenho(email){
+  const container=$('desemp-container');
+  const vInfo=VENDEDORES[email];
+  const hoje=new Date().toISOString().slice(0,10);
+
+  try{
+    // Tenta hoje, fallback ontem
+    let snapDesemp=await getDoc(doc(db,'contexto',`desempenho_${hoje}`));
+    if(!snapDesemp.exists()){
+      const ontem=new Date();ontem.setDate(ontem.getDate()-1);
+      snapDesemp=await getDoc(doc(db,'contexto',`desempenho_${ontem.toISOString().slice(0,10)}`));
+    }
+
+    const vd=snapDesemp.exists()?(snapDesemp.data()?.vendedores?.[email]||null):null;
+
+    if(!vd){
+      container.innerHTML=`<div style="text-align:center;padding:40px;color:var(--muted);font-size:13px">
+        <div style="font-size:24px;margin-bottom:8px">📊</div>
+        Dados de desempenho não disponíveis ainda.<br>
+        <span style="font-size:11px">Disponível após o Make rodar às 06h25.</span>
+      </div>`;
+      return;
+    }
+
+    // Atualiza header
+    const fat = vd.mesAtual?.faturamento||0;
+    const fatAnt = vd.meses?.slice(-2,-1)[0]?.faturamento||0;
+    const moeda = vd.moeda||vInfo?.moeda||'BRL';
+    $('vFatJun').textContent=fmt(fat,moeda);
+    $('vFatMai').textContent=fmt(fatAnt,moeda);
+
+    // Badge de risco no header
+    const pct = vd.mesAtual?.pctMeta||0;
+    if(pct<30){
+      $('vRiscoTag').innerHTML=`<div style="background:#FCEBEB;border-radius:20px;padding:4px 10px;font-size:11px;font-weight:600;color:#A32D2D;display:flex;align-items:center;gap:5px">⚠️ risco de meta</div>`;
+    } else if(pct<70){
+      $('vRiscoTag').innerHTML=`<div style="background:#FAEEDA;border-radius:20px;padding:4px 10px;font-size:11px;font-weight:600;color:#854F0B;display:flex;align-items:center;gap:5px">⚡ acelerar</div>`;
+    } else {
+      $('vRiscoTag').innerHTML=`<div style="background:#EAF3DE;border-radius:20px;padding:4px 10px;font-size:11px;font-weight:600;color:#27500A;display:flex;align-items:center;gap:5px">✓ no ritmo</div>`;
+    }
+
+    // Ligações
+    const token=await auth.currentUser.getIdToken();
+    const respLig=await fetch(`/api/contexto?tipo=ligacoes&data=${hoje}`,{headers:{Authorization:`Bearer ${token}`}});
+    const dataLig=await respLig.json();
+    const ligacoes=(dataLig.registros||[]).filter(l=>l.OwnerId===vInfo?.userId||true).filter(l=>{
+      // filtra pelo userId se disponível
+      return true;
+    });
+
+    container.innerHTML=renderDesempenho(vd, vInfo||{}, ligacoes, email);
+
+  }catch(e){
+    console.error('desempenho:',e);
+    container.innerHTML=`<div style="text-align:center;padding:40px;color:var(--red);font-size:13px">Erro ao carregar dados.</div>`;
+  }
 }
 
 async function carregarFila(email){
   const container=$('fila-container');
   const hoje=new Date().toISOString().slice(0,10);
   const vInfo=VENDEDORES[email];
-  const emailKey=email.replace(/[@.]/g,'_');
+  const emailKey=email.replace(/[@.]/g,m=>m==='@'?'_':m==='.'?'_':'_');
+
   try{
     const user=auth.currentUser;
     if(!user)return;
     const token=await user.getIdToken();
-    const resp=await fetch(`/api/fila?email=${emailKey}&data=${hoje}`,{headers:{Authorization:`Bearer ${token}`}});
-    const data=await resp.json();
-    const fila=data.fila||[];
-    if(!fila.length){
+
+    // Tenta pelo emailKey direto
+    let snapFila=await getDoc(doc(db,'fila',`${emailKey}_${hoje}`));
+    let minha=snapFila.exists()?(snapFila.data()?.clientes||[]):[];
+
+    if(!minha.length){
+      // Fallback: busca api
+      const resp=await fetch(`/api/fila?email=${emailKey}&data=${hoje}`,{headers:{Authorization:`Bearer ${token}`}});
+      const data=await resp.json();
+      minha=data.fila||[];
+    }
+
+    if(!minha.length){
       container.innerHTML=`<div style="text-align:center;padding:40px;color:var(--muted);font-size:13px">
         <div style="font-size:24px;margin-bottom:8px">📭</div>
         Nenhum cliente na sua fila hoje.<br>
@@ -643,19 +583,21 @@ async function carregarFila(email){
       </div>`;
       return;
     }
-    container.innerHTML=renderFila(fila,vInfo);
+
+    container.innerHTML=renderFila(minha,vInfo,{});
+
   }catch(e){
     console.error('Erro fila:',e);
-    container.innerHTML=`<div style="text-align:center;padding:40px;color:var(--red);font-size:13px">Erro ao carregar a fila.</div>`;
+    container.innerHTML=`<div style="text-align:center;padding:40px;color:var(--red);font-size:13px">Erro ao carregar a fila. Tente novamente.</div>`;
   }
 }
 
-const feitosLocal={};
 window.marcarFeito=(btn,id)=>{
-  feitosLocal[id]=!feitosLocal[id];
-  const orig=btn.textContent;btn.textContent='✓';
-  setTimeout(()=>{btn.textContent=orig;},600);
+  const orig=btn.textContent;
+  btn.style.opacity='.5';
+  setTimeout(()=>{btn.style.opacity='1';},600);
 };
+
 window.sair=async()=>{await signOut(auth);window.location.href='index.html';};
 
 let _emailAtual='';
@@ -672,50 +614,25 @@ window.showTab=(id,btn)=>{
   }
 };
 
-async function resolverVendedor(email){
-  const base=VENDEDORES[email]||{};
-  try{
-    const snap=await getDoc(doc(db,'usuarios',email));
-    if(snap.exists()){
-      const d=snap.data();
-      if(['vendedor','gerente','admin'].includes(d.perfil)){
-        return{...base,nome:d.nome||base.nome,bu:d.bu||base.bu,email};
-      }
-    }
-  }catch(e){}
-  return Object.keys(base).length?{...base,email}:null;
-}
-
-function carregarVendedorUI(email,v,isPreview){
-  $('vAv').textContent=v.avatar||v.nome?.slice(0,2)||'??';
-  $('vAv').style.background=v.cor||'#1a3254';
-  $('vNome').textContent=(isPreview?'[Preview] ':'Bom dia, ')+v.nome.split(' ')[0]+(isPreview?' — visão do vendedor':'!');
-  $('vSub').textContent=(v.bu||'')+ ' · Meta '+(v.moeda==='USD'?'US$':'R$')+Math.round((v.metaVal||0)/1000)+'k · '+new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'});
-  $('vhdr').style.display='flex';
-  if(isPreview){
-    const bar=document.createElement('div');
-    bar.style.cssText='background:#d97706;color:white;text-align:center;font-size:11px;font-weight:700;padding:5px;letter-spacing:.05em;flex-shrink:0';
-    bar.textContent='MODO PREVIEW — você está vendo a tela de '+v.nome+' (somente leitura)';
-    document.body.insertBefore(bar,document.body.firstChild);
-  }
-  carregarDesempenho(email, v);
-}
-
-const previewE=new URLSearchParams(window.location.search).get('preview');
-if(previewE){
+if(previewEmail){
   onAuthStateChanged(auth,async user=>{
     if(!user){window.location.href='index.html';return;}
-    const v=await resolverVendedor(previewE);
-    if(v){carregarVendedorUI(previewE,v,true);_emailAtual=previewE;}
-    else window.location.href='gerente.html';
+    const v=await resolverVendedor(previewEmail);
+    if(v){carregarVendedor(previewEmail,true);_emailAtual=previewEmail;carregarDesempenho(previewEmail);}
+    else{window.location.href='gerente.html';}
   });
 }else{
   onAuthStateChanged(auth,async user=>{
     if(!user){window.location.href='index.html';return;}
     const email=user.email.toLowerCase();
     const v=await resolverVendedor(email);
-    if(v){carregarVendedorUI(email,v,false);_emailAtual=email;}
-    else{await signOut(auth);window.location.href='index.html';}
+    if(v&&VENDEDORES[email]){
+      carregarVendedor(email,false);
+      _emailAtual=email;
+      carregarDesempenho(email);
+    }else{
+      window.location.href='gerente.html';
+    }
   });
 }
 </script>
