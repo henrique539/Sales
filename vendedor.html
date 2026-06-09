@@ -216,6 +216,7 @@ const fmt=(v,m)=>m==='USD'?`US$${Math.round(v/1000)}k`:`R$${Math.round(v/1000)}k
 // ─── DESEMPENHO ─────────────────────────────────────────────────────────────
 
 function renderDesempenho(vd, vInfo, ligacoes, email){
+  const meses_pt=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
   const moeda = vInfo.moeda||'BRL';
   const metaVal = vInfo.metaVal||0;
   const fat = vd.mesAtual?.faturamento||0;
@@ -263,8 +264,6 @@ function renderDesempenho(vd, vInfo, ligacoes, email){
     tarjaMain=`Excelente! Você está no ritmo certo para bater a meta.`;
     tanjaSub=`${pct}% da meta atingida. Mantenha o ritmo e feche mais ${fmt(faltam,moeda)}.`;
   }
-
-  const meses_pt=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
 
   const histBars = porMes.map(m=>{
     const w=Math.round(m.faturamento/maxFat*100);
