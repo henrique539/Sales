@@ -113,9 +113,22 @@ export default async function handler(req, res) {
     }
 
     const porVendedor = {};
-    for (let r of registrosRaw) {
-      // registros podem vir como string JSON
-      if (typeof r === 'string') { try { r = JSON.parse(r); } catch(e) { continue; } }
+    // Se veio como string gigante concatenada (Array Aggregator do Make)
+    let registrosExpandidos = [];
+    for (const r of registrosRaw) {
+      if (typeof r === 'string' && r.trim().startsWith('{')) {
+        try {
+          const parsed = JSON.parse('[' + r + ']');
+          if (Array.isArray(parsed)) { registrosExpandidos.push(...parsed); continue; }
+        } catch(e) {}
+        try { registrosExpandidos.push(JSON.parse(r)); } catch(e) {}
+      } else if (typeof r === 'object' && r !== null) {
+        registrosExpandidos.push(r);
+      }
+    }
+    console.log('processar-desempenho: ' + registrosExpandidos.length + ' registros expandidos');
+
+    for (let r of registrosExpandidos) {
       const email = IDEVENMAP[r.IdeVen__c];
       if (!email) continue;
       const dataPedido = r.DatFat__c || r.CreatedDate || '';
