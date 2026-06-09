@@ -410,10 +410,9 @@ function renderFila(fila,vInfo,scripts){
     const st=statusTag(c);
     const sc=scripts[c.Id]||c;
     const dias=parseFloat(c.QtdDip__c)||0;
-    const temWA=c.nitzap20__DateTime_Last_Sent_Whatsapp__c;
-    const btn = temWA
-      ? `<button onclick="window.marcarFeito(this,'${c.Id}')" class="btn-wa">💬 WA</button>`
-      : `<button onclick="window.marcarFeito(this,'${c.Id}')" class="btn-lig">📞 Ligar</button>`;
+    const temWA=c.nitzap20__DateTime_Last_Sent_Whatsapp__c||c.Phone;
+    const btn = `${temWA?`<button onclick="window.marcarFeito(this,'${c.Id}')" class="btn-wa">💬 WA</button>`:''}
+      <button onclick="window.marcarFeito(this,'${c.Id}')" class="btn-lig">📞 Ligar</button>`;
     return `<div class="fi">
       <div class="fi-grid">
         <div class="fi-col fi-col-c">
@@ -426,17 +425,26 @@ function renderFila(fila,vInfo,scripts){
           <div class="fi-sub2">${dias>0?dias+' dias s/ comprar':'prospect'} · ${c.StsCli__c||'—'}</div>
         </div>
         <div class="fi-col fi-col-s">
-          ${c.DatUli__c?`<div style="display:flex;align-items:center;gap:5px;margin-bottom:5px">
+          ${c.DatUli__c?`<div style="display:flex;align-items:center;gap:5px;margin-bottom:4px">
             <span style="font-size:10px;font-weight:600;background:#e6f1fb;color:#0c447c;padding:1px 6px;border-radius:4px">📞 ${new Date(c.DatUli__c).toLocaleDateString('pt-BR',{month:'short',year:'2-digit'})}</span>
             ${c.ResUli__c?`<span style="font-size:10px;font-weight:600;color:#4ade80">✓ ${c.ResUli__c}</span>`:''}
-          </div>`:`<div style="font-size:10px;color:var(--muted);margin-bottom:5px">Sem contato recente</div>`}
-          <div class="fi-lbl">Contexto</div>
-          <div class="fi-txt">${sc.contexto||'—'}</div>
+          </div>`:`<div style="font-size:10px;color:var(--muted);margin-bottom:4px">Sem ligação recente</div>`}
+          ${c.nitzap20__DateTime_Last_Sent_Whatsapp__c?`<div style="display:flex;align-items:center;gap:5px;margin-bottom:6px">
+            <span style="font-size:10px;font-weight:600;background:#dcfce7;color:#166534;padding:1px 6px;border-radius:4px">💬 ${new Date(c.nitzap20__DateTime_Last_Sent_Whatsapp__c).toLocaleDateString('pt-BR',{month:'short',year:'2-digit'})}</span>
+            <span style="font-size:10px;color:var(--muted)">WA</span>
+          </div>`:`<div style="font-size:10px;color:var(--muted);margin-bottom:6px">Sem WA recente</div>`}
+          <div class="fi-lbl">Situação IA</div>
+          <div class="fi-txt">${sc.situacao||sc.contexto||'—'}</div>
         </div>
         <div class="fi-col fi-col-sc">
-          <div class="fi-lbl">Script IA</div>
-          <div class="fi-script">${sc.script||'—'}</div>
-          ${sc.horario?`<div style="margin-top:6px;font-size:10px;color:var(--amber)">⏰ ${sc.horario}</div>`:''}
+          ${sc.historico?`
+            <div class="fi-lbl" style="color:#185FA5;margin-bottom:4px">Histórico</div>
+            <div style="margin-bottom:8px">${sc.historico.split('|').map(b=>b.trim()).filter(Boolean).map(b=>`<div style="display:flex;gap:5px;align-items:baseline;margin-bottom:3px"><div style="width:5px;height:5px;border-radius:50%;background:#639922;flex-shrink:0;margin-top:4px"></div><div style="font-size:11px;color:var(--text2);line-height:1.4">${b}</div></div>`).join('')}</div>
+            <div class="fi-lbl" style="color:#854F0B;margin-bottom:4px">Como abordar</div>
+            <div style="font-size:11px;color:var(--text);margin-bottom:3px"><span style="font-weight:600">Gancho:</span> ${sc.abordagem?.gancho||'—'}</div>
+            <div style="font-size:11px;color:var(--text2);margin-bottom:3px"><span style="font-weight:600;color:#E24B4A">Objeção:</span> ${sc.abordagem?.objecao||'—'}</div>
+            <div style="font-size:10px;color:var(--amber);margin-top:4px">⏰ ${sc.abordagem?.canal||sc.melhorHorario||'—'}</div>
+          `:`<div style="font-size:11px;color:var(--muted);font-style:italic;padding:4px 0">Gerando análise...</div>`}
         </div>
         <div class="fi-col fi-col-a">${btn}</div>
       </div>
@@ -460,7 +468,7 @@ function renderFila(fila,vInfo,scripts){
   <div class="col-hdr">
     <div class="ch" style="padding:0 10px">Cliente</div>
     <div class="ch" style="padding:0 10px">Último contato</div>
-    <div class="ch" style="padding:0 10px">Script IA</div>
+    <div class="ch" style="padding:0 10px">O que saber antes de ligar</div>
     <div class="ch" style="text-align:center">Ação</div>
   </div>
   ${rows}`;
@@ -563,16 +571,9 @@ async function carregarFila(email){
     if(!user)return;
     const token=await user.getIdToken();
 
-    // Tenta pelo emailKey direto
-    let snapFila=await getDoc(doc(db,'fila',`${emailKey}_${hoje}`));
-    let minha=snapFila.exists()?(snapFila.data()?.clientes||[]):[];
-
-    if(!minha.length){
-      // Fallback: busca api
-      const resp=await fetch(`/api/fila?email=${emailKey}&data=${hoje}`,{headers:{Authorization:`Bearer ${token}`}});
-      const data=await resp.json();
-      minha=data.fila||[];
-    }
+    const resp=await fetch(`/api/fila?email=${emailKey}&data=${hoje}`,{headers:{Authorization:`Bearer ${token}`}});
+    const data=await resp.json();
+    let minha=data.fila||[];
 
     if(!minha.length){
       container.innerHTML=`<div style="text-align:center;padding:40px;color:var(--muted);font-size:13px">

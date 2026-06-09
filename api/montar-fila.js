@@ -234,23 +234,17 @@ async function gerarScriptsLote(clientes, ligacoesPorCliente, nitzapPorCliente, 
   const prompt = `Você é assistente de vendas sênior da Sabagram Granitos e Mármores.
 O vendedor ${vendedorNome} vai contatar esses clientes hoje. ${tomsexta}
 
-IDIOMAS: Analise interações em qualquer idioma (português, inglês, espanhol).
-Gere o SCRIPT no idioma do cliente baseado no histórico de comunicação dele.
-
-PARA CADA CLIENTE analise o histórico WA e a última ligação e gere:
-1. PRIORIDADE_AJUSTADA: sinal de compra iminente (perguntou preço, pediu catálogo, disse que precisa) → suba 1 nível | descarte explícito → mantenha ou baixe | sem contexto → mantenha
-2. MOTIVO: 1 frase explicando o ajuste de prioridade
-3. CONTEXTO: 1-2 frases sobre a situação comercial atual
-4. SCRIPT: mensagem personalizada no idioma do cliente, max 2 frases, tom informal e natural — use o estilo das últimas mensagens do vendedor com esse cliente
-5. CANAL: "WA" ou "Ligação" — baseado no histórico de resposta do cliente
-6. MELHOR_HORARIO: janela de maior chance baseada nos horários que atendeu ligações e respondeu WA
-7. PROXIMO_PASSO: o que fazer se não atender (1 frase)
+PARA CADA CLIENTE analise todos os dados e gere:
+1. PRIORIDADE_AJUSTADA: sinal de compra iminente → suba 1 nível | descarte → baixe | sem contexto → mantenha
+2. HISTORICO: string com bullets separados por | com dados reais. Ex: "Último pedido R$37k fev/26 | 8 compras | frequência 2-3 meses | WA: áudio 28 mai (cliente enviou)"
+3. SITUACAO: string com bullets separados por | sobre momento atual. Ex: "5 lig não atendidas jun | parou após maior pedido | sem WA recente"
+4. ABORDAGEM: objeto com gancho (frase de abertura específica e informal, max 1 frase), objecao (principal objeção provável, max 1 frase), canal (ex: "WA · 14h-17h" ou "Ligação · 10h-12h")
 
 Clientes:
 ${linhas}
 
 Responda SOMENTE JSON válido sem markdown:
-{"scripts":[{"id":"ID","prioridadeAjustada":"CRÍTICO|URGENTE|ALTA|ATENÇÃO|MANUTENÇÃO|PROSPECÇÃO","motivo":"...","contexto":"...","script":"...","canal":"WA","melhorHorario":"...","proximoPasso":"..."}]}`;
+{"scripts":[{"id":"ID","prioridadeAjustada":"CRÍTICO|URGENTE|ALTA|ATENÇÃO|MANUTENÇÃO|PROSPECÇÃO","historico":"...","situacao":"...","abordagem":{"gancho":"...","objecao":"...","canal":"WA · 14h-17h"}}]}`;
 
   try {
     const r = await fetchWithTimeout(ANTHROPIC_API, {
@@ -264,12 +258,13 @@ Responda SOMENTE JSON válido sem markdown:
     (parsed.scripts || []).forEach(s => {
       scripts[s.id] = {
         prioridadeAjustada: s.prioridadeAjustada || null,
-        motivo: s.motivo || null,
-        contexto: s.contexto, 
-        script: s.script, 
-        canal: s.canal||'WA', 
-        melhorHorario: s.melhorHorario, 
-        proximoPasso: s.proximoPasso
+        historico: s.historico || null,
+        situacao: s.situacao || null,
+        abordagem: s.abordagem || null,
+        contexto: s.situacao || s.contexto || null,
+        script: s.abordagem?.gancho || s.script || null,
+        canal: s.abordagem?.canal || s.canal || 'WA',
+        melhorHorario: s.abordagem?.canal || s.melhorHorario || null,
       };
     });
   } catch(e) { console.error('Script lote erro:', e.message); }
