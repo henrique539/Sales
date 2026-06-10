@@ -532,13 +532,35 @@ function urg_cor(u){
   return {bg:'rgba(255,255,255,.1)',cor:'rgba(255,255,255,.5)'};
 }
 
+function _parseTempo(str){
+  if(!str||str==='—')return 99;
+  const s=str.toLowerCase();
+  const m=s.match(/\b(\d{1,2})h/);
+  if(m)return parseInt(m[1]);
+  if(s.includes('manhã'))return 9;
+  if(s.includes('tarde'))return 14;
+  if(s.includes('noite'))return 18;
+  return 99;
+}
+
 function renderFila(fila,vInfo,scripts){
   const contatados=fila.filter(c=>c.contatado).length;
   const meta=vInfo?.contatos_dia||fila.length;
   const pct=meta>0?Math.round(contatados/meta*100):0;
   const stars=s=>s?'⭐'.repeat(Math.min(parseInt(s)||1,5)):' ';
 
-  const rows=fila.map((c,i)=>{
+  // Ordena por horário recomendado; contatados vão pro final
+  const sorted=fila.slice().sort((a,b)=>{
+    if(a.contatado!==b.contatado)return a.contatado?1:-1;
+    const sa=scripts[a.Id]||a, sb=scripts[b.Id]||b;
+    const ta=_parseTempo(sa.abordagem?.canal||sa.melhorHorario);
+    const tb=_parseTempo(sb.abordagem?.canal||sb.melhorHorario);
+    if(ta!==tb)return ta-tb;
+    const prio={URGENTE:0,ALTA:1,'MÉDIA':2};
+    return(prio[a.prioridade]||3)-(prio[b.prioridade]||3);
+  });
+
+  const rows=sorted.map((c,i)=>{
     const u=urgencia(c);
     const uc=urg_cor(u);
     const st=statusTag(c);
@@ -548,6 +570,7 @@ function renderFila(fila,vInfo,scripts){
     const canalIA=(sc.canal||sc.melhorHorario||'').toLowerCase();
     const prefereWA=canalIA.includes('wa')||canalIA.includes('whatsapp');
     const prefereLig=canalIA.includes('liga');
+    const tempoTxt=sc.abordagem?.canal||sc.melhorHorario||'';
     let btn;
     if(prefereWA&&temWA){
       btn=`<button onclick="window.marcarFeito(this,'${c.Id}')" class="btn-wa">💬 WhatsApp</button>`;
@@ -594,11 +617,13 @@ function renderFila(fila,vInfo,scripts){
             `:''}
             <div class="fi-lbl" style="color:#854F0B;margin-bottom:4px">Como abordar</div>
             <div style="font-size:11px;color:var(--text);margin-bottom:3px"><span style="font-weight:600">Gancho:</span> ${sc.abordagem?.gancho||'—'}</div>
-            <div style="font-size:11px;color:var(--text2);margin-bottom:3px"><span style="font-weight:600;color:#E24B4A">Objeção:</span> ${sc.abordagem?.objecao||'—'}</div>
-            <div style="font-size:10px;color:var(--amber);margin-top:4px">⏰ ${sc.abordagem?.canal||sc.melhorHorario||'—'}</div>
+            <div style="font-size:11px;color:var(--text2)"><span style="font-weight:600;color:#E24B4A">Objeção:</span> ${sc.abordagem?.objecao||'—'}</div>
           `:`<div style="font-size:11px;color:var(--muted);font-style:italic;padding:4px 0">Gerando análise...</div>`}
         </div>
-        <div class="fi-col fi-col-a">${btn}</div>
+        <div class="fi-col fi-col-a">
+          ${tempoTxt?`<div style="background:var(--navy);color:white;font-size:10px;font-weight:700;padding:4px 8px;border-radius:6px;text-align:center;line-height:1.3;max-width:90px;word-break:break-word">⏰ ${tempoTxt}</div>`:''}
+          ${btn}
+        </div>
       </div>
     </div>`;
   }).join('');
