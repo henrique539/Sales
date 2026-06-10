@@ -259,19 +259,25 @@ const db=getFirestore(app);
 
 const VENDEDORES=[
   {email:"nando@sabagram.com.br",nome:"Sizenando Andrade",avatar:"SA",bu:"MI",moeda:"BRL",cor:"#1a3254",whatsapp:"5528999565519",
-   fat7d:88810,clientes7d:7,lig7d:73,atend7d:24,waChats7d:80,waPessoal7d:21,ofertas7d:18,meta:233289,fat:7785},
+   fat7d:88810,clientes7d:7,lig7d:73,atend7d:24,waChats7d:80,waPessoal7d:21,ofertas7d:18,meta:233289,fat:7785,
+   sfUserId:"005TW0000002BnNYAU"},
   {email:"kelly@sabagram.com.br",nome:"Kelly Julião",avatar:"KJ",bu:"MI",moeda:"BRL",cor:"#1a5f3a",whatsapp:"5528999688866",
-   fat7d:39938,clientes7d:4,lig7d:26,atend7d:11,waChats7d:76,waPessoal7d:1,ofertas7d:13,meta:161563,fat:4191},
+   fat7d:39938,clientes7d:4,lig7d:26,atend7d:11,waChats7d:76,waPessoal7d:1,ofertas7d:13,meta:161563,fat:4191,
+   sfUserId:"005TW0000003rpNYAQ"},
   {email:"marcelo@sabagram.com.br",nome:"Marcelo Melo",avatar:"MM",bu:"MI",moeda:"BRL",cor:"#8b1a1a",whatsapp:"",
-   fat7d:106844,clientes7d:21,lig7d:0,atend7d:0,waChats7d:0,waPessoal7d:0,ofertas7d:80,meta:463680,fat:26045},
+   fat7d:106844,clientes7d:21,lig7d:0,atend7d:0,waChats7d:0,waPessoal7d:0,ofertas7d:80,meta:463680,fat:26045,
+   sfUserId:"0054S000002TkpGQAS"},
   {email:"renata@sabagram.com.br",nome:"Renata Santana",avatar:"RS",bu:"MI",moeda:"BRL",cor:"#6b1a5f",whatsapp:"",
-   fat7d:22139,clientes7d:2,lig7d:17,atend7d:8,waChats7d:0,waPessoal7d:0,ofertas7d:15,meta:105777,fat:10849},
+   fat7d:22139,clientes7d:2,lig7d:17,atend7d:8,waChats7d:0,waPessoal7d:0,ofertas7d:15,meta:105777,fat:10849,
+   sfUserId:"005TW000000ANTBYA4",firestoreEmail:"santana@sabagram.com.br"},
   {email:"wesley@sabagram.com.br",nome:"Wesley Matieli",avatar:"WM",bu:"Obras",moeda:"BRL",cor:"#1a4a2a",whatsapp:"",
    fat7d:80489,clientes7d:2,lig7d:0,atend7d:0,waChats7d:0,waPessoal7d:0,ofertas7d:7,meta:172431,fat:12994},
   {email:"cezar@sabagram.com.br",nome:"Cezar Fiorio",avatar:"CF",bu:"ME",moeda:"USD",cor:"#1a3a6b",whatsapp:"",
-   fat7d:77301,clientes7d:3,lig7d:0,atend7d:0,waChats7d:0,waPessoal7d:0,ofertas7d:239,meta:172800,fat:0},
+   fat7d:77301,clientes7d:3,lig7d:0,atend7d:0,waChats7d:0,waPessoal7d:0,ofertas7d:239,meta:172800,fat:0,
+   sfUserId:"005TW000000APunYAG"},
   {email:"diana@sabagram.com.br",nome:"Diana Rigoni",avatar:"DR",bu:"ME",moeda:"USD",cor:"#5f1a4a",whatsapp:"",
-   fat7d:0,clientes7d:0,lig7d:0,atend7d:0,waChats7d:0,waPessoal7d:0,ofertas7d:119,meta:25000,fat:0},
+   fat7d:0,clientes7d:0,lig7d:0,atend7d:0,waChats7d:0,waPessoal7d:0,ofertas7d:119,meta:25000,fat:0,
+   sfUserId:"0054S000002TkpZQAS"},
 ];
 
 const DADOS={
@@ -1122,11 +1128,52 @@ function render1a1HTML(diags){
   ${cards}`;
 }
 
-function iniciar(){
+async function carregarDadosReais(){
+  const hoje=new Date().toISOString().slice(0,10);
+  const ontem=new Date(Date.now()-86400000).toISOString().slice(0,10);
+  // Desempenho (fat mensal, pedidos, metaMensal por vendedor)
+  try{
+    let snap=await getDoc(doc(db,'contexto',`desempenho_${hoje}`));
+    if(!snap.exists())snap=await getDoc(doc(db,'contexto',`desempenho_${ontem}`));
+    if(snap.exists()){
+      const vds=snap.data().vendedores||{};
+      for(const v of VENDEDORES){
+        const fsEmail=v.firestoreEmail||v.email;
+        const vd=vds[fsEmail];
+        if(!vd)continue;
+        if(vd.mesAtual?.faturamento!==undefined)DADOS[v.email].fat=vd.mesAtual.faturamento;
+        if(vd.mesAtual?.pedidos!==undefined)DADOS[v.email].clientes=vd.mesAtual.pedidos;
+        if(vd.metaMensal){v.meta=vd.metaMensal;DADOS[v.email].meta=vd.metaMensal;}
+      }
+    }
+  }catch(e){console.warn('desempenho:',e.message);}
+  // Ligações do dia (total e atendidas por vendedor)
+  try{
+    const ligSnap=await getDoc(doc(db,'contexto',`ligacoes_${hoje}`));
+    if(ligSnap.exists()){
+      const regs=ligSnap.data().registros||[];
+      for(const v of VENDEDORES){
+        if(!v.sfUserId)continue;
+        const vLigs=regs.filter(l=>(l.OwnerId||l.ownerId||'')===v.sfUserId);
+        if(!vLigs.length)continue;
+        DADOS[v.email].ligHoje=vLigs.length;
+        DADOS[v.email].ligAtend=vLigs.filter(l=>{
+          const s=l.Subject||l.subject||'';
+          return s.includes('Atendida')&&!s.includes('Não Atendida');
+        }).length;
+      }
+    }
+  }catch(e){console.warn('ligacoes:',e.message);}
+}
+
+async function iniciar(){
   const dias=diasUteis();
   const diaAtual=new Date().getDate();
   const ctx=diaAtual<=8?'🟡 Início de mês':diaAtual<=18?'🔵 Meio de mês':'🔴 Fim de mês';
   $('hdrCtx').textContent=ctx+' · '+dias+' dias úteis restantes';
+  $('navRight').textContent='Carregando...';
+  renderTimeSection();renderProjTable();
+  await carregarDadosReais();
   $('navRight').textContent='Atualizado às '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
   renderTimeSection();renderProjTable();
 }
