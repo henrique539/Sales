@@ -273,7 +273,7 @@ Responda SOMENTE JSON válido sem markdown:
 
 
 // ─── Limite Dinâmico ─────────────────────────────────────────────────────────
-async function calcLimiteDinamico(email, vInfo, data, token) {
+async function calcLimiteDinamico(email, vInfo, data, token, feriados = { br: [], us: [] }) {
   try {
     // 1. Ler desempenho
     const desempenhoUrl = `${FIRESTORE_URL}/contexto/desempenho_${data}`;
@@ -299,14 +299,18 @@ async function calcLimiteDinamico(email, vInfo, data, token) {
     const metaRestante = Math.max(0, vInfo.metaMensal - fatMesAtual);
     if (metaRestante <= 0) return Math.max(3, Math.floor(vInfo.limite * 0.3)); // meta batida — reduz fila
 
-    // 2. Dias úteis restantes no mês
+    // 2. Dias úteis restantes no mês (excluindo feriados conforme BU do vendedor)
+    const isUS = vInfo.bu === 'BU ME';
+    const feriadosVendedor = isUS ? feriados.us : feriados.br;
     const hoje = new Date(data + 'T12:00:00Z');
     const fimMes = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 0);
     let diasUteis = 0;
     const d = new Date(hoje);
     d.setDate(d.getDate() + 1);
     while (d <= fimMes) {
-      if (d.getDay() !== 0 && d.getDay() !== 6) diasUteis++;
+      const diaSemana = d.getDay();
+      const mmdd = d.toISOString().slice(5, 10);
+      if (diaSemana !== 0 && diaSemana !== 6 && !feriadosVendedor.includes(mmdd)) diasUteis++;
       d.setDate(d.getDate() + 1);
     }
     if (diasUteis <= 0) diasUteis = 1;
@@ -365,7 +369,7 @@ async function calcLimiteDinamico(email, vInfo, data, token) {
       )
     );
 
-    console.log(`[LIMITE] ${vInfo.nome}: meta=${vInfo.metaMensal} fat=${fatMesAtual} restante=${metaRestante} diasUteis=${diasUteis} efetivos=${diasUteisEfetivos.toFixed(1)} ticket=${ticketMedio} atend=${(taxaAtendimento*100).toFixed(0)}% conv=${(taxaConversao*100).toFixed(0)}% → limite=${limiteDinamico} (fixo=${vInfo.limite})`);
+    console.log(`[LIMITE] ${vInfo.nome}: meta=${vInfo.metaMensal} fat=${fatMesAtual} restante=${metaRestante} diasUteis=${diasUteis} efetivos=${diasUteisEfetivos.toFixed(1)} ticket=${ticketMedio} atend=${(taxaAtendimento*100).toFixed(0)}% conv=${(taxaConversao*100).toFixed(0)}% feriados=${feriadosVendedor.length} → limite=${limiteDinamico} (fixo=${vInfo.limite})`);
     return limiteDinamico;
 
   } catch(e) {
@@ -558,7 +562,7 @@ export default async function handler(req, res) {
       );
 
       // Cap de fila — limite dinâmico calculado via desempenho + ligações
-      const limite = await calcLimiteDinamico(vInfo.email, vInfo, data, adminToken);
+      const limite = await calcLimiteDinamico(vInfo.email, vInfo, data, adminToken, { br: feriadosBR, us: feriadosUS });
       const filaFinal = fila.slice(0, limite); // já está ordenada por prioridade
 
       // Gerar scripts em lotes de 15 em paralelo
@@ -576,14 +580,18 @@ export default async function handler(req, res) {
       const filaDoc = filaFinal.map(c => ({
         Id: c.Id, Name: c.Name, ScoAco__c: c.ScoAco__c||null, StsCli__c: c.StsCli__c||null,
         QtdDip__c: c.QtdDip__c||null, DatUli__c: c.DatUli__c||null, ResUli__c: c.ResUli__c||null,
+        Phone: c.Phone||null,
         LisVen__c: c.LisVen__c||null, nitzap20__DateTime_Last_Sent_Whatsapp__c: c.nitzap20__DateTime_Last_Sent_Whatsapp__c||null,
         prioridade: c._prioridade, pedidos90d: c._pedidos90d, contatado: false, respondeu: false,
-        oportunidade: c._oportunidade ? { status: c._oportunidade.StsOpo__c, abrioEmail: c._oportunidade.QtdAbe__c > 0, abrioLink: c._oportunidade.QtdAbl__c > 0, validade: c._oportunidade.DatVld__c } : null,
         oportunidade: c._oportunidade ? { status: c._oportunidade.StsOpo__c, abrioEmail: (c._oportunidade.QtdAbe__c||0)>0, abrioLink: (c._oportunidade.QtdAbl__c||0)>0, validade: c._oportunidade.DatVld__c||null } : null,
         prioridadeAjustada: scripts[c.Id]?.prioridadeAjustada||null,
-        motivo: scripts[c.Id]?.motivo||null,
-        contexto: scripts[c.Id]?.contexto||null, script: scripts[c.Id]?.script||null,
-        canal: scripts[c.Id]?.canal||'WA', melhorHorario: scripts[c.Id]?.melhorHorario||null,
+        historico: scripts[c.Id]?.historico||null,
+        situacao: scripts[c.Id]?.situacao||null,
+        abordagem: scripts[c.Id]?.abordagem||null,
+        contexto: scripts[c.Id]?.contexto||null,
+        script: scripts[c.Id]?.script||null,
+        canal: scripts[c.Id]?.canal||'WA',
+        melhorHorario: scripts[c.Id]?.melhorHorario||null,
         proximoPasso: scripts[c.Id]?.proximoPasso||null,
       }));
 

@@ -121,7 +121,7 @@ function fsToObj(doc) {
 // ─── Handler principal ────────────────────────────────────────────────────────
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PATCH,OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization,x-make-secret');
   if (req.method === 'OPTIONS') return res.status(200).end();
 
@@ -180,6 +180,49 @@ export default async function handler(req, res) {
 
       const parsed = fsToObj(docData);
       return res.json({ fila: parsed.fila || [], atualizadoEm: parsed.atualizadoEm });
+    }
+
+    // ── PATCH — marca cliente como contatado (portal manual ou Make automático) ──
+    if (req.method === 'PATCH') {
+      const makeSecret = req.headers['x-make-secret'];
+      if (makeSecret !== MAKE_SECRET) {
+        const idToken = (req.headers.authorization || '').replace('Bearer ', '');
+        if (!idToken) return res.status(401).json({ error: 'Sem token' });
+        const verifyRes = await fetch(
+          `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyC6oWnbIyaZejwtNcL2S0SrHKLlLLxzUfI`,
+          { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ idToken }) }
+        );
+        const verifyData = await verifyRes.json();
+        if (!verifyData.users?.[0]) return res.status(401).json({ error: 'Token inválido' });
+      }
+
+      const { email, data, clienteId, contatado, respondeu } = req.body;
+      if (!email || !data || !clienteId) return res.status(400).json({ error: 'email, data e clienteId são obrigatórios' });
+
+      const adminToken = await getAdminToken();
+      const emailKey = email.toLowerCase().replace(/[@.]/g, '_');
+      const docPath = `${FIRESTORE_URL}/fila/${emailKey}_${data}`;
+
+      const docRes = await fetch(docPath, { headers: { Authorization: `Bearer ${adminToken}` } });
+      const docData = await docRes.json();
+      if (docData.error || !docData.fields) return res.status(404).json({ error: 'Fila não encontrada' });
+
+      const parsed = fsToObj(docData);
+      const fila = parsed.fila || [];
+      const idx = fila.findIndex(c => c.Id === clienteId);
+      if (idx === -1) return res.status(404).json({ error: 'Cliente não encontrado na fila' });
+
+      fila[idx].contatado = contatado !== undefined ? contatado : true;
+      if (respondeu !== undefined) fila[idx].respondeu = respondeu;
+      fila[idx].contatadoEm = new Date().toISOString();
+
+      await fetch(docPath, {
+        method: 'PATCH',
+        headers: { Authorization: `Bearer ${adminToken}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fields: objToFs({ ...parsed, fila, atualizadoEm: new Date().toISOString() }) })
+      });
+
+      return res.json({ ok: true, clienteId, contatado: fila[idx].contatado });
     }
 
     return res.status(405).json({ error: 'Método não permitido' });

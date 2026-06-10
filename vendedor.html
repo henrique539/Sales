@@ -410,15 +410,25 @@ function renderFila(fila,vInfo,scripts){
     const st=statusTag(c);
     const sc=scripts[c.Id]||c;
     const dias=parseFloat(c.QtdDip__c)||0;
-    const temWA=c.nitzap20__DateTime_Last_Sent_Whatsapp__c||c.Phone;
-    const btn = `${temWA?`<button onclick="window.marcarFeito(this,'${c.Id}')" class="btn-wa">💬 WA</button>`:''}
-      <button onclick="window.marcarFeito(this,'${c.Id}')" class="btn-lig">📞 Ligar</button>`;
-    return `<div class="fi">
+    const temWA=!!(c.nitzap20__DateTime_Last_Sent_Whatsapp__c);
+    const canalIA=(sc.canal||sc.melhorHorario||'').toLowerCase();
+    const prefereWA=canalIA.includes('wa')||canalIA.includes('whatsapp');
+    const prefereLig=canalIA.includes('liga');
+    let btn;
+    if(prefereWA&&temWA){
+      btn=`<button onclick="window.marcarFeito(this,'${c.Id}')" class="btn-wa">💬 WhatsApp</button>`;
+    }else if(prefereLig||!temWA){
+      btn=`<button onclick="window.marcarFeito(this,'${c.Id}')" class="btn-lig">📞 Ligar</button>`;
+    }else{
+      btn=`<button onclick="window.marcarFeito(this,'${c.Id}')" class="btn-wa">💬 WA</button>
+           <button onclick="window.marcarFeito(this,'${c.Id}')" class="btn-lig">📞 Ligar</button>`;
+    }
+    return `<div class="fi" data-id="${c.Id}">
       <div class="fi-grid">
         <div class="fi-col fi-col-c">
           <div style="display:flex;align-items:center;gap:5px;margin-bottom:5px;flex-wrap:wrap">
             <span class="ftag" style="background:${uc.bg};color:${uc.cor}">${u}</span>
-            <span class="ftag" style="background:${st.bg};color:${st.cor}">${st.txt}</span>
+            <span class="ftag tag-status" style="background:${st.bg};color:${st.cor}">${st.txt}</span>
           </div>
           <div class="fi-nome">${i+1}. ${c.Name}</div>
           <div style="font-size:11px;color:#e0aa18;margin-bottom:2px">${stars(c.ScoAco__c)}</div>
@@ -460,9 +470,9 @@ function renderFila(fila,vInfo,scripts){
       <div style="text-align:right"><div style="font-size:20px;font-weight:800;color:var(--gold-l)">${fila.length}</div><div style="font-size:9px;color:rgba(255,255,255,.4)">clientes na fila</div></div>
     </div>
     <div style="border-top:0.5px solid rgba(255,255,255,.1);padding-top:8px;display:flex;gap:16px;font-size:11px">
-      <span style="color:#4ade80;font-weight:600">✓ ${contatados} contatados</span>
-      <span style="color:#fbbf24;font-weight:600">⏳ ${fila.length-contatados} pendentes</span>
-      <span style="color:rgba(255,255,255,.5)">${pct}% cumprido</span>
+      <span id="fila-contatados" style="color:#4ade80;font-weight:600">✓ ${contatados} contatados</span>
+      <span id="fila-pendentes" style="color:#fbbf24;font-weight:600">⏳ ${fila.length-contatados} pendentes</span>
+      <span id="fila-pct" style="color:rgba(255,255,255,.5)">${pct}% cumprido</span>
     </div>
   </div>
   <div class="col-hdr">
@@ -560,9 +570,15 @@ async function carregarDesempenho(email){
   }
 }
 
+let _filaEmail='';
+let _filaData='';
+let _filaEmailKey='';
+
 async function carregarFila(email){
   const container=$('fila-container');
   const hoje=new Date().toISOString().slice(0,10);
+  const ontem=new Date();ontem.setDate(ontem.getDate()-1);
+  const ontemStr=ontem.toISOString().slice(0,10);
   const vInfo=VENDEDORES[email];
   const emailKey=email.replace(/[@.]/g,m=>m==='@'?'_':m==='.'?'_':'_');
 
@@ -571,9 +587,19 @@ async function carregarFila(email){
     if(!user)return;
     const token=await user.getIdToken();
 
+    let minha=[];
+    let dataUsada=hoje;
+
     const resp=await fetch(`/api/fila?email=${emailKey}&data=${hoje}`,{headers:{Authorization:`Bearer ${token}`}});
     const data=await resp.json();
-    let minha=data.fila||[];
+    minha=data.fila||[];
+
+    if(!minha.length){
+      const respOntem=await fetch(`/api/fila?email=${emailKey}&data=${ontemStr}`,{headers:{Authorization:`Bearer ${token}`}});
+      const dataOntem=await respOntem.json();
+      minha=dataOntem.fila||[];
+      if(minha.length) dataUsada=ontemStr;
+    }
 
     if(!minha.length){
       container.innerHTML=`<div style="text-align:center;padding:40px;color:var(--muted);font-size:13px">
@@ -584,7 +610,17 @@ async function carregarFila(email){
       return;
     }
 
-    container.innerHTML=renderFila(minha,vInfo,{});
+    _filaEmail=email;
+    _filaData=dataUsada;
+    _filaEmailKey=emailKey;
+
+    const aviso=dataUsada!==hoje
+      ?`<div style="background:#FAEEDA;border:0.5px solid #F5D08A;border-radius:9px;padding:9px 14px;margin-bottom:10px;font-size:12px;color:#854F0B">
+          ⚠️ Mostrando fila de ontem (${new Date(ontemStr+'T12:00:00').toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'})}) — a de hoje ainda não foi gerada.
+        </div>`
+      :'';
+
+    container.innerHTML=aviso+renderFila(minha,vInfo,{});
 
   }catch(e){
     console.error('Erro fila:',e);
@@ -592,16 +628,73 @@ async function carregarFila(email){
   }
 }
 
-window.marcarFeito=(btn,id)=>{
-  const orig=btn.textContent;
-  btn.style.opacity='.5';
-  setTimeout(()=>{btn.style.opacity='1';},600);
+// ── Atualiza visualmente um card como contatado ───────────────────────────────
+function aplicarContatado(id){
+  const card=document.querySelector(`.fi[data-id="${id}"]`);
+  if(!card)return;
+  // Troca tag de status para "✓ Contatado"
+  const tagStatus=card.querySelector('.tag-status');
+  if(tagStatus){tagStatus.textContent='✓ Contatado';tagStatus.style.background='#d1fae5';tagStatus.style.color='#065f46';}
+  // Desabilita botões de ação
+  card.querySelectorAll('.btn-wa,.btn-lig').forEach(b=>{b.disabled=true;b.style.opacity='.4';b.style.cursor='default';});
+}
+
+function atualizarContador(fila){
+  const cont=document.getElementById('fila-contatados');
+  const pend=document.getElementById('fila-pendentes');
+  const pct=document.getElementById('fila-pct');
+  if(!cont)return;
+  const total=fila.length;
+  const feitos=fila.filter(c=>c.contatado).length;
+  cont.textContent=`✓ ${feitos} contatados`;
+  pend.textContent=`⏳ ${total-feitos} pendentes`;
+  pct.textContent=`${total>0?Math.round(feitos/total*100):0}% cumprido`;
+}
+
+// ── Marcar feito manualmente ──────────────────────────────────────────────────
+window.marcarFeito=async(btn,id)=>{
+  if(btn.disabled)return;
+  btn.disabled=true;btn.style.opacity='.5';
+  try{
+    const user=auth.currentUser;
+    if(!user||!_filaEmail)return;
+    const token=await user.getIdToken();
+    await fetch('/api/fila',{
+      method:'PATCH',
+      headers:{'Content-Type':'application/json',Authorization:`Bearer ${token}`},
+      body:JSON.stringify({email:_filaEmail,data:_filaData,clienteId:id,contatado:true})
+    });
+    aplicarContatado(id);
+    // Atualiza contador via re-fetch leve
+    sincronizarContatados();
+  }catch(e){
+    console.error('marcarFeito:',e);
+    btn.disabled=false;btn.style.opacity='1';
+  }
 };
+
+// ── Sincronização automática a cada 5 minutos ────────────────────────────────
+async function sincronizarContatados(){
+  if(!_filaEmail||!_filaData||!_filaEmailKey)return;
+  try{
+    const user=auth.currentUser;
+    if(!user)return;
+    const token=await user.getIdToken();
+    const resp=await fetch(`/api/fila?email=${_filaEmailKey}&data=${_filaData}`,{headers:{Authorization:`Bearer ${token}`}});
+    const data=await resp.json();
+    const fila=data.fila||[];
+    fila.forEach(c=>{if(c.contatado)aplicarContatado(c.Id);});
+    atualizarContador(fila);
+  }catch(e){}
+}
+
+setInterval(sincronizarContatados,5*60*1000);
 
 window.sair=async()=>{await signOut(auth);window.location.href='index.html';};
 
 let _emailAtual='';
 let _filaCarregada=false;
+
 
 window.showTab=(id,btn)=>{
   ['desempenho','fila'].forEach(t=>{const el=$('tab-'+t);if(el)el.style.display='none';});
