@@ -195,21 +195,34 @@ async function buscarMensagensCliente(chat) {
 }
 
 // ─── Scripts via IA ──────────────────────────────────────────────────────────
-async function gerarScriptsLote(clientes, ligacoesPorCliente, nitzapPorCliente, nitzapPorTelefone, vendedorNome, sexta) {
+async function gerarScriptsLote(clientes, ligacoesPorCliente, historicoLigPorCliente, nitzapPorCliente, nitzapPorTelefone, vendedorNome, sexta) {
   const scripts = {};
   if (!clientes.length) return scripts;
-
-  // Buscar mensagens Nitzap para cada cliente do lote (últimos 3 dias)
-  const msgsPorCliente = {};
-  // Não busca histórico — usa text_last_message do contexto (zero chamadas extras)
-  // msgsPorCliente fica vazio — o script usa nitzapPorCliente diretamente
 
   const linhas = clientes.map((c, i) => {
     const dias = parseFloat(c.QtdDip__c) || 0;
     const isProspect = c.RecordTypeId === '0124S0000005RiNQAU';
     const lig = ligacoesPorCliente[c.Id];
     const resumoLig = lig?.Description ? lig.Description.substring(0, 300) : null;
-    const dataLig = c.DatUli__c ? new Date(c.DatUli__c).toLocaleDateString('pt-BR', {month:'short',year:'2-digit'}) : 'nunca';
+
+    // Histórico de ligações: usa Task ActivityDate + Subject (mais confiável que DatUli__c)
+    const ligsCliente = (historicoLigPorCliente[c.Id] || []).slice(0, 5);
+    let historicoLig;
+    if (ligsCliente.length) {
+      historicoLig = ligsCliente.map(l => {
+        const data = l.ActivityDate ? new Date(l.ActivityDate).toLocaleDateString('pt-BR',{day:'2-digit',month:'short'}) : '?';
+        const atendida = (l.Subject||'').includes('Atendida') && !(l.Subject||'').includes('Não Atendida');
+        const resultado = atendida ? 'Atendida' : 'Não Atendida';
+        const resumo = l.Description ? ` — "${l.Description.substring(0,80)}"` : '';
+        return `    ${data}: ${resultado}${resumo}`;
+      }).join('\n');
+    } else {
+      const dataLig = c.DatUli__c ? new Date(c.DatUli__c).toLocaleDateString('pt-BR',{month:'short',year:'2-digit'}) : null;
+      historicoLig = dataLig
+        ? `    ${dataLig}: ${c.ResUli__c||'sem resultado'}${resumoLig?' — "'+resumoLig+'"':''}`
+        : '    sem ligações registradas (180 dias)';
+    }
+
     const telNorm = (c.Phone||'').replace(/\D/g,'');
     const telBR = telNorm.length === 11 ? '55' + telNorm : telNorm.length === 13 ? telNorm : '';
     const nitzapCtx = nitzapPorCliente[c.Id] || (telBR && nitzapPorTelefone ? nitzapPorTelefone[telBR] : null);
@@ -224,8 +237,8 @@ async function gerarScriptsLote(clientes, ligacoesPorCliente, nitzapPorCliente, 
     return [
       `${i+1}. ID:${c.Id} | ${c.Name} | ${isProspect?'PROSPECT':dias+'d sem comprar'} | score ${c.ScoAco__c||'?'}`,
       `   ${opoInfo}`,
-      `   Ult.lig: ${dataLig} (${c.ResUli__c||'sem registro'})${resumoLig?' | Resumo lig: '+resumoLig:''}`,
-      `   Histórico WA 3 dias:\n${historicoWA}`
+      `   Ligações recentes (180d):\n${historicoLig}`,
+      `   Histórico WA:\n${historicoWA}`
     ].join('\n');
   }).join('\n\n');
 
@@ -440,14 +453,20 @@ export default async function handler(req, res) {
       pedidosPorCliente[cliId] += (p.total || 1);
     });
 
-    // Indexar última ligação atendida por cliente
-    const ligacoesPorCliente = {};
+    // Indexar ligações por cliente — última atendida + histórico completo
+    const ligacoesPorCliente = {};    // última atendida (para resumo)
+    const historicoLigPorCliente = {}; // todas as ligações ordenadas (para IA)
     ligacoes.forEach(l => {
       if (!l) return;
       const whatId = l.WhatId;
       const subject = l.Subject || '';
-      if (!whatId || ligacoesPorCliente[whatId]) return;
-      if (subject.includes('Atendida') && !subject.includes('Não Atendida')) {
+      if (!whatId) return;
+      // Histórico completo (todas as ligações)
+      if (!historicoLigPorCliente[whatId]) historicoLigPorCliente[whatId] = [];
+      historicoLigPorCliente[whatId].push(l);
+      // Última atendida
+      const atendida = subject.includes('Atendida') && !subject.includes('Não Atendida');
+      if (atendida && !ligacoesPorCliente[whatId]) {
         ligacoesPorCliente[whatId] = l;
       }
     });
@@ -572,7 +591,7 @@ export default async function handler(req, res) {
         lotes.push(filaFinal.slice(i, i + 15));
       }
       const scriptsPorLote = await Promise.all(
-        lotes.map(lote => gerarScriptsLote(lote, ligacoesPorCliente, nitzapPorCliente, nitzapPorTelefone, vInfo.nome, sexta))
+        lotes.map(lote => gerarScriptsLote(lote, ligacoesPorCliente, historicoLigPorCliente, nitzapPorCliente, nitzapPorTelefone, vInfo.nome, sexta))
       );
       scriptsPorLote.forEach(scriptsLote => Object.assign(scripts, scriptsLote));
 
