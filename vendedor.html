@@ -108,6 +108,18 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 
 @keyframes spin{to{transform:rotate(360deg)}}
 .spinner{width:12px;height:12px;border:2px solid var(--border);border-top-color:var(--navy);border-radius:50%;animation:spin 1s linear infinite}
+
+/* DESEMPENHO DESKTOP GRID */
+.d-row{display:grid;gap:10px;margin-bottom:10px}
+.d-row-main{grid-template-columns:45fr 55fr}
+.d-row-half{grid-template-columns:1fr 1fr}
+.d-col{display:flex;flex-direction:column;gap:10px}
+@media(max-width:680px){.d-row-main,.d-row-half{grid-template-columns:1fr}}
+.cob-row{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.inr{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.in-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.in-bar{flex:1;height:5px;background:var(--s2);border-radius:3px;overflow:hidden}
+.in-fill{height:5px;border-radius:3px}
 </style>
 </head>
 <body>
@@ -215,7 +227,7 @@ const fmt=(v,m)=>m==='USD'?`US$${Math.round(v/1000)}k`:`R$${Math.round(v/1000)}k
 
 // ─── DESEMPENHO ─────────────────────────────────────────────────────────────
 
-function renderDesempenho(vd, vInfo, ligacoes, email){
+function renderDesempenho(vd, vInfo, ligacoes, email, filaStats={}){
   const meses_pt=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
   const moeda = vInfo.moeda||'BRL';
   const metaVal = vInfo.metaVal||0;
@@ -306,6 +318,54 @@ function renderDesempenho(vd, vInfo, ligacoes, email){
       </div>
     </div>`).join('');
 
+  // Dados da fila
+  const filaContatados = filaStats.contatados ?? 0;
+  const filaTotal      = filaStats.total ?? 0;
+  const filaMetaDia    = filaStats.metaDia ?? vInfo?.contatos_dia ?? 0;
+  const filaPct        = filaMetaDia > 0 ? Math.min(100, Math.round(filaContatados / filaMetaDia * 100)) : 0;
+  const filaRestam     = Math.max(0, filaMetaDia - filaContatados);
+
+  // Inativos
+  const cs = filaStats.carteiraSummary || {};
+  const inativ = cs.inativos || {};
+  const inativTotal = inativ.total || 0;
+  const inativ60  = inativ.d60  || 0;
+  const inativ90  = inativ.d90  || 0;
+  const inativ120 = inativ.d120 || 0;
+  const inativMax = Math.max(inativ60, inativ90, inativ120, 1);
+
+  // Ações ajustadas para novos dados
+  const acoes2 = [];
+  if(totalLig===0){
+    acoes2.push({bg:'#FCEBEB',nbg:'#E24B4A',txt:'Comece a ligar hoje — zero ligações em 90 dias é crítico',desc:`Com ticket de ${fmt(ticket,moeda)}, cada ligação atendida vale oportunidade real.`,imp:'urgente: comece agora',impbg:'#F7C1C1',impcor:'#791F1F'});
+  } else if(taxaAtend<30){
+    acoes2.push({bg:'#FCEBEB',nbg:'#E24B4A',txt:`Só ${taxaAtend}% das ligações sendo atendidas`,desc:'Tente ligar entre 10h–12h e 14h–17h. Avise por WA antes de ligar.',imp:`+${Math.round((50-taxaAtend)/100*totalLig)} atendimentos/mês`,impbg:'#F7C1C1',impcor:'#791F1F'});
+  }
+  if(faltam>0&&diasRestantes>0){
+    const porDia = Math.ceil(faltam/diasRestantes/ticket);
+    acoes2.push({bg:'#FAEEDA',nbg:'#BA7517',txt:`${porDia} pedido${porDia>1?'s':''}/dia para fechar a meta`,desc:`Faltam ${fmt(faltam,moeda)} em ${diasRestantes} dias úteis. Com ticket de ${fmt(ticket,moeda)}.`,imp:`${fmt(faltam,moeda)} para fechar`,impbg:'#FAC775',impcor:'#633806'});
+  }
+  if(inativ120>0){
+    acoes2.push({bg:'#FCEBEB',nbg:'#E24B4A',txt:`${inativ120} cliente${inativ120>1?'s':''} crítico${inativ120>1?'s':''} — 120+ dias sem comprar`,desc:'Tente até 3 contatos. Se não responder, considere substituir na fila por prospect.',imp:`urgente esta semana`,impbg:'#F7C1C1',impcor:'#791F1F'});
+  } else if(inativTotal>0){
+    acoes2.push({bg:'#FAEEDA',nbg:'#BA7517',txt:`${inativTotal} cliente${inativTotal>1?'s':''} inativo${inativTotal>1?'s':''} na carteira`,desc:`${inativ90} com 90–120 dias. Priorize os mais antigos no próximo contato.`,imp:`reativar = receita imediata`,impbg:'#FAC775',impcor:'#633806'});
+  } else if(filaRestam>0){
+    acoes2.push({bg:'#EAF3DE',nbg:'#639922',txt:`${filaRestam} contato${filaRestam>1?'s':''} da fila ainda pendente${filaRestam>1?'s':''}`,desc:`Com conversão de ${taxaConv>0?taxaConv+'%':'média do setor'}, cada contato vale oportunidade real.`,imp:`complete a fila hoje`,impbg:'#C0DD97',impcor:'#173404'});
+  } else if(!acoes2.length){
+    acoes2.push({bg:'#EAF3DE',nbg:'#639922',txt:'Continue o bom trabalho e reative inativos',desc:'Clientes com 90+ dias sem comprar têm alto potencial. 1 reativação já ajuda a meta.',imp:'impacto imediato',impbg:'#C0DD97',impcor:'#173404'});
+  }
+  const acoesHTML2 = acoes2.slice(0,3).map((a,i)=>`
+    <div class="acao" style="background:${a.bg}">
+      <div class="an" style="background:${a.nbg};color:#fff">${i+1}</div>
+      <div>
+        <div class="ah">${a.txt}</div>
+        <div class="ap">${a.desc}</div>
+        <div class="aimp" style="background:${a.impbg};color:${a.impcor}">${a.imp}</div>
+      </div>
+    </div>`).join('');
+
+  const anelCor = pct>=70?'#639922':pct>=40?'#BA7517':'#E24B4A';
+
   return `
   <!-- TARJA -->
   <div class="tarja" style="background:${tarjaBg}">
@@ -332,58 +392,117 @@ function renderDesempenho(vd, vInfo, ligacoes, email){
     </div>
   </div>
 
-  <!-- ANEL + MÉTRICAS -->
-  <div class="card">
-    <div class="hero-inner">
-      <div class="ring-side">
-        <div style="position:relative;width:150px;height:150px">
-          <svg width="150" height="150" viewBox="0 0 150 150">
-            <circle cx="75" cy="75" r="62" fill="none" stroke="#f0f4f8" stroke-width="13"/>
-            <circle cx="75" cy="75" r="62" fill="none" stroke="${pct>=70?'#639922':pct>=40?'#BA7517':'#E24B4A'}" stroke-width="13"
-              stroke-dasharray="389.6" stroke-dashoffset="${389.6*(1-pctAnl/100)}" stroke-linecap="round" transform="rotate(-90 75 75)"/>
-          </svg>
-          <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
-            <div style="font-size:32px;font-weight:800;color:${pct>=70?'#639922':pct>=40?'#BA7517':'#E24B4A'};line-height:1">${pct}%</div>
-            <div style="font-size:10px;color:var(--muted);margin-top:2px">da meta</div>
-            <div style="font-size:12px;font-weight:600;color:var(--text);margin-top:3px">${fmt(fat,moeda)}</div>
+  <!-- ROW 1: Anel + Cobertura | Conversão + Fila -->
+  <div class="d-row d-row-main">
+
+    <!-- ANEL + HISTÓRICO + COBERTURA COMPACTA -->
+    <div class="card">
+      <div class="hero-inner">
+        <div class="ring-side">
+          <div style="position:relative;width:150px;height:150px">
+            <svg width="150" height="150" viewBox="0 0 150 150">
+              <circle cx="75" cy="75" r="62" fill="none" stroke="#f0f4f8" stroke-width="13"/>
+              <circle cx="75" cy="75" r="62" fill="none" stroke="${anelCor}" stroke-width="13"
+                stroke-dasharray="389.6" stroke-dashoffset="${389.6*(1-pctAnl/100)}" stroke-linecap="round" transform="rotate(-90 75 75)"/>
+            </svg>
+            <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+              <div style="font-size:32px;font-weight:800;color:${anelCor};line-height:1">${pct}%</div>
+              <div style="font-size:10px;color:var(--muted);margin-top:2px">da meta</div>
+              <div style="font-size:12px;font-weight:600;color:var(--text);margin-top:3px">${fmt(fat,moeda)}</div>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="stats-side">
-        <div style="margin-bottom:10px">
+        <div class="stats-side">
           <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:1px">${fmt(fat,moeda)} <span style="font-size:11px;font-weight:500;color:var(--muted)">faturado</span></div>
           <div style="font-size:12px;color:${projCor};font-weight:600;margin-bottom:8px">${proj>=metaVal?'↑':'↓'} proj. ${fmt(proj,moeda)}${proj>=metaVal?' · acima da meta':' · abaixo da meta'}</div>
-          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:3px 7px;padding-top:8px;border-top:0.5px solid var(--border)">
+          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:3px 7px;padding-top:8px;border-top:0.5px solid var(--border);margin-bottom:10px">
             <span style="font-size:11px;color:var(--text2)">${fmt(fatAnt,moeda)} <span style="color:var(--muted)">ant.</span></span>
             <span style="color:var(--border)">·</span>
             <span style="font-size:11px;font-weight:600;color:var(--green)">${fmt(ticket,moeda)} <span style="font-weight:400;color:var(--muted)">ticket</span></span>
             <span style="color:var(--border)">·</span>
             <span style="font-size:11px;color:var(--text2)">${pedidos} <span style="color:var(--muted)">ped.</span></span>
-            <span style="color:var(--border)">·</span>
-            <span style="font-size:11px;font-weight:600;color:var(--blue)">${taxaConv>0?taxaConv+'%':'—'} <span style="font-weight:400;color:var(--muted)">conv.${clientesMes>0?' ('+clientesMes+')':''}</span></span>
+          </div>
+          <div style="background:var(--s2);border-radius:9px;padding:10px 12px">
+            <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">faturamento mensal</div>
+            ${histBars}
           </div>
         </div>
-        <div style="background:var(--s2);border-radius:9px;padding:10px 12px">
-          <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">faturamento mensal</div>
-          ${histBars}
+      </div>
+      <!-- Cobertura compacta no rodapé -->
+      <div style="margin-top:12px;padding-top:10px;border-top:0.5px solid var(--border)">
+        <div style="font-size:10px;font-weight:700;color:#185FA5;text-transform:uppercase;letter-spacing:.07em;margin-bottom:7px">cobertura da carteira · ${total} de ${carteira} contatados${carteiraClientes||carteiraProspects?' ('+carteiraClientes+'c · '+carteiraProspects+'p)':''}</div>
+        <div class="cob-row"><div style="font-size:11px;font-weight:600;color:#185FA5;width:100px;flex-shrink:0">contatados</div><div style="flex:1;height:5px;background:var(--s2);border-radius:3px;overflow:hidden"><div style="height:5px;border-radius:3px;background:#378ADD;width:${carteira>0?Math.round(total/carteira*100):0}%"></div></div><div style="font-size:11px;font-weight:600;color:#185FA5;width:22px;text-align:right;flex-shrink:0">${total}</div><div style="font-size:10px;color:var(--dim);width:28px;text-align:right;flex-shrink:0">${carteira>0?Math.round(total/carteira*100):0}%</div></div>
+        ${freq0>0?`<div class="cob-row" style="margin-bottom:0"><div style="font-size:11px;font-weight:600;color:#E24B4A;width:100px;flex-shrink:0">sem contato</div><div style="flex:1;height:5px;background:var(--s2);border-radius:3px;overflow:hidden"><div style="height:5px;border-radius:3px;background:#F09595;width:${Math.round(freq0/carteira*100)}%"></div></div><div style="font-size:11px;font-weight:600;color:#E24B4A;width:22px;text-align:right;flex-shrink:0">${freq0}</div><div style="font-size:10px;color:var(--dim);width:28px;text-align:right;flex-shrink:0">${Math.round(freq0/carteira*100)}%</div></div>`:''}
+      </div>
+    </div>
+
+    <!-- COLUNA DIREITA: Conversão + Fila -->
+    <div class="d-col">
+
+      <!-- TAXA DE CONVERSÃO -->
+      <div class="card">
+        <div class="card-title">taxa de conversão · contatados → pedido</div>
+        <div style="display:flex;align-items:center;gap:14px">
+          <div style="flex:1">
+            <div style="font-size:38px;font-weight:800;font-family:'JetBrains Mono',monospace;color:var(--blue);line-height:1;margin-bottom:2px">${taxaConv>0?taxaConv+'%':'—'}</div>
+            <div style="font-size:11px;color:var(--muted);margin-bottom:8px">${clientesMes} contatados · ${pedidos} pedidos em ${new Date().toLocaleString('pt-BR',{month:'long'})}</div>
+            <div style="height:5px;background:var(--s2);border-radius:3px;overflow:hidden"><div style="height:5px;border-radius:3px;background:#378ADD;width:${Math.min(taxaConv,100)}%"></div></div>
+            <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--dim);margin-top:3px"><span>0%</span><span>meta: 15%</span><span>30%</span></div>
+          </div>
+          <div style="background:var(--s2);border-radius:10px;padding:10px 12px;flex-shrink:0;text-align:center">
+            <div style="display:flex;align-items:center;gap:5px;margin-bottom:4px">
+              <div style="text-align:center"><div style="font-size:18px;font-weight:800;font-family:'JetBrains Mono',monospace;color:#1a3254">${clientesMes}</div><div style="font-size:9px;color:var(--muted)">contatados</div></div>
+              <div style="color:var(--dim);font-size:14px;padding-bottom:10px">›</div>
+              <div style="text-align:center"><div style="font-size:18px;font-weight:800;font-family:'JetBrains Mono',monospace;color:var(--blue)">${pedidos}</div><div style="font-size:9px;color:var(--muted)">pedidos</div></div>
+            </div>
+          </div>
         </div>
       </div>
+
+      <!-- CUMPRIMENTO DA FILA -->
+      <div class="card">
+        <div class="card-title">cumprimento da fila hoje</div>
+        ${filaTotal>0?`
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <div>
+            <div style="font-size:36px;font-weight:800;font-family:'JetBrains Mono',monospace;color:var(--navy);line-height:1;margin-bottom:2px">${filaPct}%</div>
+            <div style="font-size:11px;color:var(--muted);margin-bottom:8px">${filaContatados} de ${filaMetaDia} contatados hoje</div>
+            <div style="height:5px;background:var(--s2);border-radius:3px;overflow:hidden;width:160px"><div style="height:5px;border-radius:3px;background:#378ADD;width:${filaPct}%"></div></div>
+          </div>
+          ${filaRestam>0?`<div style="background:#FAEEDA;border:0.5px solid #FAC775;border-radius:9px;padding:10px 14px;text-align:center;flex-shrink:0"><div style="font-size:22px;font-weight:800;font-family:'JetBrains Mono',monospace;color:#BA7517">${filaRestam}</div><div style="font-size:9px;color:#854F0B;margin-top:2px">restam hoje</div></div>`:`<div style="background:#EAF3DE;border:0.5px solid #C0DD97;border-radius:9px;padding:10px 14px;text-align:center;flex-shrink:0"><div style="font-size:13px;font-weight:700;color:#27500A">✓ fila<br>completa</div></div>`}
+        </div>`:`<div style="font-size:12px;color:var(--muted);padding:6px 0">Fila de hoje ainda não disponível.<br><span style="font-size:11px">Disponível após o Make rodar às 06h25.</span></div>`}
+      </div>
+
     </div>
   </div>
 
-  <!-- COBERTURA DA CARTEIRA -->
-  <div class="card">
-    <div class="card-title" style="color:#185FA5">cobertura da carteira — ${total} de ${carteira} contatados</div>
-    ${carteiraClientes||carteiraProspects?`<div style="font-size:11px;color:var(--muted);margin-bottom:10px">${carteiraClientes} clientes · ${carteiraProspects} prospects</div>`:''}
-    <div class="freq-row"><div class="fl" style="color:#185FA5;font-weight:600">contatados</div><div class="fb"><div class="ff" style="width:${carteira>0?Math.round(total/carteira*100):0}%;background:#378ADD"></div></div><div class="fn" style="color:#185FA5">${total}</div><div class="fp">${carteira>0?Math.round(total/carteira*100):0}%</div></div>
-    ${freq0>0?`<div class="freq-row" style="margin-bottom:0"><div class="fl" style="color:#E24B4A;font-weight:600">sem contato</div><div class="fb"><div class="ff" style="width:${Math.round(freq0/carteira*100)}%;background:#F09595"></div></div><div class="fn" style="color:#E24B4A">${freq0}</div><div class="fp">${Math.round(freq0/carteira*100)}%</div></div>`:''}
-    <div style="margin-top:10px;padding-top:8px;border-top:0.5px solid var(--border);font-size:12px;color:var(--text2)">${freq0>0?`<span style="font-weight:600;color:#E24B4A">${freq0} contas</span> sem contato — inclua-as na fila para aumentar as chances de fechar a meta.`:`<span style="font-weight:600;color:#27500A">✓ Toda a carteira foi contatada.</span>`}</div>
-  </div>
+  <!-- ROW 2: Inativos | Ações -->
+  <div class="d-row d-row-half">
 
-  <!-- AÇÕES -->
-  <div class="card">
-    <div class="card-title" style="color:#A32D2D">o que fazer agora</div>
-    ${acoesHTML}
+    <!-- CLIENTES INATIVOS -->
+    <div class="card">
+      <div class="card-title">clientes inativos sem compra</div>
+      ${inativTotal>0?`
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <div>
+          <div style="font-size:36px;font-weight:800;font-family:'JetBrains Mono',monospace;color:#c0392b;line-height:1">${inativTotal}</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px">de ${cs.totalCarteira||carteira} na carteira</div>
+        </div>
+        ${inativ120>0?`<div style="background:#FCEBEB;border:0.5px solid #F7C1C1;border-radius:9px;padding:8px 12px;text-align:center;flex-shrink:0"><div style="font-size:20px;font-weight:800;font-family:'JetBrains Mono',monospace;color:#c0392b">${inativ120}</div><div style="font-size:9px;color:#791F1F;margin-top:2px">críticos 120d+</div></div>`:''}
+      </div>
+      <div class="inr"><div class="in-dot" style="background:#e0aa18"></div><div style="font-size:11px;color:var(--text2);width:82px;flex-shrink:0">60–90 dias</div><div class="in-bar"><div class="in-fill" style="width:${Math.round(inativ60/inativMax*100)}%;background:#e0aa18"></div></div><div style="font-size:12px;font-weight:700;color:#c8960a;width:22px;text-align:right;flex-shrink:0">${inativ60}</div></div>
+      <div class="inr"><div class="in-dot" style="background:#d97706"></div><div style="font-size:11px;color:var(--text2);width:82px;flex-shrink:0">90–120 dias</div><div class="in-bar"><div class="in-fill" style="width:${Math.round(inativ90/inativMax*100)}%;background:#d97706"></div></div><div style="font-size:12px;font-weight:700;color:#d97706;width:22px;text-align:right;flex-shrink:0">${inativ90}</div></div>
+      <div class="inr" style="margin-bottom:0"><div class="in-dot" style="background:#c0392b"></div><div style="font-size:11px;color:var(--text2);width:82px;flex-shrink:0">120+ dias</div><div class="in-bar"><div class="in-fill" style="width:${Math.round(inativ120/inativMax*100)}%;background:#c0392b"></div></div><div style="font-size:12px;font-weight:700;color:#c0392b;width:22px;text-align:right;flex-shrink:0">${inativ120}</div></div>
+      <div style="margin-top:10px;padding-top:8px;border-top:0.5px solid var(--border);font-size:11px;color:var(--text2)">${inativ120>0?`<span style="font-weight:600;color:#c0392b">${inativ120} crítico${inativ120>1?'s':''}</span> com 120+ dias — inclua na próxima fila`:inativ90>0?`Foco em <span style="font-weight:600;color:#d97706">${inativ90} clientes</span> com 90–120 dias`:`<span style="font-weight:600;color:#c8960a">${inativ60} clientes</span> com 60–90 dias — ainda recuperáveis`}</div>
+      `:`<div style="font-size:12px;color:var(--muted);padding:6px 0">${cs.totalCarteira?'Nenhum cliente inativo detectado — carteira saudável ✓':'Dados disponíveis após a fila ser gerada.'}</div>`}
+    </div>
+
+    <!-- AÇÕES -->
+    <div class="card">
+      <div class="card-title" style="color:#A32D2D">o que fazer agora</div>
+      ${acoesHTML2}
+    </div>
+
   </div>`;
 }
 
@@ -578,14 +697,30 @@ async function carregarDesempenho(email){
       $('vRiscoTag').innerHTML=`<div style="background:#EAF3DE;border-radius:20px;padding:4px 10px;font-size:11px;font-weight:600;color:#27500A;display:flex;align-items:center;gap:5px">✓ no ritmo</div>`;
     }
 
-    // Ligações
+    // Ligações + fila (em paralelo)
     const token=await auth.currentUser.getIdToken();
-    const respLig=await fetch(`/api/contexto?tipo=ligacoes&data=${hoje}`,{headers:{Authorization:`Bearer ${token}`}});
+    const emailKey=email.replace(/[@.]/g,'_');
+    const [respLig, respFila]=await Promise.all([
+      fetch(`/api/contexto?tipo=ligacoes&data=${hoje}`,{headers:{Authorization:`Bearer ${token}`}}),
+      fetch(`/api/fila?email=${emailKey}&data=${hoje}`,{headers:{Authorization:`Bearer ${token}`}}),
+    ]);
     const dataLig=await respLig.json();
     const sfUserId=vInfo?.sfUserId;
     const ligacoes=(dataLig.registros||[]).filter(l=>!sfUserId||l.OwnerId===sfUserId);
 
-    container.innerHTML=renderDesempenho(vd, vInfo||{}, ligacoes, email);
+    let filaStats={};
+    try{
+      const filaData=await respFila.json();
+      const filaItems=filaData.fila||[];
+      filaStats={
+        contatados:filaItems.filter(c=>c.contatado).length,
+        total:filaItems.length,
+        metaDia:vInfo?.contatos_dia||filaItems.length,
+        carteiraSummary:filaData.carteiraSummary||null,
+      };
+    }catch(e){console.warn('filaStats erro:',e.message);}
+
+    container.innerHTML=renderDesempenho(vd, vInfo||{}, ligacoes, email, filaStats);
 
   }catch(e){
     console.error('desempenho:',e);

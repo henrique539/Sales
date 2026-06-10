@@ -638,10 +638,22 @@ export default async function handler(req, res) {
         proximoPasso: scripts[c.Id]?.proximoPasso||null,
       });});
 
+      // Resumo da carteira — inativos por faixa (todos os clientes antes do cap)
+      const carteiraSummary = { totalCarteira: filaFiltrada.length, inativos: { d60: 0, d90: 0, d120: 0, total: 0 } };
+      for (const c of filaFiltrada) {
+        if (c.RecordTypeId === '0124S0000005RiNQAU') continue; // prospects não têm histórico de compra
+        const dias = parseFloat(c.QtdDip__c) || 0;
+        if (dias >= 120) carteiraSummary.inativos.d120++;
+        else if (dias >= 90) carteiraSummary.inativos.d90++;
+        else if (dias >= 60) carteiraSummary.inativos.d60++;
+      }
+      carteiraSummary.inativos.total = carteiraSummary.inativos.d60 + carteiraSummary.inativos.d90 + carteiraSummary.inativos.d120;
+
       const emailKey = vInfo.email.replace(/[@.]/g, '_');
       await gravarFila(emailKey, data, {
         email: vInfo.email, data, vendedor: vInfo.nome, fila: filaDoc,
         total: filaDoc.length, urgentes: filaDoc.filter(c => c.prioridade==='URGENTE').length,
+        carteiraSummary,
         atualizadoEm: new Date().toISOString(),
       }, adminToken);
 
