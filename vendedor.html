@@ -185,14 +185,14 @@ import{getFirestore,doc,getDoc}from"https://www.gstatic.com/firebasejs/10.12.0/f
 const FB={apiKey:"AIzaSyC6oWnbIyaZejwtNcL2S0SrHKLlLLxzUfI",authDomain:"sales-team-6aeb6.firebaseapp.com",projectId:"sales-team-6aeb6",storageBucket:"sales-team-6aeb6.firebasestorage.app",messagingSenderId:"421701680094",appId:"1:421701680094:web:1f8bc4ae716dd0d0f3bb4f"};
 
 const VENDEDORES={
-  "nando@sabagram.com.br":{nome:"Sizenando Andrade",avatar:"SA",cor:"#1a3254",bu:"BU MI",meta:"R$233k",metaVal:233000,moeda:"BRL",contatos_dia:20,sfUserId:"005TW0000002BnNYAU",carteiraClientes:42,carteiraProspects:183},
-  "sizenando@sabagram.com.br":{nome:"Sizenando Andrade",avatar:"SA",cor:"#1a3254",bu:"BU MI",meta:"R$233k",metaVal:233000,moeda:"BRL",contatos_dia:20,sfUserId:"005TW0000002BnNYAU",carteiraClientes:42,carteiraProspects:183},
+  "nando@sabagram.com.br":{nome:"Sizenando Andrade",avatar:"SA",cor:"#1a3254",bu:"BU MI",meta:"R$233k",metaVal:233000,moeda:"BRL",contatos_dia:20,sfUserId:"005TW0000002BnNYAU",carteiraClientes:41,carteiraProspects:174},
+  "sizenando@sabagram.com.br":{nome:"Sizenando Andrade",avatar:"SA",cor:"#1a3254",bu:"BU MI",meta:"R$233k",metaVal:233000,moeda:"BRL",contatos_dia:20,sfUserId:"005TW0000002BnNYAU",carteiraClientes:41,carteiraProspects:174},
   "kelly@sabagram.com.br":{nome:"Kelly Julião",avatar:"KJ",cor:"#1a5f3a",bu:"BU MI",meta:"R$161k",metaVal:161000,moeda:"BRL",contatos_dia:15,sfUserId:"005TW0000003rpNYAQ",carteiraClientes:9,carteiraProspects:10},
   "marcelo@sabagram.com.br":{nome:"Marcelo Melo",avatar:"MM",cor:"#8b1a1a",bu:"BU MI",meta:"R$463k",metaVal:463000,moeda:"BRL",contatos_dia:20,sfUserId:"0054S000002TkpGQAS",carteiraClientes:1,carteiraProspects:2},
-  "renata@sabagram.com.br":{nome:"Renata Santana",avatar:"RS",cor:"#6b1a5f",bu:"BU MI",meta:"R$105k",metaVal:105000,moeda:"BRL",contatos_dia:15,sfUserId:"005TW000000ANTBYA4",carteiraClientes:4,carteiraProspects:94},
-  "santana@sabagram.com.br":{nome:"Renata Santana",avatar:"RS",cor:"#6b1a5f",bu:"BU MI",meta:"R$105k",metaVal:105000,moeda:"BRL",contatos_dia:15,sfUserId:"005TW000000ANTBYA4",carteiraClientes:4,carteiraProspects:94},
-  "cezar@sabagram.com.br":{nome:"Cezar Fiorio",avatar:"CF",cor:"#1a3a6b",bu:"BU ME",meta:"US$172k",metaVal:172000,moeda:"USD",contatos_dia:15,sfUserId:"005TW000000APunYAG",carteiraClientes:4,carteiraProspects:323},
-  "diana@sabagram.com.br":{nome:"Diana Rigoni",avatar:"DR",cor:"#5f1a4a",bu:"BU ME",meta:"US$25k",metaVal:25000,moeda:"USD",contatos_dia:10,sfUserId:"0054S000002TkpZQAS",carteiraClientes:1,carteiraProspects:95},
+  "renata@sabagram.com.br":{nome:"Renata Santana",avatar:"RS",cor:"#6b1a5f",bu:"BU MI",meta:"R$105k",metaVal:105000,moeda:"BRL",contatos_dia:15,sfUserId:"005TW000000ANTBYA4",carteiraClientes:4,carteiraProspects:91},
+  "santana@sabagram.com.br":{nome:"Renata Santana",avatar:"RS",cor:"#6b1a5f",bu:"BU MI",meta:"R$105k",metaVal:105000,moeda:"BRL",contatos_dia:15,sfUserId:"005TW000000ANTBYA4",carteiraClientes:4,carteiraProspects:91},
+  "cezar@sabagram.com.br":{nome:"Cezar Fiorio",avatar:"CF",cor:"#1a3a6b",bu:"BU ME",meta:"US$172k",metaVal:172000,moeda:"USD",contatos_dia:15,sfUserId:"005TW000000APunYAG",carteiraClientes:4,carteiraProspects:314},
+  "diana@sabagram.com.br":{nome:"Diana Rigoni",avatar:"DR",cor:"#5f1a4a",bu:"BU ME",meta:"US$25k",metaVal:25000,moeda:"USD",contatos_dia:10,sfUserId:"0054S000002TkpZQAS",carteiraClientes:1,carteiraProspects:87},
 };
 
 const LISVENMAP={
@@ -609,6 +609,8 @@ async function carregarFila(email){
       minha=dataOntem.fila||[];
       if(minha.length) dataUsada=ontemStr;
     }
+
+    minha=minha.filter(c=>c.ScoAco__c!=='6');
 
     if(!minha.length){
       container.innerHTML=`<div style="text-align:center;padding:40px;color:var(--muted);font-size:13px">

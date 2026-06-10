@@ -510,6 +510,7 @@ export default async function handler(req, res) {
 
     for (const cliente of clientes) {
       if (!cliente || !cliente.Id) continue;
+      if (cliente.ScoAco__c === '6') continue; // exclui contas descartadas (score 6)
       const lisVen = (cliente.LisVen__c || '').replace(/^;|;$/g, '').split(';').filter(Boolean);
 
       for (const cod of lisVen) {
