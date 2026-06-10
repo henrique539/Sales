@@ -249,8 +249,8 @@ O vendedor ${vendedorNome} vai contatar esses clientes hoje. ${tomsexta}
 
 PARA CADA CLIENTE analise todos os dados e gere:
 1. PRIORIDADE_AJUSTADA: sinal de compra iminente → suba 1 nível | descarte → baixe | sem contexto → mantenha
-2. HISTORICO: string com bullets separados por | com dados reais. Ex: "Último pedido R$37k fev/26 | 8 compras | frequência 2-3 meses | WA: áudio 28 mai (cliente enviou)"
-3. SITUACAO: string com bullets separados por | sobre momento atual. Ex: "5 lig não atendidas jun | parou após maior pedido | sem WA recente"
+2. HISTORICO: apenas fatos comerciais passados separados por |. Foco em compras, valores, frequência e interações relevantes. Ex: "Último pedido R$37k fev/26 | 8 compras no ano | intervalo médio 45 dias | WA respondido em 2h"
+3. SITUACAO: 1 frase interpretando o momento atual do cliente — o que explica o comportamento recente. Ex: "Parou de comprar após trocar gestor" ou "Engajado mas sem fechar" ou "Sumiu após receber proposta". Sem repetir dados do histórico.
 4. ABORDAGEM: objeto com gancho (frase de abertura específica e informal, max 1 frase), objecao (principal objeção provável, max 1 frase), canal (ex: "WA · 14h-17h" ou "Ligação · 10h-12h")
 
 Clientes:
