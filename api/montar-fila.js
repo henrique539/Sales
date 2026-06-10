@@ -604,11 +604,26 @@ export default async function handler(req, res) {
         const resUli = c.ResUli__c || (ultimaLig
           ? ((ultimaLig.Subject||'').includes('Não Atendida') ? 'Não Atendida' : 'Atendida')
           : null);
+        const resumoLig = ultimaLig?.Description
+          ? ultimaLig.Description.substring(0, 120)
+          : (ligacoesPorCliente[c.Id]?.Description ? ligacoesPorCliente[c.Id].Description.substring(0, 120) : null);
+        const naoAtendidas = ligsC.filter(l => (l.Subject||'').includes('Não Atendida')).length;
+
+        // WA — direção da última mensagem
+        const telNorm = (c.Phone||'').replace(/\D/g,'');
+        const telBR = telNorm.length === 11 ? '55'+telNorm : telNorm.length === 13 ? telNorm : '';
+        const nitzapCtx = nitzapPorCliente[c.Id] || (telBR ? nitzapPorTelefone[telBR] : null);
+        const ultimaMsgWA = nitzapCtx?.text_last_message || null;
+        const waDtUltima = nitzapCtx?.dt_lastmessage || nitzapCtx?.dt_second_last_message || null;
+        const waClienteRespondeu = nitzapCtx ? (nitzapCtx.isent === false) : null;
+
         return ({
         Id: c.Id, Name: c.Name, ScoAco__c: c.ScoAco__c||null, StsCli__c: c.StsCli__c||null,
         QtdDip__c: c.QtdDip__c||null, DatUli__c: datUli, ResUli__c: resUli,
+        resumoLig, naoAtendidas,
         Phone: c.Phone||null,
         LisVen__c: c.LisVen__c||null, nitzap20__DateTime_Last_Sent_Whatsapp__c: c.nitzap20__DateTime_Last_Sent_Whatsapp__c||null,
+        ultimaMsgWA, waDtUltima, waClienteRespondeu,
         prioridade: c._prioridade, pedidos90d: c._pedidos90d, contatado: false, respondeu: false,
         oportunidade: c._oportunidade ? { status: c._oportunidade.StsOpo__c, abrioEmail: (c._oportunidade.QtdAbe__c||0)>0, abrioLink: (c._oportunidade.QtdAbl__c||0)>0, validade: c._oportunidade.DatVld__c||null } : null,
         prioridadeAjustada: scripts[c.Id]?.prioridadeAjustada||null,
