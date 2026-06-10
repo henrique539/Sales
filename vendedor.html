@@ -322,6 +322,14 @@ function renderDesempenho(vd, vInfo, ligacoes, email){
       <div class="t-pill"><div class="t-pv">${fmt(faltam,moeda)}</div><div class="t-pl">faltam</div></div>
       <div class="t-pill"><div class="t-pv">${diasRestantes}d</div><div class="t-pl">úteis rest.</div></div>
     </div>
+    <div style="margin-top:12px">
+      <div style="height:5px;background:rgba(255,255,255,.15);border-radius:3px;overflow:hidden">
+        <div style="height:5px;border-radius:3px;background:rgba(255,255,255,.55);width:${pctAnl}%;transition:width .4s"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:10px;color:rgba(255,255,255,.4);margin-top:4px">
+        <span>${pctAnl}% da meta concluído</span><span>${Math.round(diaAtual/30*100)}% do mês</span>
+      </div>
+    </div>
   </div>
 
   <!-- ANEL + MÉTRICAS -->
@@ -335,19 +343,25 @@ function renderDesempenho(vd, vInfo, ligacoes, email){
               stroke-dasharray="389.6" stroke-dashoffset="${389.6*(1-pctAnl/100)}" stroke-linecap="round" transform="rotate(-90 75 75)"/>
           </svg>
           <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
-            <div style="font-size:30px;font-weight:700;color:${pct>=70?'#639922':pct>=40?'#BA7517':'#E24B4A'};line-height:1">${pct}%</div>
-            <div style="font-size:11px;color:var(--muted);margin-top:2px">da meta</div>
-            <div style="font-size:13px;font-weight:600;color:var(--text);margin-top:4px">${fmt(fat,moeda)}</div>
-            <div style="font-size:10px;color:${projCor};margin-top:2px">proj. ${fmt(proj,moeda)}</div>
+            <div style="font-size:32px;font-weight:800;color:${pct>=70?'#639922':pct>=40?'#BA7517':'#E24B4A'};line-height:1">${pct}%</div>
+            <div style="font-size:10px;color:var(--muted);margin-top:2px">da meta</div>
+            <div style="font-size:12px;font-weight:600;color:var(--text);margin-top:3px">${fmt(fat,moeda)}</div>
           </div>
         </div>
       </div>
       <div class="stats-side">
-        <div class="s3">
-          <div class="sc"><div class="sv">${fmt(fatAnt,moeda)}</div><div class="sl">mês anterior</div></div>
-          <div class="sc"><div class="sv" style="color:var(--green)">${fmt(ticket,moeda)}</div><div class="sl">ticket médio</div></div>
-          <div class="sc"><div class="sv">${pedidos}</div><div class="sl">pedidos fechados</div></div>
-          <div class="sc"><div class="sv" style="color:var(--blue)">${taxaConv>0?taxaConv+'%':'—'}</div><div class="sl">conversão${clientesMes>0?' ('+clientesMes+' cont.)':''}</div></div>
+        <div style="margin-bottom:10px">
+          <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:1px">${fmt(fat,moeda)} <span style="font-size:11px;font-weight:500;color:var(--muted)">faturado</span></div>
+          <div style="font-size:12px;color:${projCor};font-weight:600;margin-bottom:8px">${proj>=metaVal?'↑':'↓'} proj. ${fmt(proj,moeda)}${proj>=metaVal?' · acima da meta':' · abaixo da meta'}</div>
+          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:3px 7px;padding-top:8px;border-top:0.5px solid var(--border)">
+            <span style="font-size:11px;color:var(--text2)">${fmt(fatAnt,moeda)} <span style="color:var(--muted)">ant.</span></span>
+            <span style="color:var(--border)">·</span>
+            <span style="font-size:11px;font-weight:600;color:var(--green)">${fmt(ticket,moeda)} <span style="font-weight:400;color:var(--muted)">ticket</span></span>
+            <span style="color:var(--border)">·</span>
+            <span style="font-size:11px;color:var(--text2)">${pedidos} <span style="color:var(--muted)">ped.</span></span>
+            <span style="color:var(--border)">·</span>
+            <span style="font-size:11px;font-weight:600;color:var(--blue)">${taxaConv>0?taxaConv+'%':'—'} <span style="font-weight:400;color:var(--muted)">conv.${clientesMes>0?' ('+clientesMes+')':''}</span></span>
+          </div>
         </div>
         <div style="background:var(--s2);border-radius:9px;padding:10px 12px">
           <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">faturamento mensal</div>
