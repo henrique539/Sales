@@ -596,9 +596,17 @@ export default async function handler(req, res) {
       scriptsPorLote.forEach(scriptsLote => Object.assign(scripts, scriptsLote));
 
       // Montar documento final
-      const filaDoc = filaFinal.map(c => ({
+      const filaDoc = filaFinal.map(c => {
+        // Fallback: usa Task mais recente quando Account não tem DatUli__c/ResUli__c
+        const ligsC = historicoLigPorCliente[c.Id] || [];
+        const ultimaLig = ligsC[0];
+        const datUli = c.DatUli__c || ultimaLig?.ActivityDate || null;
+        const resUli = c.ResUli__c || (ultimaLig
+          ? ((ultimaLig.Subject||'').includes('Não Atendida') ? 'Não Atendida' : 'Atendida')
+          : null);
+        return ({
         Id: c.Id, Name: c.Name, ScoAco__c: c.ScoAco__c||null, StsCli__c: c.StsCli__c||null,
-        QtdDip__c: c.QtdDip__c||null, DatUli__c: c.DatUli__c||null, ResUli__c: c.ResUli__c||null,
+        QtdDip__c: c.QtdDip__c||null, DatUli__c: datUli, ResUli__c: resUli,
         Phone: c.Phone||null,
         LisVen__c: c.LisVen__c||null, nitzap20__DateTime_Last_Sent_Whatsapp__c: c.nitzap20__DateTime_Last_Sent_Whatsapp__c||null,
         prioridade: c._prioridade, pedidos90d: c._pedidos90d, contatado: false, respondeu: false,
@@ -612,7 +620,7 @@ export default async function handler(req, res) {
         canal: scripts[c.Id]?.canal||'WA',
         melhorHorario: scripts[c.Id]?.melhorHorario||null,
         proximoPasso: scripts[c.Id]?.proximoPasso||null,
-      }));
+      });});
 
       const emailKey = vInfo.email.replace(/[@.]/g, '_');
       await gravarFila(emailKey, data, {
