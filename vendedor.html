@@ -55,7 +55,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .hero-inner{display:flex;align-items:center;gap:20px;padding:4px 0}
 .ring-side{flex-shrink:0}
 .stats-side{flex:1}
-.s3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px}
+.s3{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
 .sc{background:var(--s2);border-radius:9px;padding:9px 10px;text-align:center}
 .sv{font-size:17px;font-weight:700;font-family:'JetBrains Mono',monospace}
 .sl{font-size:10px;color:var(--muted);margin-top:2px}
@@ -139,7 +139,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
       <div id="vRiscoTag"></div>
       <div class="vhdr-stat">
         <div class="vhdr-val" id="vFatJun" style="color:var(--amber)">—</div>
-        <div class="vhdr-lbl">junho até agora</div>
+        <div class="vhdr-lbl" id="vMesAtual">— até agora</div>
       </div>
       <div class="vhdr-stat">
         <div class="vhdr-val" id="vFatMai" style="color:var(--muted)">—</div>
@@ -185,14 +185,14 @@ import{getFirestore,doc,getDoc}from"https://www.gstatic.com/firebasejs/10.12.0/f
 const FB={apiKey:"AIzaSyC6oWnbIyaZejwtNcL2S0SrHKLlLLxzUfI",authDomain:"sales-team-6aeb6.firebaseapp.com",projectId:"sales-team-6aeb6",storageBucket:"sales-team-6aeb6.firebasestorage.app",messagingSenderId:"421701680094",appId:"1:421701680094:web:1f8bc4ae716dd0d0f3bb4f"};
 
 const VENDEDORES={
-  "nando@sabagram.com.br":{nome:"Sizenando Andrade",avatar:"SA",cor:"#1a3254",bu:"BU MI",meta:"R$233k",metaVal:233000,moeda:"BRL",contatos_dia:20},
-  "sizenando@sabagram.com.br":{nome:"Sizenando Andrade",avatar:"SA",cor:"#1a3254",bu:"BU MI",meta:"R$233k",metaVal:233000,moeda:"BRL",contatos_dia:20},
-  "kelly@sabagram.com.br":{nome:"Kelly Julião",avatar:"KJ",cor:"#1a5f3a",bu:"BU MI",meta:"R$161k",metaVal:161000,moeda:"BRL",contatos_dia:15},
-  "marcelo@sabagram.com.br":{nome:"Marcelo Melo",avatar:"MM",cor:"#8b1a1a",bu:"BU MI",meta:"R$463k",metaVal:463000,moeda:"BRL",contatos_dia:20},
-  "renata@sabagram.com.br":{nome:"Renata Santana",avatar:"RS",cor:"#6b1a5f",bu:"BU MI",meta:"R$105k",metaVal:105000,moeda:"BRL",contatos_dia:15},
-  "santana@sabagram.com.br":{nome:"Renata Santana",avatar:"RS",cor:"#6b1a5f",bu:"BU MI",meta:"R$105k",metaVal:105000,moeda:"BRL",contatos_dia:15},
-  "cezar@sabagram.com.br":{nome:"Cezar Fiorio",avatar:"CF",cor:"#1a3a6b",bu:"BU ME",meta:"US$172k",metaVal:172000,moeda:"USD",contatos_dia:15},
-  "diana@sabagram.com.br":{nome:"Diana Rigoni",avatar:"DR",cor:"#5f1a4a",bu:"BU ME",meta:"US$25k",metaVal:25000,moeda:"USD",contatos_dia:10},
+  "nando@sabagram.com.br":{nome:"Sizenando Andrade",avatar:"SA",cor:"#1a3254",bu:"BU MI",meta:"R$233k",metaVal:233000,moeda:"BRL",contatos_dia:20,sfUserId:"005TW0000002BnNYAU"},
+  "sizenando@sabagram.com.br":{nome:"Sizenando Andrade",avatar:"SA",cor:"#1a3254",bu:"BU MI",meta:"R$233k",metaVal:233000,moeda:"BRL",contatos_dia:20,sfUserId:"005TW0000002BnNYAU"},
+  "kelly@sabagram.com.br":{nome:"Kelly Julião",avatar:"KJ",cor:"#1a5f3a",bu:"BU MI",meta:"R$161k",metaVal:161000,moeda:"BRL",contatos_dia:15,sfUserId:"005TW0000003rpNYAQ"},
+  "marcelo@sabagram.com.br":{nome:"Marcelo Melo",avatar:"MM",cor:"#8b1a1a",bu:"BU MI",meta:"R$463k",metaVal:463000,moeda:"BRL",contatos_dia:20,sfUserId:"0054S000002TkpGQAS"},
+  "renata@sabagram.com.br":{nome:"Renata Santana",avatar:"RS",cor:"#6b1a5f",bu:"BU MI",meta:"R$105k",metaVal:105000,moeda:"BRL",contatos_dia:15,sfUserId:"005TW000000ANTBYA4"},
+  "santana@sabagram.com.br":{nome:"Renata Santana",avatar:"RS",cor:"#6b1a5f",bu:"BU MI",meta:"R$105k",metaVal:105000,moeda:"BRL",contatos_dia:15,sfUserId:"005TW000000ANTBYA4"},
+  "cezar@sabagram.com.br":{nome:"Cezar Fiorio",avatar:"CF",cor:"#1a3a6b",bu:"BU ME",meta:"US$172k",metaVal:172000,moeda:"USD",contatos_dia:15,sfUserId:"005TW000000APunYAG"},
+  "diana@sabagram.com.br":{nome:"Diana Rigoni",avatar:"DR",cor:"#5f1a4a",bu:"BU ME",meta:"US$25k",metaVal:25000,moeda:"USD",contatos_dia:10,sfUserId:"0054S000002TkpZQAS"},
 };
 
 const LISVENMAP={
@@ -231,6 +231,15 @@ function renderDesempenho(vd, vInfo, ligacoes, email){
   const diaAtual = new Date().getDate();
   const diasRestantes = Math.max(diasUteis - Math.round(diaAtual * diasUteis/30), 1);
   const faltam = Math.max(metaVal - fat, 0);
+  const pctAnl = Math.min(pct, 100);
+  const projCor = proj >= metaVal ? '#4ade80' : '#E24B4A';
+
+  // Conversão: clientes contatados este mês × pedidos fechados
+  const _mesN = new Date().getMonth()+1;
+  const _anoN = new Date().getFullYear();
+  const ligMes = ligacoes.filter(l=>{const d=new Date(l.ActivityDate||l.CreatedDate||'');return d.getFullYear()===_anoN&&d.getMonth()+1===_mesN;});
+  const clientesMes = new Set(ligMes.map(l=>l.WhatId).filter(Boolean)).size;
+  const taxaConv = clientesMes>0?Math.round(pedidos/clientesMes*100):0;
 
   // Ligações
   const totalLig = ligacoes.length;
@@ -330,13 +339,13 @@ function renderDesempenho(vd, vInfo, ligacoes, email){
           <svg width="150" height="150" viewBox="0 0 150 150">
             <circle cx="75" cy="75" r="62" fill="none" stroke="#f0f4f8" stroke-width="13"/>
             <circle cx="75" cy="75" r="62" fill="none" stroke="${pct>=70?'#639922':pct>=40?'#BA7517':'#E24B4A'}" stroke-width="13"
-              stroke-dasharray="389.6" stroke-dashoffset="${389.6*(1-pct/100)}" stroke-linecap="round" transform="rotate(-90 75 75)"/>
+              stroke-dasharray="389.6" stroke-dashoffset="${389.6*(1-pctAnl/100)}" stroke-linecap="round" transform="rotate(-90 75 75)"/>
           </svg>
           <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
             <div style="font-size:30px;font-weight:700;color:${pct>=70?'#639922':pct>=40?'#BA7517':'#E24B4A'};line-height:1">${pct}%</div>
             <div style="font-size:11px;color:var(--muted);margin-top:2px">da meta</div>
             <div style="font-size:13px;font-weight:600;color:var(--text);margin-top:4px">${fmt(fat,moeda)}</div>
-            <div style="font-size:10px;color:#E24B4A;margin-top:2px">proj. ${fmt(proj,moeda)}</div>
+            <div style="font-size:10px;color:${projCor};margin-top:2px">proj. ${fmt(proj,moeda)}</div>
           </div>
         </div>
       </div>
@@ -344,7 +353,8 @@ function renderDesempenho(vd, vInfo, ligacoes, email){
         <div class="s3">
           <div class="sc"><div class="sv">${fmt(fatAnt,moeda)}</div><div class="sl">mês anterior</div></div>
           <div class="sc"><div class="sv" style="color:var(--green)">${fmt(ticket,moeda)}</div><div class="sl">ticket médio</div></div>
-          <div class="sc"><div class="sv">${pedidos}</div><div class="sl">pedidos</div></div>
+          <div class="sc"><div class="sv">${pedidos}</div><div class="sl">pedidos fechados</div></div>
+          <div class="sc"><div class="sv" style="color:var(--blue)">${taxaConv>0?taxaConv+'%':'—'}</div><div class="sl">conversão${clientesMes>0?' ('+clientesMes+' cont.)':''}</div></div>
         </div>
         <div style="background:var(--s2);border-radius:9px;padding:10px 12px">
           <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">faturamento mensal</div>
@@ -550,6 +560,8 @@ async function carregarDesempenho(email){
     const moeda = vd.moeda||vInfo?.moeda||'BRL';
     $('vFatJun').textContent=fmt(fat,moeda);
     $('vFatMai').textContent=fmt(fatAnt,moeda);
+    const _mNomes=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+    $('vMesAtual').textContent=_mNomes[new Date().getMonth()]+' até agora';
 
     // Badge de risco no header
     const pct = vd.mesAtual?.pctMeta||0;
@@ -565,10 +577,8 @@ async function carregarDesempenho(email){
     const token=await auth.currentUser.getIdToken();
     const respLig=await fetch(`/api/contexto?tipo=ligacoes&data=${hoje}`,{headers:{Authorization:`Bearer ${token}`}});
     const dataLig=await respLig.json();
-    const ligacoes=(dataLig.registros||[]).filter(l=>l.OwnerId===vInfo?.userId||true).filter(l=>{
-      // filtra pelo userId se disponível
-      return true;
-    });
+    const sfUserId=vInfo?.sfUserId;
+    const ligacoes=(dataLig.registros||[]).filter(l=>!sfUserId||l.OwnerId===sfUserId);
 
     container.innerHTML=renderDesempenho(vd, vInfo||{}, ligacoes, email);
 
