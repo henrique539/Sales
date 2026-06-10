@@ -18,6 +18,21 @@ const VENDEDORES = {
   // Wesley (171) excluído — BU Obras trabalha com projetos
 };
 
+// Mapas de deduplicação — para clientes com múltiplos vendedores na mesma BU
+// sfUserId → código do vendedor (para cruzar com OwnerId das ligações/atividades)
+const USERID_TO_COD = Object.fromEntries(
+  Object.entries(VENDEDORES).map(([cod, v]) => [v.userId, cod])
+);
+// Account ID do vendedor → código (para cruzar com IdeVen__c dos pedidos)
+const VEACC_TO_COD = {
+  '001TW000003LbquYAC': '185', '001TW000003LcYSYA0': '185', // Sizenando
+  '001TW000005ag14YAA': '192',                               // Kelly
+  '0014S00000BK1xDQAT': '11',                                // Marcelo
+  '001TW00000Buxa9YAB': '203', '001TW00000C09VzYAJ': '203', // Santana
+  '001TW00000C10vCYAR': '204', '001TW00000C114rYAB': '204', // Cezar
+  '0054S000002TkpZQAS': '212',                               // Diana
+};
+
 async function fetchWithTimeout(url, options = {}, timeoutMs = 10000) {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
@@ -445,12 +460,22 @@ export default async function handler(req, res) {
 
     // Indexar pedidos por cliente
     const pedidosPorCliente = {};
+    // Deduplicação passo 1: vendedor mais recente pelo último pedido (IdeVen__c)
+    const primarioPorCliente = {};
     pedidos.forEach(p => {
       if (!p) return;
       const cliId = p.IdeCli__c;
       if (!cliId) return;
       if (!pedidosPorCliente[cliId]) pedidosPorCliente[cliId] = 0;
       pedidosPorCliente[cliId] += (p.total || 1);
+      // Guarda o vendedor do pedido mais recente
+      const cod = VEACC_TO_COD[p.IdeVen__c];
+      if (cod) {
+        const atual = primarioPorCliente[cliId];
+        if (!atual || (p.DatFat__c || '') > (atual.data || '')) {
+          primarioPorCliente[cliId] = { cod, data: p.DatFat__c || '', fonte: 'pedido' };
+        }
+      }
     });
 
     // Indexar ligações por cliente — última atendida + histórico completo
@@ -458,16 +483,26 @@ export default async function handler(req, res) {
     const historicoLigPorCliente = {}; // todas as ligações ordenadas (para IA)
     ligacoes.forEach(l => {
       if (!l) return;
-      const whatId = l.WhatId;
+      // Aceita WhatId OU AccountId — algumas Tasks usam só AccountId
+      const cliId = l.WhatId || l.AccountId;
       const subject = l.Subject || '';
-      if (!whatId) return;
+      if (!cliId) return;
       // Histórico completo (todas as ligações)
-      if (!historicoLigPorCliente[whatId]) historicoLigPorCliente[whatId] = [];
-      historicoLigPorCliente[whatId].push(l);
+      if (!historicoLigPorCliente[cliId]) historicoLigPorCliente[cliId] = [];
+      historicoLigPorCliente[cliId].push(l);
       // Última atendida
       const atendida = subject.includes('Atendida') && !subject.includes('Não Atendida');
-      if (atendida && !ligacoesPorCliente[whatId]) {
-        ligacoesPorCliente[whatId] = l;
+      if (atendida && !ligacoesPorCliente[cliId]) {
+        ligacoesPorCliente[cliId] = l;
+      }
+      // Deduplicação passo 2: atividade recente (ligação/WA) vence pedido
+      const ownerId = l.OwnerId || l.ownerId;
+      const cod = ownerId ? USERID_TO_COD[ownerId] : null;
+      if (cod) {
+        const atual = primarioPorCliente[cliId];
+        if (!atual || atual.fonte === 'pedido') {
+          primarioPorCliente[cliId] = { cod, fonte: 'atividade' };
+        }
       }
     });
 
@@ -513,9 +548,20 @@ export default async function handler(req, res) {
       if (cliente.ScoAco__c === '6') continue; // exclui contas descartadas (score 6)
       const lisVen = (cliente.LisVen__c || '').replace(/^;|;$/g, '').split(';').filter(Boolean);
 
+      // Deduplicação: só aplica quando há múltiplos vendedores NA MESMA BU
+      // (clientes cross-BU — ex: MI + ME — ficam nas duas filas, são mercados distintos)
+      let codPrimario = null;
+      if (lisVen.length > 1) {
+        const bus = lisVen.map(c => VENDEDORES[c]?.bu).filter(Boolean);
+        const mesmaBU = new Set(bus).size === 1;
+        if (mesmaBU) codPrimario = primarioPorCliente[cliente.Id]?.cod || null;
+      }
+
       for (const cod of lisVen) {
         const vInfo = VENDEDORES_ATIVOS[cod];
         if (!vInfo) continue;
+        // Pula vendedores não-primários (quando há histórico para decidir)
+        if (codPrimario && cod !== codPrimario) continue;
 
         const pedidos90d = pedidosPorCliente[cliente.Id] || 0;
         const oportunidade = oportunidadesPorCliente[cliente.Id] || null;
