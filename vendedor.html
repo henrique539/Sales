@@ -185,14 +185,14 @@ import{getFirestore,doc,getDoc}from"https://www.gstatic.com/firebasejs/10.12.0/f
 const FB={apiKey:"AIzaSyC6oWnbIyaZejwtNcL2S0SrHKLlLLxzUfI",authDomain:"sales-team-6aeb6.firebaseapp.com",projectId:"sales-team-6aeb6",storageBucket:"sales-team-6aeb6.firebasestorage.app",messagingSenderId:"421701680094",appId:"1:421701680094:web:1f8bc4ae716dd0d0f3bb4f"};
 
 const VENDEDORES={
-  "nando@sabagram.com.br":{nome:"Sizenando Andrade",avatar:"SA",cor:"#1a3254",bu:"BU MI",meta:"R$233k",metaVal:233000,moeda:"BRL",contatos_dia:20,sfUserId:"005TW0000002BnNYAU"},
-  "sizenando@sabagram.com.br":{nome:"Sizenando Andrade",avatar:"SA",cor:"#1a3254",bu:"BU MI",meta:"R$233k",metaVal:233000,moeda:"BRL",contatos_dia:20,sfUserId:"005TW0000002BnNYAU"},
-  "kelly@sabagram.com.br":{nome:"Kelly Julião",avatar:"KJ",cor:"#1a5f3a",bu:"BU MI",meta:"R$161k",metaVal:161000,moeda:"BRL",contatos_dia:15,sfUserId:"005TW0000003rpNYAQ"},
-  "marcelo@sabagram.com.br":{nome:"Marcelo Melo",avatar:"MM",cor:"#8b1a1a",bu:"BU MI",meta:"R$463k",metaVal:463000,moeda:"BRL",contatos_dia:20,sfUserId:"0054S000002TkpGQAS"},
-  "renata@sabagram.com.br":{nome:"Renata Santana",avatar:"RS",cor:"#6b1a5f",bu:"BU MI",meta:"R$105k",metaVal:105000,moeda:"BRL",contatos_dia:15,sfUserId:"005TW000000ANTBYA4"},
-  "santana@sabagram.com.br":{nome:"Renata Santana",avatar:"RS",cor:"#6b1a5f",bu:"BU MI",meta:"R$105k",metaVal:105000,moeda:"BRL",contatos_dia:15,sfUserId:"005TW000000ANTBYA4"},
-  "cezar@sabagram.com.br":{nome:"Cezar Fiorio",avatar:"CF",cor:"#1a3a6b",bu:"BU ME",meta:"US$172k",metaVal:172000,moeda:"USD",contatos_dia:15,sfUserId:"005TW000000APunYAG"},
-  "diana@sabagram.com.br":{nome:"Diana Rigoni",avatar:"DR",cor:"#5f1a4a",bu:"BU ME",meta:"US$25k",metaVal:25000,moeda:"USD",contatos_dia:10,sfUserId:"0054S000002TkpZQAS"},
+  "nando@sabagram.com.br":{nome:"Sizenando Andrade",avatar:"SA",cor:"#1a3254",bu:"BU MI",meta:"R$233k",metaVal:233000,moeda:"BRL",contatos_dia:20,sfUserId:"005TW0000002BnNYAU",carteiraClientes:42,carteiraProspects:183},
+  "sizenando@sabagram.com.br":{nome:"Sizenando Andrade",avatar:"SA",cor:"#1a3254",bu:"BU MI",meta:"R$233k",metaVal:233000,moeda:"BRL",contatos_dia:20,sfUserId:"005TW0000002BnNYAU",carteiraClientes:42,carteiraProspects:183},
+  "kelly@sabagram.com.br":{nome:"Kelly Julião",avatar:"KJ",cor:"#1a5f3a",bu:"BU MI",meta:"R$161k",metaVal:161000,moeda:"BRL",contatos_dia:15,sfUserId:"005TW0000003rpNYAQ",carteiraClientes:9,carteiraProspects:10},
+  "marcelo@sabagram.com.br":{nome:"Marcelo Melo",avatar:"MM",cor:"#8b1a1a",bu:"BU MI",meta:"R$463k",metaVal:463000,moeda:"BRL",contatos_dia:20,sfUserId:"0054S000002TkpGQAS",carteiraClientes:1,carteiraProspects:2},
+  "renata@sabagram.com.br":{nome:"Renata Santana",avatar:"RS",cor:"#6b1a5f",bu:"BU MI",meta:"R$105k",metaVal:105000,moeda:"BRL",contatos_dia:15,sfUserId:"005TW000000ANTBYA4",carteiraClientes:4,carteiraProspects:94},
+  "santana@sabagram.com.br":{nome:"Renata Santana",avatar:"RS",cor:"#6b1a5f",bu:"BU MI",meta:"R$105k",metaVal:105000,moeda:"BRL",contatos_dia:15,sfUserId:"005TW000000ANTBYA4",carteiraClientes:4,carteiraProspects:94},
+  "cezar@sabagram.com.br":{nome:"Cezar Fiorio",avatar:"CF",cor:"#1a3a6b",bu:"BU ME",meta:"US$172k",metaVal:172000,moeda:"USD",contatos_dia:15,sfUserId:"005TW000000APunYAG",carteiraClientes:4,carteiraProspects:323},
+  "diana@sabagram.com.br":{nome:"Diana Rigoni",avatar:"DR",cor:"#5f1a4a",bu:"BU ME",meta:"US$25k",metaVal:25000,moeda:"USD",contatos_dia:10,sfUserId:"0054S000002TkpZQAS",carteiraClientes:1,carteiraProspects:95},
 };
 
 const LISVENMAP={
@@ -247,16 +247,12 @@ function renderDesempenho(vd, vInfo, ligacoes, email){
   const taxaAtend = totalLig>0?Math.round(ligAtend/totalLig*100):0;
   const clientesLig = new Set(ligacoes.map(l=>l.WhatId).filter(Boolean));
 
-  // Frequência de contatos (simulada por distribuição)
+  // Cobertura da carteira — dados reais do Salesforce
   const total = clientesLig.size;
-  const freq0 = Math.max(0, Math.round(metaVal/ticket) - total); // estimativa carteira - contatados
-  // Para demo usa proporção real de ligações
-  const ligPorCliente = total > 0 ? (totalLig / total) : 0;
-  const f1 = Math.round(total * 0.44);
-  const f2 = Math.round(total * 0.28);
-  const f3 = Math.round(total * 0.18);
-  const f6 = total - f1 - f2 - f3;
-  const carteira = total + freq0;
+  const carteiraClientes = vInfo?.carteiraClientes || 0;
+  const carteiraProspects = vInfo?.carteiraProspects || 0;
+  const carteira = carteiraClientes + carteiraProspects || Math.max(total, Math.round(metaVal / (ticket||1) * 2));
+  const freq0 = Math.max(0, carteira - total);
 
   // Tarja
   const riscoNivel = pct < 30 ? 'danger' : pct < 70 ? 'warn' : 'ok';
@@ -310,9 +306,6 @@ function renderDesempenho(vd, vInfo, ligacoes, email){
       </div>
     </div>`).join('');
 
-  const freqTotal = f1+f2+f3+f6;
-  const pFreq = (n)=>freqTotal>0?Math.round(n/freqTotal*100):0;
-
   return `
   <!-- TARJA -->
   <div class="tarja" style="background:${tarjaBg}">
@@ -364,15 +357,13 @@ function renderDesempenho(vd, vInfo, ligacoes, email){
     </div>
   </div>
 
-  <!-- FREQUÊNCIA DE CONTATOS -->
+  <!-- COBERTURA DA CARTEIRA -->
   <div class="card">
-    <div class="card-title" style="color:#185FA5">cobertura da carteira — ${total} de ~${carteira} clientes contatados</div>
-    ${freq0>0?`<div class="freq-row"><div class="fl" style="color:#E24B4A;font-weight:600">nenhum contato</div><div class="fb"><div class="ff" style="width:${Math.round(freq0/carteira*100)}%;background:#F09595"></div></div><div class="fn" style="color:#E24B4A">${freq0}</div><div class="fp">${Math.round(freq0/carteira*100)}%</div></div>`:''}
-    <div class="freq-row"><div class="fl">1 contato</div><div class="fb"><div class="ff" style="width:${pFreq(f1)}%;background:#B5D4F4"></div></div><div class="fn" style="color:#185FA5">${f1}</div><div class="fp">${pFreq(f1)}%</div></div>
-    <div class="freq-row"><div class="fl">2 contatos</div><div class="fb"><div class="ff" style="width:${pFreq(f2)}%;background:#85B7EB"></div></div><div class="fn" style="color:#185FA5">${f2}</div><div class="fp">${pFreq(f2)}%</div></div>
-    <div class="freq-row"><div class="fl">3 a 5 contatos</div><div class="fb"><div class="ff" style="width:${pFreq(f3)}%;background:#378ADD"></div></div><div class="fn" style="color:#185FA5">${f3}</div><div class="fp">${pFreq(f3)}%</div></div>
-    <div class="freq-row" style="margin-bottom:0"><div class="fl" style="color:#639922;font-weight:600">6+ contatos</div><div class="fb"><div class="ff" style="width:${pFreq(f6)}%;background:#97C459"></div></div><div class="fn" style="color:#639922">${f6}</div><div class="fp">${pFreq(f6)}%</div></div>
-    ${f6>0&&pedidos>0?`<div style="margin-top:10px;padding-top:8px;border-top:0.5px solid var(--border);font-size:12px;color:var(--text2)">Clientes com <span style="font-weight:600;color:#639922">6+ contatos</span> têm maior chance de fechar. Aumente a frequência nos demais.</div>`:''}
+    <div class="card-title" style="color:#185FA5">cobertura da carteira — ${total} de ${carteira} contatados</div>
+    ${carteiraClientes||carteiraProspects?`<div style="font-size:11px;color:var(--muted);margin-bottom:10px">${carteiraClientes} clientes · ${carteiraProspects} prospects</div>`:''}
+    <div class="freq-row"><div class="fl" style="color:#185FA5;font-weight:600">contatados</div><div class="fb"><div class="ff" style="width:${carteira>0?Math.round(total/carteira*100):0}%;background:#378ADD"></div></div><div class="fn" style="color:#185FA5">${total}</div><div class="fp">${carteira>0?Math.round(total/carteira*100):0}%</div></div>
+    ${freq0>0?`<div class="freq-row" style="margin-bottom:0"><div class="fl" style="color:#E24B4A;font-weight:600">sem contato</div><div class="fb"><div class="ff" style="width:${Math.round(freq0/carteira*100)}%;background:#F09595"></div></div><div class="fn" style="color:#E24B4A">${freq0}</div><div class="fp">${Math.round(freq0/carteira*100)}%</div></div>`:''}
+    <div style="margin-top:10px;padding-top:8px;border-top:0.5px solid var(--border);font-size:12px;color:var(--text2)">${freq0>0?`<span style="font-weight:600;color:#E24B4A">${freq0} contas</span> sem contato — inclua-as na fila para aumentar as chances de fechar a meta.`:`<span style="font-weight:600;color:#27500A">✓ Toda a carteira foi contatada.</span>`}</div>
   </div>
 
   <!-- AÇÕES -->
