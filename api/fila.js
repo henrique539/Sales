@@ -179,7 +179,7 @@ export default async function handler(req, res) {
       if (docData.error || !docData.fields) return res.json({ fila: [] });
 
       const parsed = fsToObj(docData);
-      return res.json({ fila: parsed.fila || [], atualizadoEm: parsed.atualizadoEm });
+      return res.json({ fila: parsed.fila || [], carteiraSummary: parsed.carteiraSummary || null, atualizadoEm: parsed.atualizadoEm });
     }
 
     // ── PATCH — marca cliente como contatado (portal manual ou Make automático) ──

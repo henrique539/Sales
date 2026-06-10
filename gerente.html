@@ -206,6 +206,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
   <button class="nbtn" id="nb-mi" onclick="showSection('mi',this)">🏠 BU MI</button>
   <button class="nbtn" id="nb-obras" onclick="showSection('obras',this)">🏗 BU Obras</button>
   <button class="nbtn" id="nb-me" onclick="showSection('me',this)">🌎 BU ME</button>
+  <button class="nbtn" id="nb-1a1" onclick="showSection('1a1',this)">🎯 Pauta 1:1</button>
   <div class="nav-right" id="navRight">—</div>
 </div>
 
@@ -343,6 +344,11 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
   <div id="sec-me" style="display:none">
     <div class="bu-sec"><div class="bu-hdr"><div style="display:flex;align-items:center;gap:8px"><span class="bu-pill bu-me">BU ME</span> Mercado Externo (USD)</div><div style="font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace">US$0k / US$197k · 0%</div></div><div class="vgrid" id="gridME"></div></div>
     <div id="detalhe-me"></div>
+  </div>
+
+  <!-- ══ PAUTA 1:1 ══ -->
+  <div id="sec-1a1" style="display:none">
+    <div id="conteudo-1a1"><div class="spin-wrap"><div class="spinner"></div> Gerando pauta de 1:1...</div></div>
   </div>
 
 </div>
@@ -492,7 +498,7 @@ document.addEventListener('click',e=>{
 
 // ── NAVEGAÇÃO ──
 window.showSection=(id,btn)=>{
-  ['geral','vendedores','mi','obras','me'].forEach(s=>{
+  ['geral','vendedores','mi','obras','me','1a1'].forEach(s=>{
     const el=$('sec-'+s);if(el)el.style.display='none';
   });
   document.querySelectorAll('.nbtn').forEach(b=>b.classList.remove('on'));
@@ -500,6 +506,7 @@ window.showSection=(id,btn)=>{
   if(btn)btn.classList.add('on');
   if(id==='mi')renderBUCards();
   if(id==='vendedores')renderVdCards();
+  if(id==='1a1')carregarSec1a1();
 };
 
 // ── CARDS BU ──
@@ -837,6 +844,224 @@ window.switchTab=(id,btn,email)=>{
   btn.classList.add('on');
   const p=$('tab-'+id);if(p)p.style.display='block';
 };
+
+// ── PAUTA 1:1 ──
+let _1a1Loaded=false;
+
+async function carregarSec1a1(){
+  if(_1a1Loaded)return;
+  const el=$('conteudo-1a1');
+  if(!el)return;
+  const hoje=new Date().toISOString().slice(0,10);
+  try{
+    const token=await auth.currentUser?.getIdToken();
+    if(!token)throw new Error('Sem token');
+    const resultados=await Promise.all(VENDEDORES.map(async v=>{
+      try{
+        const emailKey=v.email.toLowerCase().replace(/[@.]/g,'_');
+        const r=await fetch(`/api/fila?email=${emailKey}&data=${hoje}`,{headers:{Authorization:`Bearer ${token}`}});
+        const data=await r.json();
+        const filaItems=data.fila||[];
+        return{v,dados:DADOS[v.email]||{},conv:CONVERSAO[v.email]||{},
+          filaStats:{total:filaItems.length,contatados:filaItems.filter(c=>c.contatado).length,carteiraSummary:data.carteiraSummary||null}};
+      }catch(err){
+        return{v,dados:DADOS[v.email]||{},conv:CONVERSAO[v.email]||{},filaStats:{total:0,contatados:0,carteiraSummary:null}};
+      }
+    }));
+    const diags=resultados.map(({v,dados,conv,filaStats})=>computarDiag1a1(v,dados,conv,filaStats));
+    diags.sort((a,b)=>b.urgencia-a.urgencia);
+    el.innerHTML=render1a1HTML(diags);
+    _1a1Loaded=true;
+  }catch(e){
+    el.innerHTML=`<div style="color:var(--red);padding:20px;font-size:12px">Erro ao carregar: ${e.message}</div>`;
+  }
+}
+
+function computarDiag1a1(v,dados,conv,filaStats){
+  const fat=dados.fat||0;
+  const meta=dados.meta||v.meta||1;
+  const pct=fat/meta*100;
+  const clientes7d=v.clientes7d||0;
+  const lig7d=v.lig7d||0;
+  const waChats7d=v.waChats7d||0;
+  const contatos7d=lig7d+Math.floor(waChats7d/2);
+  const taxaConv7d=contatos7d>0?(clientes7d/contatos7d*100):0;
+  const filaPct=filaStats.total>0?(filaStats.contatados/filaStats.total*100):-1;
+  const inativ60=filaStats.carteiraSummary?.inativos?.d60||0;
+  const inativ90=filaStats.carteiraSummary?.inativos?.d90||0;
+  const inativ120=filaStats.carteiraSummary?.inativos?.d120||0;
+  const inativTotal=inativ60+inativ90+inativ120;
+  const diaAtual=new Date().getDate();
+  const ritmoEsperado=Math.min(100,diaAtual/22*100);
+  const atraso=ritmoEsperado-pct;
+  const metrics={fat,meta,pct,clientes7d,lig7d,waChats7d,contatos7d,taxaConv7d,
+    filaPct,filaTotal:filaStats.total,filaContatados:filaStats.contatados,
+    inativ60,inativ90,inativ120,inativTotal,ritmoEsperado,atraso,conv,moeda:v.moeda};
+  let tipo,urgencia;
+  if(filaPct>=0&&filaPct<50&&filaStats.total>=3){
+    tipo='DISCIPLINA';urgencia=atraso>15?3:2;
+  }else if(contatos7d<8&&v.bu!=='ME'){
+    tipo='VOLUME';urgencia=atraso>10?3:2;
+  }else if(taxaConv7d>0&&taxaConv7d<10&&contatos7d>=8){
+    tipo='CONVERSÃO';urgencia=atraso>10?3:2;
+  }else if(inativ120>2){
+    tipo='CARTEIRA';urgencia=2;
+  }else if(atraso>10){
+    tipo='RITMO';urgencia=2;
+  }else{
+    tipo='AVIÃO';urgencia=1;
+  }
+  if(pct===0&&ritmoEsperado>20){urgencia=3;if(tipo==='AVIÃO')tipo='RITMO';}
+  return{v,dados,conv,metrics,tipo,urgencia,pct,fat,meta};
+}
+
+function render1a1HTML(diags){
+  const criticos=diags.filter(d=>d.urgencia===3).length;
+  const atencao=diags.filter(d=>d.urgencia===2).length;
+  const bons=diags.filter(d=>d.urgencia===1).length;
+  const hoje=new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'});
+
+  const GUIAS={
+    DISCIPLINA:{cor:'#dc2626',bg:'#fff5f5',brd:'#fca5a5',icon:'⛔',label:'DISCIPLINA',
+      numDiag:m=>`Fila hoje: ${Math.round(Math.max(0,m.filaPct))}% cumprida`,
+      contexto:m=>`${m.filaContatados} de ${m.filaTotal} contatos feitos`,
+      pergunta:()=>'"Por que você não completou a fila hoje? O que estava te impedindo?"',
+      cobrar:()=>'90% de cumprimento da fila pelos próximos 5 dias úteis. Print ao final do dia.',
+      orientar:()=>'A fila é o motor da receita. Cada item não contatado é uma oportunidade real que pode ir para o concorrente antes de amanhã.',
+      impacto:m=>`${m.filaTotal-m.filaContatados} contatos perdidos hoje. Com a taxa de conversão atual, isso representa pedidos não acontecendo toda semana.`},
+    VOLUME:{cor:'#d97706',bg:'#fffbeb',brd:'#fde68a',icon:'📵',label:'VOLUME BAIXO',
+      numDiag:m=>`${m.contatos7d} contatos em 7 dias`,
+      contexto:m=>`${m.lig7d} lig + ${m.waChats7d} WA · meta: ${(m.conv?.contatos_dia||10)}×5 dias`,
+      pergunta:()=>'"O que está tomando o seu tempo no lugar das ligações?"',
+      cobrar:m=>`Mínimo ${m.conv?.contatos_dia||10} contatos por dia pelos próximos 10 dias.`,
+      orientar:()=>'Sua conversão está boa — o motor está parado. Você já sabe fechar. Falta volume para criar as oportunidades.',
+      impacto:()=>'Dobrar volume com mesma conversão = dobrar pedidos. Meta ao alcance sem mudar nada além da frequência.'},
+    'CONVERSÃO':{cor:'#d97706',bg:'#fffbeb',brd:'#fde68a',icon:'📉',label:'CONVERSÃO BAIXA',
+      numDiag:m=>`Conversão 7d: ${Math.round(m.taxaConv7d)}%`,
+      contexto:m=>`${m.clientes7d} pedidos em ${m.contatos7d} contatos · meta: 15%`,
+      pergunta:()=>'"Traga 3 contatos dessa semana que não compraram. O que eles responderam?"',
+      cobrar:m=>`Conversão de ${Math.round(m.taxaConv7d)}%→13% nos próximos 14 dias. Follow-up em 48h para todo contato.`,
+      orientar:()=>'Volume existe, resultado não. O gargalo está no follow-up ou no timing — entre o primeiro contato e o pedido há uma etapa sendo pulada.',
+      impacto:m=>`Conv. ${Math.round(m.taxaConv7d)}%→15% mesmo volume = +${Math.max(1,Math.round(m.contatos7d*0.15)-m.clientes7d)} pedidos extras/semana.`},
+    CARTEIRA:{cor:'#7c3aed',bg:'#faf5ff',brd:'#d8b4fe',icon:'🚨',label:'CARTEIRA EM RISCO',
+      numDiag:m=>`${m.inativ120} clientes críticos (120d+)`,
+      contexto:m=>`${m.inativTotal} inativos: ${m.inativ60}×60d · ${m.inativ90}×90d · ${m.inativ120}×120d+`,
+      pergunta:m=>`"Desses ${m.inativ120} críticos, quantos você sabe por que pararam de comprar?"`,
+      cobrar:m=>`Ligar para todos os ${m.inativ120} críticos esta semana. 3 tentativas cada. Resultado no CRM.`,
+      orientar:()=>'Cliente inativo é concorrente ativo na conta dele. Cada dia sem contato aumenta a chance de perder definitivamente — a custo zero para o concorrente.',
+      impacto:m=>`Reativar 2 dos ${m.inativ120} críticos = receita imediata + base estabilizada. Retenção custa 5× menos que aquisição.`},
+    RITMO:{cor:'#d97706',bg:'#fffbeb',brd:'#fde68a',icon:'⏱',label:'ATRÁS DO RITMO',
+      numDiag:m=>`${Math.round(m.pct)}% meta · ${Math.round(m.atraso)}pts abaixo do esperado`,
+      contexto:m=>`Esperado ${Math.round(m.ritmoEsperado)}% neste dia do mês`,
+      pergunta:()=>'"Quais os 5 clientes com mais chance de fechar essa semana?"',
+      cobrar:()=>'Lista dos clientes quentes até amanhã com próximo passo definido para cada um.',
+      orientar:()=>'Está no jogo, mas precisa de um sprint. Foque em clientes que já sinalizaram interesse recente — são os mais rápidos de fechar.',
+      impacto:m=>`3 clientes quentes fechados essa semana coloca projeção acima de ${Math.round(m.ritmoEsperado+5)}%.`},
+    AVIÃO:{cor:'#16a34a',bg:'#f0fdf4',brd:'#bbf7d0',icon:'✈',label:'NO RITMO',
+      numDiag:m=>`${Math.round(m.pct)}% da meta`,
+      contexto:()=>'Projeção: encaminhado para bater meta',
+      pergunta:()=>'"O que está funcionando essa semana que você pode escalar?"',
+      cobrar:()=>'Nos próximos 5 pedidos, oferecer produto premium. Registrar o resultado.',
+      orientar:()=>'Está voando. Agora é subir o teto — aumentar ticket médio sem mudar o esforço.',
+      impacto:m=>`Ticket +10% mantendo ritmo = meta superada com folga. Reconhecer publicamente no time.`},
+  };
+
+  const urgBadge=u=>u===3?`<span style="background:#fee2e2;color:#dc2626;border:0.5px solid #fca5a5;font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px">🔴 CRÍTICO</span>`:
+    u===2?`<span style="background:#fef3c7;color:#d97706;border:0.5px solid #fde68a;font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px">🟡 ATENÇÃO</span>`:
+    `<span style="background:#f0fdf4;color:#16a34a;border:0.5px solid #bbf7d0;font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px">🟢 NO RITMO</span>`;
+
+  const cards=diags.map(({v,metrics,tipo,urgencia,pct,fat,meta})=>{
+    const g=GUIAS[tipo]||GUIAS.AVIÃO;
+    const m=v.moeda;
+    const hasFilaData=metrics.filaTotal>0;
+    const filaPctSafe=Math.min(100,Math.round(Math.max(0,metrics.filaPct)));
+    const filaCor=metrics.filaPct>=80?'#16a34a':metrics.filaPct>=50?'#d97706':'#dc2626';
+    return`<div style="background:var(--white);border:0.5px solid ${g.brd};border-left:4px solid ${g.cor};border-radius:12px;overflow:hidden;margin-bottom:12px">
+      <div style="background:${g.bg};padding:12px 16px;border-bottom:0.5px solid ${g.brd}">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <div style="display:flex;align-items:center;gap:9px">
+            <div style="width:33px;height:33px;border-radius:50%;background:${v.cor};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:white;flex-shrink:0">${v.avatar}</div>
+            <div>
+              <div style="font-size:14px;font-weight:800;color:var(--text);line-height:1.1">${v.nome}</div>
+              <div style="font-size:10px;color:var(--muted);margin-top:1px">BU ${v.bu} · ${fmt(fat,m)} de ${fmt(meta,m)}</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:7px">
+            <span style="background:${g.bg};color:${g.cor};border:0.5px solid ${g.brd};font-size:10px;font-weight:700;padding:3px 9px;border-radius:5px">${g.icon} ${g.label}</span>
+            ${urgBadge(urgencia)}
+          </div>
+        </div>
+        <div style="height:3px;background:rgba(0,0,0,.08);border-radius:2px;margin-bottom:4px">
+          <div style="height:3px;width:${Math.min(100,Math.round(pct))}%;background:${g.cor};border-radius:2px"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted)">
+          <span><strong style="color:${g.cor}">${Math.round(pct)}%</strong> da meta</span>
+          <span>Esperado neste dia: ${Math.round(metrics.ritmoEsperado)}%</span>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:210px 1fr">
+        <div style="padding:14px 15px;border-right:0.5px solid var(--border)">
+          <div style="font-size:9px;font-weight:700;color:${g.cor};text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px">Diagnóstico</div>
+          <div style="font-size:15px;font-weight:800;color:var(--text);line-height:1.25;margin-bottom:3px">${g.numDiag(metrics)}</div>
+          <div style="font-size:11px;color:var(--muted);line-height:1.5;margin-bottom:10px">${g.contexto(metrics)}</div>
+          <div style="background:var(--s2);border-radius:7px;padding:8px 10px;margin-bottom:7px">
+            <div style="font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px">Fila hoje</div>
+            ${hasFilaData?`<div style="height:4px;background:var(--border);border-radius:2px;margin-bottom:4px;overflow:hidden"><div style="height:4px;background:${filaCor};border-radius:2px;width:${filaPctSafe}%"></div></div>
+            <div style="font-size:10px;color:var(--text2)">${metrics.filaContatados}/${metrics.filaTotal} contatados · <strong>${filaPctSafe}%</strong></div>`:
+            `<div style="font-size:10px;color:var(--muted)">Disponível após 06:30 (Make)</div>`}
+          </div>
+          ${metrics.inativTotal>0?`<div style="background:var(--s2);border-radius:7px;padding:8px 10px">
+            <div style="font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px">Inativos na carteira</div>
+            ${metrics.inativ120>0?`<div style="display:flex;align-items:center;gap:5px;margin-bottom:3px"><div style="width:7px;height:7px;border-radius:50%;background:#dc2626;flex-shrink:0"></div><span style="font-size:11px;color:var(--text)">${metrics.inativ120} críticos (120d+)</span></div>`:''}
+            ${metrics.inativ90>0?`<div style="display:flex;align-items:center;gap:5px;margin-bottom:3px"><div style="width:7px;height:7px;border-radius:50%;background:#d97706;flex-shrink:0"></div><span style="font-size:11px;color:var(--text)">${metrics.inativ90} em risco (90d)</span></div>`:''}
+            ${metrics.inativ60>0?`<div style="display:flex;align-items:center;gap:5px"><div style="width:7px;height:7px;border-radius:50%;background:#ca8a04;flex-shrink:0"></div><span style="font-size:11px;color:var(--text)">${metrics.inativ60} atenção (60d)</span></div>`:''}
+          </div>`:''}
+        </div>
+        <div style="padding:14px 16px">
+          <div style="font-size:9px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.07em;margin-bottom:12px">Roteiro do 1:1</div>
+          <div style="margin-bottom:10px">
+            <div style="font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">❓ Perguntar</div>
+            <div style="font-size:12px;color:var(--text);font-style:italic;line-height:1.6;background:var(--s2);padding:9px 11px;border-radius:7px;border-left:3px solid ${g.cor}">${g.pergunta(metrics)}</div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+            <div>
+              <div style="font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">⚡ Cobrar</div>
+              <div style="font-size:11px;color:var(--text2);line-height:1.55">${g.cobrar(metrics)}</div>
+            </div>
+            <div>
+              <div style="font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">🎯 Orientar</div>
+              <div style="font-size:11px;color:var(--text2);line-height:1.55">${g.orientar(metrics)}</div>
+            </div>
+          </div>
+          <div style="background:var(--navy);border-radius:8px;padding:10px 13px">
+            <div style="font-size:9px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px">📈 Impacto se corrigir</div>
+            <div style="font-size:12px;color:rgba(255,255,255,.85);line-height:1.55">${g.impacto(metrics)}</div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  return`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+    <div>
+      <div style="font-size:18px;font-weight:800;color:var(--text);letter-spacing:-.3px;margin-bottom:3px">Pauta de 1:1 · ${hoje}</div>
+      <div style="font-size:11px;color:var(--muted)">Ordene pelos críticos — fale com eles primeiro</div>
+    </div>
+    <div style="display:flex;gap:6px">
+      ${criticos>0?`<span style="background:#fee2e2;color:#dc2626;font-size:11px;font-weight:700;padding:4px 11px;border-radius:6px;border:0.5px solid #fca5a5">🔴 ${criticos} crítico${criticos>1?'s':''}</span>`:''}
+      ${atencao>0?`<span style="background:#fef3c7;color:#d97706;font-size:11px;font-weight:700;padding:4px 11px;border-radius:6px;border:0.5px solid #fde68a">🟡 ${atencao} atenção</span>`:''}
+      ${bons>0?`<span style="background:#f0fdf4;color:#16a34a;font-size:11px;font-weight:700;padding:4px 11px;border-radius:6px;border:0.5px solid #bbf7d0">🟢 ${bons} no ritmo</span>`:''}
+    </div>
+  </div>
+  <div style="background:var(--navy);border-radius:10px;padding:13px 16px;margin-bottom:16px">
+    <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px">Estratégia do gerente</div>
+    <div style="font-size:12px;color:rgba(255,255,255,.8);line-height:1.65">
+      O avião só voa quando todos os motores estão funcionando. Seu trabalho hoje é identificar <strong style="color:var(--gold-l)">qual motor está falhando em cada pessoa</strong> e dar o ajuste específico — não um discurso genérico.
+      <strong style="color:var(--gold-l)">Comece pelos críticos</strong>, depois os de atenção, depois reconheça quem está voando.
+    </div>
+  </div>
+  ${cards}`;
+}
 
 function iniciar(){
   const dias=diasUteis();
