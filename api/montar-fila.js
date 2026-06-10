@@ -339,7 +339,7 @@ async function calcLimiteDinamico(email, vInfo, data, token, feriados = { br: []
 
       const ligVendedor = ligs.filter(l => l.ownerId === vInfo.userId);
       const totalLig    = ligVendedor.length;
-      const atendidas   = ligVendedor.filter(l => l.subject.includes('Atendida')).length;
+      const atendidas   = ligVendedor.filter(l => l.subject.includes('Atendida') && !l.subject.includes('Não Atendida')).length;
 
       if (totalLig > 5) {
         taxaAtendimento = atendidas / totalLig;
