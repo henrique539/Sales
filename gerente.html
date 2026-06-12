@@ -210,6 +210,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 <div class="nav">
   <button class="nbtn on" id="nb-time" onclick="showSection('time',this)">📊 Time</button>
   <button class="nbtn" id="nb-1a1" onclick="showSection('1a1',this)">🎯 Pauta 1:1</button>
+  <button class="nbtn" id="nb-foco" onclick="showSection('foco',this)">📌 Foco da Semana</button>
   <div class="nav-right" id="navRight">—</div>
 </div>
 
@@ -243,6 +244,11 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
   <!-- ══ PAUTA 1:1 ══ -->
   <div id="sec-1a1" style="display:none">
     <div id="conteudo-1a1"><div class="spin-wrap"><div class="spinner"></div> Gerando pauta de 1:1...</div></div>
+  </div>
+
+  <!-- ══ FOCO DA SEMANA ══ -->
+  <div id="sec-foco" style="display:none">
+    <div id="conteudo-foco"><div class="spin-wrap"><div class="spinner"></div> Gerando foco da semana...</div></div>
   </div>
 
 </div>
@@ -398,11 +404,12 @@ document.addEventListener('click',e=>{
 
 // ── NAVEGAÇÃO ──
 window.showSection=(id,btn)=>{
-  ['time','1a1'].forEach(s=>{const el=$('sec-'+s);if(el)el.style.display='none';});
+  ['time','1a1','foco'].forEach(s=>{const el=$('sec-'+s);if(el)el.style.display='none';});
   document.querySelectorAll('.nbtn').forEach(b=>b.classList.remove('on'));
   const sec=$('sec-'+id);if(sec)sec.style.display='block';
   if(btn)btn.classList.add('on');
   if(id==='1a1')carregarSec1a1();
+  if(id==='foco')carregarSecFoco();
 };
 
 // ── CARDS BU ──
@@ -1164,6 +1171,150 @@ async function carregarDadosReais(){
       }
     }
   }catch(e){console.warn('ligacoes:',e.message);}
+}
+
+// ── FOCO DA SEMANA ──
+let _focoLoaded=false;
+
+async function carregarSecFoco(){
+  if(_focoLoaded)return;
+  const el=$('conteudo-foco');if(!el)return;
+  const historico=await buscarHistorico3Meses();
+  el.innerHTML=renderFocoHTML(historico);
+  _focoLoaded=true;
+}
+
+async function buscarHistorico3Meses(){
+  const resultado=[];
+  const hoje=new Date();
+  const mesesDef=[
+    {label:'Junho (parcial)',key:hoje.toISOString().slice(0,10),fallback:new Date(Date.now()-86400000).toISOString().slice(0,10)},
+    {label:'Maio',key:`${hoje.getFullYear()}-05-31`,fallback:`${hoje.getFullYear()}-05-30`},
+    {label:'Abril',key:`${hoje.getFullYear()}-04-30`,fallback:`${hoje.getFullYear()}-04-29`},
+  ];
+  for(const mes of mesesDef){
+    try{
+      let snap=await getDoc(doc(db,'contexto',`desempenho_${mes.key}`));
+      if(!snap.exists())snap=await getDoc(doc(db,'contexto',`desempenho_${mes.fallback}`));
+      if(snap.exists()){
+        const vds=snap.data().vendedores||{};
+        let fatBRL=0,metaBRL=0,fatUSD=0,metaUSD=0;
+        for(const v of VENDEDORES){
+          const fsEmail=v.firestoreEmail||v.email;
+          const vd=vds[fsEmail];if(!vd)continue;
+          const fat=vd.mesAtual?.faturamento||0;
+          const meta=vd.metaMensal||v.meta||0;
+          if(v.moeda==='USD'){fatUSD+=fat;metaUSD+=meta;}else{fatBRL+=fat;metaBRL+=meta;}
+        }
+        resultado.push({label:mes.label,fatBRL,metaBRL,fatUSD,metaUSD,ok:true});
+      }else{resultado.push({label:mes.label,ok:false});}
+    }catch(e){resultado.push({label:mes.label,ok:false});}
+  }
+  return resultado;
+}
+
+function renderFocoHTML(historico){
+  const hoje=new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'});
+
+  // Ranking por urgência derivado de VD_CONFIG
+  const ranked=VENDEDORES.map(v=>{
+    const cfg=VD_CONFIG[v.email]||{};
+    const d=DADOS[v.email]||{};
+    const pct=Math.round((d.fat||0)/(v.meta||1)*100);
+    const u=cfg.alertaTipo==='red'?3:cfg.alertaTipo==='warn'?2:1;
+    return{v,cfg,pct,u};
+  }).sort((a,b)=>b.u-a.u||(b.pct-a.pct)*-1);
+
+  const priorItems=ranked.map(({v,cfg,pct,u})=>{
+    const icon=u===3?'🚨':u===2?'⚠️':'✅';
+    const label=u===3?'INTERVENÇÃO':u===2?'ATENÇÃO':'RECONHECER';
+    const cor=u===3?'#dc2626':u===2?'#d97706':'#16a34a';
+    const bg=u===3?'#fff5f5':u===2?'#fffbeb':'#f0fdf4';
+    const brd=u===3?'#fca5a5':u===2?'#fde68a':'#bbf7d0';
+    return`<div style="border:0.5px solid ${brd};border-left:4px solid ${cor};border-radius:10px;padding:12px 14px;margin-bottom:8px;background:${bg}">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:7px">
+        <div style="width:28px;height:28px;border-radius:50%;background:${v.cor};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:white;flex-shrink:0">${v.avatar}</div>
+        <div style="flex:1">
+          <div style="font-size:10px;font-weight:700;color:${cor};margin-bottom:1px">${icon} ${label}</div>
+          <div style="font-size:13px;font-weight:800;color:var(--text)">${v.nome} <span style="font-size:10px;font-weight:600;color:var(--muted)">· BU ${v.bu} · ${pct}% da meta</span></div>
+        </div>
+      </div>
+      <div style="font-size:11px;color:var(--text2);line-height:1.55;margin-bottom:${cfg.atitudeTxt?'7px':'0'}">${cfg.alertaTxt||''}</div>
+      ${cfg.atitudeTxt?`<div style="background:white;border:0.5px solid ${brd};border-radius:7px;padding:8px 11px;display:flex;gap:7px;align-items:flex-start">
+        <span style="font-size:11px;font-weight:800;color:${cor};flex-shrink:0;margin-top:1px">→</span>
+        <span style="font-size:11px;color:var(--text);line-height:1.55">${cfg.atitudeTxt}</span>
+      </div>`:''}
+    </div>`;
+  }).join('');
+
+  // Pauta inteligente baseada nos problemas do time
+  const hasMe=ranked.some(r=>r.v.bu==='ME'&&r.u>=2);
+  const hasWaPessoal=ranked.some(r=>r.cfg.alertaTxt?.includes('pessoal'));
+  const hasTicket=ranked.some(r=>r.cfg.alertaTxt?.includes('ticket'));
+  const bestPractice=ranked.find(r=>r.u===1);
+
+  const pautaItens=[
+    {t:'5 min',d:'Números da semana — abrir o painel juntos. Cada um fala: o que fechou e o que está quente para fechar essa semana.'},
+    bestPractice?{t:'10 min',d:`Boas práticas: ${bestPractice.v.nome.split(' ')[0]} apresenta o que está funcionando. Time discute como replicar.`}:null,
+    hasMe?{t:'10 min',d:'Mercado Externo — processo pós-oferta: o que acontece entre enviar a proposta e o silêncio? Mapear os gargalos.'}:null,
+    hasWaPessoal?{t:'5 min',d:'Padrão de WhatsApp: revisar tom das mensagens. Mostrar diferença entre WA comercial e pessoal com exemplos reais.'}:null,
+    hasTicket?{t:'5 min',d:'Mix de produtos: por que o ticket médio está caindo? Identificar os produtos certos para cada perfil de cliente.'}:null,
+    {t:'5 min',d:'Compromissos: cada um fala o número de contatos do dia. Fila diária 90% + print ao final do expediente.'},
+  ].filter(Boolean);
+
+  const pautaHTML=pautaItens.map(item=>`
+    <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:0.5px solid rgba(255,255,255,.08)">
+      <div style="flex-shrink:0;background:rgba(255,255,255,.1);border-radius:5px;padding:2px 9px;font-size:10px;font-weight:700;color:var(--gold-l);white-space:nowrap">${item.t}</div>
+      <div style="font-size:12px;color:rgba(255,255,255,.8);line-height:1.6">${item.d}</div>
+    </div>`).join('');
+
+  // Histórico 3 meses
+  const histHTML=historico.map(m=>{
+    const pctBRL=m.ok&&m.metaBRL>0?Math.round(m.fatBRL/m.metaBRL*100):null;
+    const pctUSD=m.ok&&m.metaUSD>0?Math.round(m.fatUSD/m.metaUSD*100):null;
+    const cor=pctBRL===null?'var(--muted)':pctBRL>=90?'#16a34a':pctBRL>=60?'#d97706':'#dc2626';
+    return`<div style="background:var(--white);border:0.5px solid var(--border);border-radius:10px;padding:14px 15px">
+      <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">${m.label}</div>
+      ${m.ok&&pctBRL!==null?`
+        <div style="font-size:22px;font-weight:800;color:${cor};font-family:'JetBrains Mono',monospace;line-height:1;margin-bottom:5px">${pctBRL}%</div>
+        <div style="height:5px;background:var(--border);border-radius:3px;margin-bottom:6px;overflow:hidden"><div style="height:5px;width:${Math.min(100,pctBRL)}%;background:${cor};border-radius:3px"></div></div>
+        <div style="font-size:10px;color:var(--muted)">BRL ${Math.round(m.fatBRL/1000)}k <span style="color:var(--dim)">/ meta ${Math.round(m.metaBRL/1000)}k</span></div>
+        ${pctUSD!==null?`<div style="font-size:10px;color:var(--muted);margin-top:3px">USD ${Math.round(m.fatUSD/1000)}k <span style="color:var(--dim)">/ meta ${Math.round(m.metaUSD/1000)}k</span></div>`:''}
+      `:`<div style="font-size:11px;color:var(--muted);margin-top:8px">Histórico não disponível</div>`}
+    </div>`;
+  }).join('');
+
+  const totalUrgentes=ranked.filter(r=>r.u===3).length;
+  const totalAtencao=ranked.filter(r=>r.u===2).length;
+
+  return`<div style="max-width:900px;margin:0 auto">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px">
+      <div>
+        <div style="font-size:18px;font-weight:800;color:var(--text);letter-spacing:-.3px;margin-bottom:3px">Foco do gerente · ${hoje}</div>
+        <div style="font-size:11px;color:var(--muted)">O que fazer esta semana para mover o time — ordenado por urgência</div>
+      </div>
+      <div style="display:flex;gap:6px;flex-shrink:0">
+        ${totalUrgentes>0?`<span style="background:#fee2e2;color:#dc2626;border:0.5px solid #fca5a5;font-size:10px;font-weight:700;padding:3px 10px;border-radius:5px">🚨 ${totalUrgentes} urgente${totalUrgentes>1?'s':''}</span>`:''}
+        ${totalAtencao>0?`<span style="background:#fef3c7;color:#d97706;border:0.5px solid #fde68a;font-size:10px;font-weight:700;padding:3px 10px;border-radius:5px">⚠️ ${totalAtencao} atenção</span>`:''}
+      </div>
+    </div>
+
+    <div style="background:var(--white);border:0.5px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px">
+      <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:12px">⚡ Prioridades desta semana</div>
+      ${priorItems}
+    </div>
+
+    <div style="background:var(--navy);border-radius:12px;padding:16px;margin-bottom:12px">
+      <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.07em;margin-bottom:2px">📅 Pauta da reunião de time</div>
+      <div style="font-size:11px;color:rgba(255,255,255,.35);margin-bottom:10px">Duração sugerida: ${pautaItens.reduce((s,i)=>s+parseInt(i.t),0)} min · use como roteiro, não script</div>
+      ${pautaHTML}
+    </div>
+
+    <div style="background:var(--white);border:0.5px solid var(--border);border-radius:12px;padding:16px">
+      <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:12px">📊 Retrospectiva — últimos 3 meses</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">${histHTML}</div>
+    </div>
+  </div>`;
 }
 
 async function iniciar(){
