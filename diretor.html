@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sabagram · Direção Comercial</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#1a3254;--gold:#c8960a;--gold-l:#e0aa18;
+  --bg:#f4f6f9;--white:#fff;--s2:#f8f9fc;
+  --border:#e2e7ef;--text:#1a2540;--text2:#3d5073;--muted:#7589a8;--dim:#a8b8cf;
+  --red:#c0392b;--rbg:rgba(192,57,43,.07);--rbd:rgba(192,57,43,.2);
+  --amber:#d97706;--abg:rgba(217,119,6,.07);--abd:rgba(217,119,6,.2);
+  --green:#1a7a4a;--gbg:rgba(26,122,74,.07);--gbd:rgba(26,122,74,.2);
+  --r:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6;height:100vh;overflow:hidden;display:flex;flex-direction:column}
+.hdr{background:var(--navy);height:52px;padding:0 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.logo{font-weight:800;font-size:15px;color:white;letter-spacing:.04em}.logo span{color:var(--gold-l)}
+.hdr-badge{background:rgba(255,255,255,.12);border:0.5px solid rgba(255,255,255,.2);color:rgba(255,255,255,.75);font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:.06em}
+.hdr-badge-dir{background:rgba(224,170,24,.18);border:0.5px solid rgba(224,170,24,.35);color:var(--gold-l);font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:.06em}
+#clock{font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,.35)}
+.hbtn-ghost{background:transparent;border:0.5px solid rgba(255,255,255,.2);color:rgba(255,255,255,.5);font-size:11px;font-weight:600;padding:5px 10px;border-radius:7px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif}
+.sbar{background:#0f1e35;border-bottom:0.5px solid rgba(255,255,255,.07);padding:4px 20px;display:flex;align-items:center;gap:6px;font-size:10px;color:rgba(255,255,255,.3);font-family:'JetBrains Mono',monospace;flex-shrink:0}
+.sdot{width:5px;height:5px;border-radius:50%;background:var(--gold-l);flex-shrink:0}
+.content{overflow-y:auto;flex:1;padding:20px}
+.inner{max-width:1000px;margin:0 auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner{width:13px;height:13px;border:2px solid var(--border);border-top-color:var(--navy);border-radius:50%;animation:spin 1s linear infinite}
+.spin-wrap{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);padding:40px 0;justify-content:center}
+
+/* Cards de status */
+.status-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.status-card{border-radius:14px;padding:18px 20px}
+
+/* Seções */
+.sec{background:var(--white);border:0.5px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:12px}
+.sec-title{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:14px;display:flex;align-items:center;gap:6px}
+
+/* Item de cobrança */
+.cobr-item{border-radius:10px;padding:13px 15px;margin-bottom:8px}
+.cobr-item:last-child{margin-bottom:0}
+.cobr-num{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:white;flex-shrink:0}
+
+/* Entrega */
+.entrega-row{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:0.5px solid var(--border)}
+.entrega-row:last-child{border-bottom:none}
+.entrega-prazo{flex-shrink:0;font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px;white-space:nowrap;margin-top:2px}
+
+/* Risco */
+.risco-item{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:8px;margin-bottom:6px}
+.risco-item:last-child{margin-bottom:0}
+
+/* Pergunta ao gerente */
+.pergunta-dir{background:var(--navy);border-radius:8px;padding:12px 14px;margin-bottom:8px}
+.pergunta-dir:last-child{margin-bottom:0}
+
+/* Time resumo */
+.time-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:0.5px solid var(--border)}
+.time-row:last-child{border-bottom:none}
+.dot{display:inline-block;width:7px;height:7px;border-radius:50%;flex-shrink:0}
+
+/* Histórico */
+.hist-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.hist-card{background:var(--s2);border-radius:10px;padding:13px 14px}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div style="display:flex;align-items:center;gap:12px">
+    <div class="logo">SABA<span>GRAM</span></div>
+    <div style="width:1px;height:16px;background:rgba(255,255,255,.15)"></div>
+    <div class="hdr-badge-dir">DIREÇÃO COMERCIAL</div>
+    <div class="hdr-badge" style="display:none" id="hdrBadge">RESTRITO</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px">
+    <div id="clock"></div>
+    <button class="hbtn-ghost" onclick="sair()">Sair</button>
+  </div>
+</header>
+
+<div class="sbar"><div class="sdot"></div><span id="sTxt">Acesso restrito · Direção Comercial</span></div>
+
+<div class="content">
+  <div class="inner" id="mainContent">
+    <div class="spin-wrap"><div class="spinner"></div> Carregando dados...</div>
+  </div>
+</div>
+
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import{getAuth,onAuthStateChanged,signOut}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import{getFirestore,doc,getDoc}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const FB={apiKey:"AIzaSyC6oWnbIyaZejwtNcL2S0SrHKLlLLxzUfI",authDomain:"sales-team-6aeb6.firebaseapp.com",projectId:"sales-team-6aeb6",storageBucket:"sales-team-6aeb6.firebasestorage.app",messagingSenderId:"421701680094",appId:"1:421701680094:web:1f8bc4ae716dd0d0f3bb4f"};
+const app=initializeApp(FB);
+const auth=getAuth(app);
+const db=getFirestore(app);
+const $=id=>document.getElementById(id);
+
+const VENDEDORES=[
+  {email:"nando@sabagram.com.br",nome:"Sizenando Andrade",avatar:"SA",bu:"MI",moeda:"BRL",cor:"#1a3254",
+   fat7d:88810,lig7d:73,atend7d:24,waChats7d:80,waPessoal7d:21,ofertas7d:18,meta:233289,fat:7785,monWA:true},
+  {email:"kelly@sabagram.com.br",nome:"Kelly Julião",avatar:"KJ",bu:"MI",moeda:"BRL",cor:"#1a5f3a",
+   fat7d:39938,lig7d:26,atend7d:11,waChats7d:76,waPessoal7d:0,ofertas7d:13,meta:161563,fat:4191,monWA:true},
+  {email:"marcelo@sabagram.com.br",nome:"Marcelo Melo",avatar:"MM",bu:"MI",moeda:"BRL",cor:"#8b1a1a",
+   fat7d:106844,lig7d:0,atend7d:0,waChats7d:0,waPessoal7d:0,ofertas7d:80,meta:463680,fat:26045,monWA:false},
+  {email:"renata@sabagram.com.br",nome:"Renata Santana",avatar:"RS",bu:"MI",moeda:"BRL",cor:"#6b1a5f",
+   fat7d:22139,lig7d:17,atend7d:8,waChats7d:0,waPessoal7d:0,ofertas7d:15,meta:105777,fat:10849,monWA:false,firestoreEmail:"santana@sabagram.com.br"},
+  {email:"wesley@sabagram.com.br",nome:"Wesley Matieli",avatar:"WM",bu:"Obras",moeda:"BRL",cor:"#1a4a2a",
+   fat7d:80489,lig7d:0,atend7d:0,waChats7d:0,waPessoal7d:0,ofertas7d:7,meta:172431,fat:12994,monWA:false},
+  {email:"cezar@sabagram.com.br",nome:"Cezar Fiorio",avatar:"CF",bu:"ME",moeda:"USD",cor:"#1a3a6b",
+   fat7d:77301,lig7d:0,atend7d:0,waChats7d:0,waPessoal7d:0,ofertas7d:239,meta:172800,fat:0,monWA:false},
+  {email:"diana@sabagram.com.br",nome:"Diana Rigoni",avatar:"DR",bu:"ME",moeda:"USD",cor:"#5f1a4a",
+   fat7d:0,lig7d:0,atend7d:0,waChats7d:0,waPessoal7d:0,ofertas7d:119,meta:25000,fat:0,monWA:false},
+];
+
+const DADOS={};
+VENDEDORES.forEach(v=>{DADOS[v.email]={fat:v.fat,meta:v.meta,moeda:v.moeda};});
+
+const fmt=(v,m='BRL')=>m==='USD'?'US$'+Math.round(v/1000)+'k':'R$'+Math.round(v/1000)+'k';
+const pct=(fat,meta)=>meta>0?Math.round(fat/meta*100):0;
+const corPct=p=>p>=90?'#16a34a':p>=60?'#d97706':p>=25?'#dc2626':'#7f1d1d';
+const tick=()=>{$('clock').textContent=new Date().toLocaleString('pt-BR',{weekday:'short',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}).toUpperCase();};
+tick();setInterval(tick,30000);
+
+// ── AUTH: só admin ou diretor ──
+onAuthStateChanged(auth,async user=>{
+  if(!user){window.location.href='index.html';return;}
+  const email=user.email.toLowerCase();
+  let perfil='';
+  try{
+    const snap=await getDoc(doc(db,'usuarios',email));
+    if(snap.exists())perfil=snap.data().perfil;
+  }catch(e){}
+  if(!perfil&&email==='henrique@sabagram.com.br')perfil='admin';
+  if(perfil!=='admin'&&perfil!=='diretor'){
+    await signOut(auth);window.location.href='index.html';return;
+  }
+  await carregarDados();
+  renderPagina();
+});
+
+window.sair=async()=>{await signOut(auth);window.location.href='index.html';};
+
+async function carregarDados(){
+  const hoje=new Date().toISOString().slice(0,10);
+  const ontem=new Date(Date.now()-86400000).toISOString().slice(0,10);
+  try{
+    let snap=await getDoc(doc(db,'contexto',`desempenho_${hoje}`));
+    if(!snap.exists())snap=await getDoc(doc(db,'contexto',`desempenho_${ontem}`));
+    if(snap.exists()){
+      const vds=snap.data().vendedores||{};
+      for(const v of VENDEDORES){
+        const fsEmail=v.firestoreEmail||v.email;
+        const vd=vds[fsEmail];if(!vd)continue;
+        if(vd.mesAtual?.faturamento!==undefined)DADOS[v.email].fat=vd.mesAtual.faturamento;
+        if(vd.metaMensal){DADOS[v.email].meta=vd.metaMensal;}
+      }
+    }
+  }catch(e){}
+}
+
+async function buscarHistorico(){
+  const hoje=new Date();
+  const meses=[
+    {label:'Junho',key:hoje.toISOString().slice(0,10),fb:new Date(Date.now()-86400000).toISOString().slice(0,10)},
+    {label:'Maio',key:`${hoje.getFullYear()}-05-31`,fb:`${hoje.getFullYear()}-05-30`},
+    {label:'Abril',key:`${hoje.getFullYear()}-04-30`,fb:`${hoje.getFullYear()}-04-29`},
+  ];
+  const resultado=[];
+  for(const m of meses){
+    try{
+      let snap=await getDoc(doc(db,'contexto',`desempenho_${m.key}`));
+      if(!snap.exists())snap=await getDoc(doc(db,'contexto',`desempenho_${m.fb}`));
+      if(snap.exists()){
+        const vds=snap.data().vendedores||{};
+        let fBRL=0,mBRL=0,fUSD=0,mUSD=0;
+        for(const v of VENDEDORES){
+          const fsEmail=v.firestoreEmail||v.email;
+          const vd=vds[fsEmail];if(!vd)continue;
+          const fat=vd.mesAtual?.faturamento||0;
+          const meta=vd.metaMensal||v.meta||0;
+          if(v.moeda==='USD'){fUSD+=fat;mUSD+=meta;}else{fBRL+=fat;mBRL+=meta;}
+        }
+        resultado.push({label:m.label,fBRL,mBRL,fUSD,mUSD,ok:true});
+      }else resultado.push({label:m.label,ok:false});
+    }catch(e){resultado.push({label:m.label,ok:false});}
+  }
+  return resultado;
+}
+
+function renderPagina(){
+  const hoje=new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  const diaAtual=new Date().getDate();
+  const diasTotais=22;
+
+  // ── Métricas de time ──
+  const vBRL=VENDEDORES.filter(v=>v.moeda==='BRL');
+  const vUSD=VENDEDORES.filter(v=>v.moeda==='USD');
+  const fatBRL=vBRL.reduce((s,v)=>s+(DADOS[v.email]?.fat||0),0);
+  const metaBRL=vBRL.reduce((s,v)=>s+(DADOS[v.email]?.meta||v.meta||0),0);
+  const fatUSD=vUSD.reduce((s,v)=>s+(DADOS[v.email]?.fat||0),0);
+  const metaUSD=vUSD.reduce((s,v)=>s+(DADOS[v.email]?.meta||v.meta||0),0);
+  const projBRL=Math.round(fatBRL/Math.max(1,diaAtual)*diasTotais);
+  const projUSD=Math.round(fatUSD/Math.max(1,diaAtual)*diasTotais);
+  const pBRL=pct(projBRL,metaBRL);
+  const pUSD=pct(projUSD,metaUSD);
+
+  // ── O que está funcionando ──
+  const destaques=[
+    {v:VENDEDORES.find(v=>v.email==='kelly@sabagram.com.br'),
+     titulo:'Maior conversão do time',
+     detalhe:'Conversão 18% com 41% de atendimento — modelo a ser replicado. WA exclusivamente comercial.',
+     acao:'Pedir ao gerente que Kelly apresente seu modelo de abordagem na próxima reunião de time.'},
+    {v:VENDEDORES.find(v=>v.email==='renata@sabagram.com.br'),
+     titulo:'Eficiência excepcional',
+     detalhe:'Conversão de 85% com apenas 1 contato por dia necessário. Menor esforço, maior resultado por contato.',
+     acao:'Investigar o que Renata faz diferente no momento do contato. Documentar para treinamento.'},
+    {v:VENDEDORES.find(v=>v.email==='wesley@sabagram.com.br'),
+     titulo:'Ticket alto em Obras',
+     detalhe:'R$40k de ticket médio, dinâmica de projeto funciona. R$80k faturado com apenas 2 clientes.',
+     acao:'Garantir que o gerente não pressione Wesley com volume — o modelo de obras é diferente do varejista.'},
+  ];
+
+  // ── Cobranças ao gerente ──
+  const cobracas=[
+    {urgencia:3,titulo:'Mercado Externo sem resultado',
+     detalhe:'Cezar e Diana somam 358 ofertas em 7 dias e R$0 faturado em junho. O problema não é volume — é o processo entre oferta e fechamento.',
+     cobrar:'Apresentar diagnóstico desta semana: o que acontece após enviar a oferta? Quantos clientes responderam? Por que não estão fechando?',
+     prazo:'Esta semana'},
+    {urgencia:2,titulo:'4 vendedores sem monitoramento de WA',
+     detalhe:'Marcelo, Renata, Wesley e Diana não têm WhatsApp monitorado. O gerente não tem visibilidade da qualidade do contato dessas pessoas.',
+     cobrar:'Plano de ativação de monitoramento para os 4 em até 2 semanas. Sem monitoramento, não dá para diagnosticar o problema.',
+     prazo:'Em 2 semanas'},
+    {urgencia:2,titulo:'Ticket de Marcelo caiu 5x',
+     detalhe:'Marcelo tem a maior meta do time (R$463k) mas o ticket médio caiu de R$25k para R$5k em 7 dias — 21 clientes pequenos em vez de poucos grandes.',
+     cobrar:'Apresentar lista dos clientes de Marcelo desta semana. O mix está errado ou a carteira mudou?',
+     prazo:'Até sexta'},
+    {urgencia:1,titulo:'Cadência de 1:1 formal',
+     detalhe:'Não há registro de 1:1 estruturado entre gerente e vendedores. Diagnóstico depende de percepção, não de processo.',
+     cobrar:'Estabelecer 1:1 semanal com cada vendedor (15-20 min). Pauta registrada no sistema.',
+     prazo:'Próxima semana'},
+  ];
+
+  // ── Entregas esperadas do gerente ──
+  const entregas=[
+    {prazo:'Esta semana',bg:'#fee2e2',cor:'#dc2626',txt:'Diagnóstico ME: por que 358 ofertas não viraram nenhuma venda em junho.'},
+    {prazo:'Esta semana',bg:'#fee2e2',cor:'#dc2626',txt:'Reunião individual com Cezar + Diana para mapear o processo pós-oferta.'},
+    {prazo:'Até sexta',bg:'#fef3c7',cor:'#d97706',txt:'Lista de clientes de Marcelo desta semana com ticket de cada um.'},
+    {prazo:'Em 2 semanas',bg:'#fef3c7',cor:'#d97706',txt:'Plano de ativação de monitoramento WA para Marcelo, Renata, Wesley e Diana.'},
+    {prazo:'Mensal',bg:'#e6f1fb',cor:'#185fa5',txt:'Relatório de conversão por vendedor: contatos → atendimentos → pedidos → R$.'},
+    {prazo:'Mensal',bg:'#e6f1fb',cor:'#185fa5',txt:'Relatório de carteira inativa: clientes >60 dias sem compra por vendedor.'},
+  ];
+
+  // ── Riscos estratégicos ──
+  const riscos=[
+    {nivel:3,titulo:'Mercado Externo pode não fechar junho',
+     detalhe:'Meta combinada: US$198k. Faturamento atual: US$0. Com o ritmo atual, a projeção é zero. Há risco real de mês em branco no ME.',
+     acaoDir:'Questionar o gerente sobre o pipeline real do ME — não ofertas enviadas, mas negociações com avanço concreto.'},
+    {nivel:2,titulo:'Concentração de carteira em MI',
+     detalhe:'Sizenando tem clientes como Marmoraria Tocantins (R$300k histórico) e Technogran (R$281k) inativos há >200 dias. Perder esses clientes impacta a meta estruturalmente.',
+     acaoDir:'Pedir relatório de carteira estratégica: top 10 clientes por vendedor, tempo sem compra, risco de migração.'},
+    {nivel:1,titulo:'Dependência do modelo de ligação em MI',
+     detalhe:'WA está sendo usado de forma pessoal por parte do time. Se o padrão de relacionamento virar lazer em vez de negócio, a conversão cai silenciosamente.',
+     acaoDir:'Definir política clara de WA comercial: o que pode e o que não pode. Gerente aplica e monitora.'},
+  ];
+
+  // ── Perguntas para o gerente ──
+  const perguntas=[
+    {txt:'"Você consegue explicar por que Cezar e Diana têm quase 400 ofertas sem nenhuma venda neste mês?"',
+     porque:'Essa pergunta força o gerente a ter uma hipótese concreta, não apenas reconhecer o problema. A resposta revela se ele entende o negócio ou está apenas reagindo.'},
+    {txt:'"Qual foi o último 1:1 que você fez com cada vendedor? O que ficou acordado?"',
+     porque:'Mede se há gestão real ou só acompanhamento de números. Gerente que não faz 1:1 não diagnostica — só constata.'},
+    {txt:'"Se você tivesse que escolher um vendedor para promover e um para substituir nos próximos 6 meses, quem seriam e por quê?"',
+     porque:'Revela a clareza de critérios do gerente sobre performance real versus esforço aparente.'},
+  ];
+
+  const mkStatusCard=(moeda,fat,meta,proj,p,bg,label)=>{
+    const cp=corPct(p);
+    const barAtual=Math.min(100,pct(fat,meta));
+    const barProj=Math.min(100,p)-barAtual;
+    return`<div class="status-card" style="background:${bg}">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <div style="font-size:9px;font-weight:700;color:rgba(255,255,255,.4);letter-spacing:.09em;text-transform:uppercase">${label}</div>
+        <div style="font-size:10px;font-weight:700;color:${cp};background:rgba(0,0,0,.15);padding:2px 9px;border-radius:4px">${p>=90?'No ritmo':p>=60?'Sprint necessário':'Intervenção'}</div>
+      </div>
+      <div style="display:flex;align-items:flex-end;gap:10px;margin-bottom:12px">
+        <div>
+          <div style="font-size:10px;color:rgba(255,255,255,.35);margin-bottom:2px">Projeção fim do mês</div>
+          <div style="font-size:30px;font-weight:800;color:white;font-family:'JetBrains Mono',monospace;letter-spacing:-1px;line-height:1">${fmt(proj,moeda)}</div>
+        </div>
+        <div style="margin-bottom:3px">
+          <div style="font-size:11px;color:rgba(255,255,255,.3)">de ${fmt(meta,moeda)} meta</div>
+          <div style="font-size:22px;font-weight:800;color:${cp};font-family:'JetBrains Mono',monospace">${p}%</div>
+        </div>
+      </div>
+      <div style="position:relative;height:7px;background:rgba(255,255,255,.1);border-radius:4px;overflow:hidden;margin-bottom:6px">
+        <div style="position:absolute;left:0;top:0;height:7px;width:${barAtual}%;background:white;border-radius:4px 0 0 4px;opacity:.85"></div>
+        <div style="position:absolute;left:${barAtual}%;top:0;height:7px;width:${Math.max(0,barProj)}%;background:rgba(255,255,255,.25)"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:10px;color:rgba(255,255,255,.35)">
+        <span>Atual <strong style="color:rgba(255,255,255,.7)">${fmt(fat,moeda)}</strong></span>
+        <span>Projeção <strong style="color:rgba(255,255,255,.7)">${fmt(proj,moeda)}</strong></span>
+        <span>Meta <strong style="color:rgba(255,255,255,.7)">${fmt(meta,moeda)}</strong></span>
+      </div>
+    </div>`;
+  };
+
+  const mkTimeline=()=>{
+    return VENDEDORES.map(v=>{
+      const d=DADOS[v.email]||{};
+      const fat=d.fat||0,meta=d.meta||v.meta||1;
+      const p=pct(fat,meta);
+      const cp=corPct(p);
+      const semMon=!v.monWA;
+      return`<div class="time-row">
+        <div style="display:flex;align-items:center;gap:8px;width:180px;flex-shrink:0">
+          <div style="width:26px;height:26px;border-radius:50%;background:${v.cor};display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:white;flex-shrink:0">${v.avatar}</div>
+          <div>
+            <div style="font-size:12px;font-weight:700;color:var(--text)">${v.nome.split(' ')[0]}</div>
+            <div style="font-size:9px;color:var(--muted)">BU ${v.bu}</div>
+          </div>
+        </div>
+        <div style="flex:1;padding:0 16px">
+          <div style="height:5px;background:var(--border);border-radius:3px;overflow:hidden;margin-bottom:3px">
+            <div style="height:5px;width:${Math.min(100,p)}%;background:${cp};border-radius:3px"></div>
+          </div>
+          <div style="font-size:10px;color:var(--muted)">${fmt(fat,v.moeda)} de ${fmt(meta,v.moeda)}</div>
+        </div>
+        <div style="width:60px;text-align:right;font-size:14px;font-weight:800;color:${cp};font-family:'JetBrains Mono',monospace;flex-shrink:0">${p}%</div>
+        <div style="width:80px;text-align:right;flex-shrink:0">
+          ${semMon?'<span style="font-size:9px;font-weight:600;background:#fef3c7;color:#92400e;padding:2px 6px;border-radius:3px">sem WA</span>':'<span style="font-size:9px;font-weight:600;background:#dcfce7;color:#166534;padding:2px 6px;border-radius:3px">WA ✓</span>'}
+        </div>
+      </div>`;
+    }).join('');
+  };
+
+  const el=$('mainContent');
+  el.innerHTML=`
+    <!-- Título -->
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px">
+      <div>
+        <div style="font-size:20px;font-weight:800;color:var(--text);letter-spacing:-.4px;margin-bottom:3px">Painel da Direção Comercial</div>
+        <div style="font-size:11px;color:var(--muted)">${hoje} · Confidencial</div>
+      </div>
+      <div style="background:#fff8e1;border:0.5px solid #fde68a;border-radius:8px;padding:7px 13px;font-size:11px;color:#78350f;font-weight:600">
+        🔒 Acesso restrito — não compartilhar com gerente ou vendedores
+      </div>
+    </div>
+
+    <!-- Status BRL + USD -->
+    <div class="status-grid">
+      ${mkStatusCard('BRL',fatBRL,metaBRL,projBRL,pBRL,'#1a3254','Mercado Interno · BRL')}
+      ${mkStatusCard('USD',fatUSD,metaUSD,projUSD,pUSD,'#0c3a2a','Mercado Externo · USD')}
+    </div>
+
+    <!-- Time resumo -->
+    <div class="sec" style="margin-bottom:12px">
+      <div class="sec-title">👥 Posição individual do time</div>
+      ${mkTimeline()}
+    </div>
+
+    <!-- O que está funcionando -->
+    <div class="sec">
+      <div class="sec-title">✅ O que está funcionando — reforçar</div>
+      ${destaques.map(d=>`
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px 0;border-bottom:0.5px solid var(--border)">
+          <div style="display:flex;gap:9px;align-items:flex-start">
+            <div style="width:30px;height:30px;border-radius:50%;background:${d.v.cor};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:white;flex-shrink:0">${d.v.avatar}</div>
+            <div>
+              <div style="font-size:10px;font-weight:700;color:var(--green);margin-bottom:2px">${d.titulo}</div>
+              <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px">${d.v.nome}</div>
+              <div style="font-size:11px;color:var(--text2);line-height:1.55">${d.detalhe}</div>
+            </div>
+          </div>
+          <div style="background:#f0fdf4;border:0.5px solid #bbf7d0;border-radius:8px;padding:10px 12px">
+            <div style="font-size:9px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px">→ Ação sugerida para o diretor</div>
+            <div style="font-size:11px;color:#166534;line-height:1.55">${d.acao}</div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+
+    <!-- Cobranças ao gerente -->
+    <div class="sec">
+      <div class="sec-title">⚡ O que cobrar do gerente</div>
+      ${cobracas.map((c,i)=>{
+        const cor=c.urgencia===3?'#dc2626':c.urgencia===2?'#d97706':'#185fa5';
+        const bg=c.urgencia===3?'#fff5f5':c.urgencia===2?'#fffbeb':'#f0f7ff';
+        const brd=c.urgencia===3?'#fca5a5':c.urgencia===2?'#fde68a':'#bcd4f6';
+        const icon=c.urgencia===3?'🚨':c.urgencia===2?'⚠️':'📌';
+        return`<div class="cobr-item" style="background:${bg};border:0.5px solid ${brd};border-left:4px solid ${cor}">
+          <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:8px">
+            <div class="cobr-num" style="background:${cor};margin-top:1px">${i+1}</div>
+            <div style="flex:1">
+              <div style="font-size:10px;font-weight:700;color:${cor};margin-bottom:2px">${icon} ${c.prazo.toUpperCase()}</div>
+              <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:5px">${c.titulo}</div>
+              <div style="font-size:11px;color:var(--text2);line-height:1.55;margin-bottom:8px">${c.detalhe}</div>
+              <div style="background:white;border:0.5px solid ${brd};border-radius:7px;padding:8px 11px">
+                <div style="font-size:9px;font-weight:700;color:${cor};text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px">Cobrar do gerente</div>
+                <div style="font-size:11px;color:var(--text);line-height:1.55">${c.cobrar}</div>
+              </div>
+            </div>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+
+    <!-- Entregas esperadas -->
+    <div class="sec">
+      <div class="sec-title">📋 Entregas esperadas do gerente</div>
+      ${entregas.map(e=>`
+        <div class="entrega-row">
+          <div class="entrega-prazo" style="background:${e.bg};color:${e.cor}">${e.prazo}</div>
+          <div style="font-size:12px;color:var(--text);line-height:1.55">${e.txt}</div>
+        </div>
+      `).join('')}
+    </div>
+
+    <!-- Riscos estratégicos -->
+    <div class="sec">
+      <div class="sec-title">⚠️ Riscos estratégicos</div>
+      ${riscos.map(r=>{
+        const cor=r.nivel===3?'#dc2626':r.nivel===2?'#d97706':'#7c3aed';
+        const bg=r.nivel===3?'#fff5f5':r.nivel===2?'#fffbeb':'#faf5ff';
+        const brd=r.nivel===3?'#fca5a5':r.nivel===2?'#fde68a':'#d8b4fe';
+        return`<div class="risco-item" style="background:${bg};border:0.5px solid ${brd};border-left:4px solid ${cor}">
+          <div style="width:8px;height:8px;border-radius:50%;background:${cor};flex-shrink:0;margin-top:4px"></div>
+          <div>
+            <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px">${r.titulo}</div>
+            <div style="font-size:11px;color:var(--text2);line-height:1.55;margin-bottom:6px">${r.detalhe}</div>
+            <div style="font-size:11px;color:${cor};font-weight:600">→ ${r.acaoDir}</div>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+
+    <!-- Perguntas para o gerente -->
+    <div class="sec">
+      <div class="sec-title">💬 Perguntar ao gerente no próximo 1:1</div>
+      ${perguntas.map(p=>`
+        <div class="pergunta-dir">
+          <div style="font-size:12px;color:rgba(255,255,255,.9);line-height:1.65;font-style:italic;margin-bottom:7px">${p.txt}</div>
+          <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px">Por que perguntar isso</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.55);line-height:1.55">${p.porque}</div>
+        </div>
+      `).join('')}
+    </div>
+
+    <!-- Retrospectiva 3 meses (carregada após) -->
+    <div id="histSec" class="sec">
+      <div class="sec-title">📊 Retrospectiva — últimos 3 meses</div>
+      <div class="spin-wrap" style="padding:20px 0"><div class="spinner"></div> Carregando histórico...</div>
+    </div>
+  `;
+
+  // Carregar histórico em paralelo
+  buscarHistorico().then(hist=>{
+    const corH=p=>p>=90?'#16a34a':p>=60?'#d97706':'#dc2626';
+    const histHTML=hist.map(m=>{
+      const pBRL=m.ok&&m.mBRL>0?Math.round(m.fBRL/m.mBRL*100):null;
+      const pUSD=m.ok&&m.mUSD>0?Math.round(m.fUSD/m.mUSD*100):null;
+      const cor=pBRL===null?'var(--muted)':corH(pBRL);
+      return`<div class="hist-card">
+        <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">${m.label}</div>
+        ${m.ok&&pBRL!==null?`
+          <div style="font-size:24px;font-weight:800;color:${cor};font-family:'JetBrains Mono',monospace;line-height:1;margin-bottom:5px">${pBRL}%</div>
+          <div style="height:5px;background:var(--border);border-radius:3px;margin-bottom:6px;overflow:hidden">
+            <div style="height:5px;width:${Math.min(100,pBRL)}%;background:${cor};border-radius:3px"></div>
+          </div>
+          <div style="font-size:10px;color:var(--muted);margin-bottom:2px">BRL ${Math.round(m.fBRL/1000)}k <span style="color:var(--dim)">/ ${Math.round(m.mBRL/1000)}k</span></div>
+          ${pUSD!==null?`<div style="font-size:10px;color:var(--muted)">USD ${Math.round(m.fUSD/1000)}k <span style="color:var(--dim)">/ ${Math.round(m.mUSD/1000)}k</span></div>`:''}
+        `:`<div style="font-size:11px;color:var(--muted);margin-top:8px">Histórico não disponível</div>`}
+      </div>`;
+    }).join('');
+    const hs=$('histSec');
+    if(hs)hs.innerHTML=`<div class="sec-title">📊 Retrospectiva — últimos 3 meses</div><div class="hist-grid">${histHTML}</div>`;
+  });
+}
+</script>
+</body>
+</html>
