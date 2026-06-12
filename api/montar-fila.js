@@ -239,7 +239,7 @@ async function gerarScriptsLote(clientes, ligacoesPorCliente, historicoLigPorCli
     }
 
     const telNorm = (c.Phone||'').replace(/\D/g,'');
-    const telBR = telNorm.length === 11 ? '55' + telNorm : telNorm.length === 13 ? telNorm : '';
+    const telBR = telNorm.length === 13 ? telNorm : telNorm.length === 12 ? telNorm : telNorm.length === 11 ? '55'+telNorm : telNorm.length === 10 ? telNorm : '';
     const nitzapCtx = nitzapPorCliente[c.Id] || (telBR && nitzapPorTelefone ? nitzapPorTelefone[telBR] : null);
     const dataUltimoWA = c.nitzap20__DateTime_Last_Sent_Whatsapp__c;
     const historicoWA = nitzapCtx && nitzapCtx.text_last_message
@@ -506,7 +506,7 @@ export default async function handler(req, res) {
       }
     });
 
-    // Indexar Nitzap por last_salesforce_user (Account ID)
+    // Indexar Nitzap por telefone (last_salesforce_user é User ID do vendedor, não Account ID do cliente)
     const nitzapPorCliente = {};
     const nitzapPorTelefone = {};
     nitzap.forEach(n => {
@@ -517,6 +517,8 @@ export default async function handler(req, res) {
       if (n.secondwhatsappid) {
         const num = (n.secondwhatsappid||'').replace('@s.whatsapp.net','').replace('@c.us','');
         if (num && !nitzapPorTelefone[num]) nitzapPorTelefone[num] = n;
+        // Indexa também sem código do país (55) — Nitzap grava 12 dígitos, SF armazena 10
+        if (num.startsWith('55') && !nitzapPorTelefone[num.slice(2)]) nitzapPorTelefone[num.slice(2)] = n;
       }
     });
 
@@ -658,7 +660,7 @@ export default async function handler(req, res) {
 
         // WA — direção da última mensagem
         const telNorm = (c.Phone||'').replace(/\D/g,'');
-        const telBR = telNorm.length === 11 ? '55'+telNorm : telNorm.length === 13 ? telNorm : '';
+        const telBR = telNorm.length === 13 ? telNorm : telNorm.length === 12 ? telNorm : telNorm.length === 11 ? '55'+telNorm : telNorm.length === 10 ? telNorm : '';
         const nitzapCtx = nitzapPorCliente[c.Id] || (telBR ? nitzapPorTelefone[telBR] : null);
         const ultimaMsgWA = nitzapCtx?.text_last_message || null;
         const waDtUltima = nitzapCtx?.dt_lastmessage || nitzapCtx?.dt_second_last_message || null;
