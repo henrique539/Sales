@@ -1,79 +1,19 @@
 // Firebase REST API — sem dependências externas, igual ao claude.js
 const PROJECT_ID = 'sales-team-6aeb6';
 
-async function enviarEmailBoasVindas(nome, email, senha, perfil) {
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) { console.warn('RESEND_API_KEY não configurado — email não enviado'); return; }
-
-  const perfilLabel = { vendedor: 'Vendedor', gerente: 'Gerente', diretor: 'Diretor', admin: 'Administrador' }[perfil] || perfil;
-
-  const html = `<!DOCTYPE html>
-<html lang="pt-BR">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
-<body style="margin:0;padding:0;background:#f4f6f9;font-family:'Helvetica Neue',Arial,sans-serif">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f6f9;padding:40px 20px">
-    <tr><td align="center">
-      <table width="540" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08)">
-        <!-- Header -->
-        <tr><td style="background:#1a3254;padding:28px 36px">
-          <p style="margin:0;font-size:22px;font-weight:800;color:#ffffff;letter-spacing:.04em">SABA<span style="color:#e0aa18">GRAM</span></p>
-          <p style="margin:6px 0 0;font-size:11px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.08em">Portal de Vendas</p>
-        </td></tr>
-        <!-- Body -->
-        <tr><td style="padding:36px 36px 28px">
-          <p style="margin:0 0 6px;font-size:20px;font-weight:700;color:#1a2540">Olá, ${nome}!</p>
-          <p style="margin:0 0 24px;font-size:14px;color:#3d5073;line-height:1.6">Seu acesso ao <strong>Portal Sabagram</strong> foi criado. Use as credenciais abaixo para entrar.</p>
-
-          <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f6f9;border-radius:10px;margin-bottom:24px">
-            <tr><td style="padding:20px 24px">
-              <p style="margin:0 0 10px;font-size:10px;font-weight:700;color:#7589a8;text-transform:uppercase;letter-spacing:.08em">Suas credenciais</p>
-              <table width="100%" cellpadding="0" cellspacing="0">
-                <tr>
-                  <td style="font-size:12px;color:#7589a8;padding:5px 0;width:80px">Perfil</td>
-                  <td style="font-size:13px;font-weight:600;color:#1a2540;padding:5px 0">${perfilLabel}</td>
-                </tr>
-                <tr>
-                  <td style="font-size:12px;color:#7589a8;padding:5px 0">E-mail</td>
-                  <td style="font-size:13px;font-weight:600;color:#1a2540;padding:5px 0;font-family:monospace">${email}</td>
-                </tr>
-                <tr>
-                  <td style="font-size:12px;color:#7589a8;padding:5px 0">Senha</td>
-                  <td style="font-size:13px;font-weight:700;color:#1a2540;padding:5px 0;font-family:monospace">${senha}</td>
-                </tr>
-              </table>
-            </td></tr>
-          </table>
-
-          <table width="100%" cellpadding="0" cellspacing="0">
-            <tr><td align="center">
-              <a href="https://portal.sabagram.com.br" style="display:inline-block;background:#1a3254;color:#ffffff;font-size:14px;font-weight:700;text-decoration:none;padding:13px 32px;border-radius:8px;letter-spacing:.02em">Acessar o Portal →</a>
-            </td></tr>
-          </table>
-        </td></tr>
-        <!-- Footer -->
-        <tr><td style="padding:18px 36px;border-top:1px solid #e2e7ef">
-          <p style="margin:0;font-size:11px;color:#a8b8cf;line-height:1.6">Recomendamos alterar sua senha após o primeiro acesso. Em caso de dúvidas, fale com seu gestor.</p>
-        </td></tr>
-      </table>
-    </td></tr>
-  </table>
-</body>
-</html>`;
-
+async function enviarEmailBoasVindas(email) {
   try {
-    const r = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        from: 'Portal Sabagram <portal@sabagram.com.br>',
-        to: email,
-        subject: 'Seu acesso ao Portal Sabagram',
-        html,
-      }),
-    });
+    const r = await fetch(
+      `https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AIzaSyC6oWnbIyaZejwtNcL2S0SrHKLlLLxzUfI`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ requestType: 'PASSWORD_RESET', email }),
+      }
+    );
     const d = await r.json();
-    if (d.error) console.error('Resend erro:', d.error);
-    else console.log('Email enviado para', email, '| id:', d.id);
+    if (d.error) console.error('Firebase email erro:', d.error);
+    else console.log('Email de acesso enviado para', email);
   } catch(e) {
     console.error('enviarEmailBoasVindas:', e.message);
   }
@@ -265,8 +205,8 @@ export default async function handler(req, res) {
         body: JSON.stringify(objToFs({ uid, nome, email: emailLower, perfil, bu: bu || '', whatsapp: whatsapp || '', ativo: true }))
       });
 
-      // Enviar email de boas-vindas (não bloqueia se falhar)
-      enviarEmailBoasVindas(nome, emailLower, senha, perfil);
+      // Enviar email de acesso via Firebase (não bloqueia se falhar)
+      enviarEmailBoasVindas(emailLower);
 
       return res.json({ ok: true, uid });
     }
