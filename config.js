@@ -17,6 +17,11 @@ export const USUARIOS = {
     salesforce:{ ideVen:["001TW000003LbquYAC","001TW000003LcYSYA0"], userId:"005TW0000002BnNYAU" },
     whatsapp:"5528999565519", cor:"#1a3254"
   },
+  "nando@sabagram.com.br": {
+    nome:"Sizenando Andrade", perfil:"vendedor", avatar:"SA", bu:"MI", moeda:"BRL",
+    salesforce:{ ideVen:["001TW000003LbquYAC","001TW000003LcYSYA0"], userId:"005TW0000002BnNYAU" },
+    whatsapp:"5528999565519", cor:"#1a3254"
+  },
   "kelly@sabagram.com.br": {
     nome:"Kelly Julião", perfil:"vendedor", avatar:"KJ", bu:"MI", moeda:"BRL",
     salesforce:{ ideVen:["001TW000005ag14YAA","001TW000005ah3ZYAQ"], userId:"005TW0000003rpNYAQ" },
