@@ -180,16 +180,16 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: 'nome, email, senha e perfil são obrigatórios' });
       const emailLower = email.toLowerCase();
 
-      // Criar no Firebase Auth via REST
+      // Criar no Firebase Auth via REST (ignora se já existe)
       const authRes = await fetch(
         `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyC6oWnbIyaZejwtNcL2S0SrHKLlLLxzUfI`,
         { method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email: emailLower, password: senha, displayName: nome, returnSecureToken: false }) }
       );
       const authData = await authRes.json();
-      if (authData.error) throw new Error(authData.error.message);
+      if (authData.error && authData.error.message !== 'EMAIL_EXISTS') throw new Error(authData.error.message);
 
-      // Buscar UID via admin
+      // Buscar UID via admin (funciona tanto para usuário novo quanto existente)
       const listRes = await fetch(
         `https://identitytoolkit.googleapis.com/v1/projects/${PROJECT_ID}/accounts:lookup`,
         { method: 'POST', headers: { Authorization: `Bearer ${adminToken}`, 'Content-Type': 'application/json' },
