@@ -246,6 +246,7 @@ function renderTabela(lista){
       <div class="row-btns">
         <button class="btn-sm" onclick="editarUsuario('${u.email}')">Editar</button>
         <button class="btn-sm" onclick="resetarSenha('${u.email}','${u.nome}')">Senha</button>
+        <button class="btn-sm" onclick="enviarEmail('${u.email}','${u.nome}')">Email</button>
         ${u.ativo
           ?`<button class="btn-sm btn-sm-red" onclick="desativar('${u.email}','${u.nome}')">Desativar</button>`
           :`<button class="btn-sm" onclick="reativar('${u.email}','${u.nome}')">Reativar</button>`
@@ -351,6 +352,15 @@ window.reativar=async(email,nome)=>{
     if(r.error)throw new Error(r.error);
     toast(nome+' reativado!');
     await carregarUsuarios();
+  }catch(e){toast('Erro: '+e.message,false);}
+};
+
+window.enviarEmail=async(email,nome)=>{
+  if(!confirm('Enviar email de acesso para '+nome+' ('+email+')?'))return;
+  try{
+    const r=await fetchAPI('POST',{action:'sendEmail',email});
+    if(r.error)throw new Error(r.error);
+    toast('Email enviado para '+nome+'!');
   }catch(e){toast('Erro: '+e.message,false);}
 };
 

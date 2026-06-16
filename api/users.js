@@ -173,6 +173,14 @@ export default async function handler(req, res) {
       return res.json({ users });
     }
 
+    // POST — enviar email
+    if (req.method === 'POST' && req.body?.action === 'sendEmail') {
+      const { email } = req.body;
+      if (!email) return res.status(400).json({ error: 'email obrigatório' });
+      await enviarEmailBoasVindas(email.toLowerCase());
+      return res.json({ ok: true });
+    }
+
     // POST — criar usuário
     if (req.method === 'POST') {
       const { nome, email, senha, perfil, bu, whatsapp } = req.body;
