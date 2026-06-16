@@ -228,10 +228,12 @@ import { initializeApp }                        from "https://www.gstatic.com/fi
 import { getAuth, signInWithEmailAndPassword,
          GoogleAuthProvider, signInWithPopup,
          onAuthStateChanged }                   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, getDoc }            from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { FIREBASE_CONFIG, USUARIOS }            from "./config.js";
 
 const app  = initializeApp(FIREBASE_CONFIG);
 const auth = getAuth(app);
+const db   = getFirestore(app);
 
 // Se já está logado, redireciona direto
 onAuthStateChanged(auth, user => {
@@ -251,12 +253,30 @@ function setLoading(on) {
   document.getElementById('formArea').style.display = on ? 'none' : 'block';
   document.getElementById('btnLogin').disabled = on;
 }
-function rotear(email) {
-  const u = USUARIOS[email.toLowerCase()];
+async function rotear(email) {
+  const emailLower = email.toLowerCase();
+  try {
+    const snap = await getDoc(doc(db, 'usuarios', emailLower));
+    if (snap.exists()) {
+      const u = snap.data();
+      if (!u.ativo) { mostrarErro('Sua conta está desativada. Fale com o administrador.'); return; }
+      const extra = USUARIOS[emailLower] || {};
+      sessionStorage.setItem('sb_user', JSON.stringify({ email, ...extra, ...u }));
+      if (u.perfil === 'admin' || u.perfil === 'gerente') {
+        window.location.href = 'gerente.html';
+      } else {
+        window.location.href = 'vendedor.html';
+      }
+      return;
+    }
+  } catch(e) {
+    console.warn('Firestore indisponível, usando config local:', e.message);
+  }
+  // Fallback para config.js (admins hardcoded)
+  const u = USUARIOS[emailLower];
   if (!u) { mostrarErro('Acesso não autorizado para este e-mail.'); return; }
   sessionStorage.setItem('sb_user', JSON.stringify({ email, ...u }));
-  const perfil = u.perfil;
-  if (perfil === 'admin' || perfil === 'gerente') {
+  if (u.perfil === 'admin' || u.perfil === 'gerente') {
     window.location.href = 'gerente.html';
   } else {
     window.location.href = 'vendedor.html';
