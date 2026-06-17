@@ -685,15 +685,20 @@ async function carregarDesempenho(email){
   const hoje=new Date().toISOString().slice(0,10);
 
   try{
-    // Tenta hoje, fallback ontem
-    let snapDesemp=await getDoc(doc(db,'contexto',`desempenho_${hoje}`));
-    if(!snapDesemp.exists()){
+    const token=await auth.currentUser.getIdToken();
+    const fsEmail=vInfo?.firestoreEmail||email;
+    const hdrs={Authorization:`Bearer ${token}`};
+
+    // Tenta hoje, fallback ontem — via API (evita regras do Firestore)
+    let resp=await fetch(`/api/contexto?tipo=desempenho&data=${hoje}`,{headers:hdrs});
+    let desempData=await resp.json();
+    if(!desempData.vendedores){
       const ontem=new Date();ontem.setDate(ontem.getDate()-1);
-      snapDesemp=await getDoc(doc(db,'contexto',`desempenho_${ontem.toISOString().slice(0,10)}`));
+      resp=await fetch(`/api/contexto?tipo=desempenho&data=${ontem.toISOString().slice(0,10)}`,{headers:hdrs});
+      desempData=await resp.json();
     }
 
-    const fsEmail=vInfo?.firestoreEmail||email;
-    const vd=snapDesemp.exists()?(snapDesemp.data()?.vendedores?.[fsEmail]||null):null;
+    const vd=desempData.vendedores?.[fsEmail]||null;
 
     if(!vd){
       container.innerHTML=`<div style="text-align:center;padding:40px;color:var(--muted);font-size:13px">
@@ -724,7 +729,6 @@ async function carregarDesempenho(email){
     }
 
     // Ligações + fila (em paralelo)
-    const token=await auth.currentUser.getIdToken();
     const fsEmailFila=vInfo?.firestoreEmail||email;
     const emailKey=fsEmailFila.replace(/[@.]/g,'_');
     const [respLig, respFila]=await Promise.all([

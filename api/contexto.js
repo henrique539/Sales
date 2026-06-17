@@ -89,6 +89,28 @@ export default async function handler(req, res) {
       const docPath = `${FIRESTORE_URL}/contexto/${tipo}_${data}`;
       const r = await fetch(docPath, { headers: { Authorization: `Bearer ${adminToken}` } });
       const d = await r.json();
+      // Desempenho tem estrutura diferente (mapa vendedores, não array registros)
+      if (tipo === 'desempenho') {
+        if (d.error || !d.fields) return res.json({ vendedores: null });
+        function fsToVal(v) {
+          if (!v) return null;
+          if (v.stringValue  !== undefined) return v.stringValue;
+          if (v.integerValue !== undefined) return parseInt(v.integerValue);
+          if (v.doubleValue  !== undefined) return v.doubleValue;
+          if (v.booleanValue !== undefined) return v.booleanValue;
+          if (v.nullValue    !== undefined) return null;
+          if (v.arrayValue)  return (v.arrayValue.values || []).map(fsToVal);
+          if (v.mapValue) {
+            const obj = {};
+            for (const [k, val] of Object.entries(v.mapValue.fields || {})) obj[k] = fsToVal(val);
+            return obj;
+          }
+          return null;
+        }
+        const vendedores = d.fields.vendedores ? fsToVal(d.fields.vendedores) : null;
+        return res.json({ vendedores });
+      }
+
       if (d.error || !d.fields) return res.json({ registros: [], total: 0 });
       const registros = d.fields.registros?.arrayValue?.values?.map(v => {
         // Registros podem vir como string JSON (gravados pelo Make Array Aggregator)
