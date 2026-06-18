@@ -483,8 +483,8 @@ export default async function handler(req, res) {
     const historicoLigPorCliente = {}; // todas as ligações ordenadas (para IA)
     ligacoes.forEach(l => {
       if (!l) return;
-      // Aceita WhatId OU AccountId — algumas Tasks usam só AccountId
-      const cliId = l.WhatId || l.AccountId;
+      // AccountId é sempre o ID da Conta — WhatId pode ser ID de Oportunidade (não casa com c.Id)
+      const cliId = l.AccountId || l.WhatId;
       const subject = l.Subject || '';
       if (!cliId) return;
       // Histórico completo (todas as ligações)
